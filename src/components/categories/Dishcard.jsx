@@ -5,7 +5,7 @@ export function DishCard({ dish, isFavorite, onToggleFavorite }) {
   return (
     <div className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-border">
       <div className="relative">
-        <Link to={`/dish/${dish.id}`} className="block">
+        <Link to={`/plats/${dish.id}`} className="block">
           <div className="aspect-[4/3] bg-muted overflow-hidden">
             <img
               src={dish.image}
@@ -47,7 +47,7 @@ export function DishCard({ dish, isFavorite, onToggleFavorite }) {
         </div>
 
         {/* Dish Name */}
-        <Link to={`/dish/${dish.id}`}>
+        <Link to={`/plats/${dish.id}`}>
           <h3 className="font-semibold mb-3 group-hover:text-primary transition-colors line-clamp-1">
             {dish.name}
           </h3>

@@ -37,7 +37,18 @@ function CardPlat({
   };
 
   return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all duration-300 flex flex-col h-full group text-left">
+    <div
+      onClick={() => onOrder?.(id)}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onOrder?.(id);
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all duration-300 flex flex-col h-full group text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
+    >
       {/* Image container */}
       <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
         <img
