@@ -11,8 +11,11 @@ function MainLayout() {
     pathname === "/profile" ||
     pathname === "/panier" ||
     pathname === "/favoris" ||
+    pathname === "/plats" ||
+    /^\/plats\/[^/]+$/.test(pathname) ||
     pathname.startsWith("/seller/");
   const hideNavbar =
+    pathname === "/dashboard" ||
     pathname === "/SellerDashboard" ||
     pathname === "/profile" ||
     pathname.startsWith("/seller/");

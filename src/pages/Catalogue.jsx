@@ -27,7 +27,7 @@ export default function Catalog() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const handleOrder = (dishId) => {
-    navigate(`/dish/${dishId}`);
+    navigate(`/plats/${dishId}`);
   };
 
   const resetFilters = () => {
