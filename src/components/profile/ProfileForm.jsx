@@ -1,14 +1,14 @@
 function ProfileInput({ id, label, type = "text", value }) {
   return (
     <div>
-      <label htmlFor={id} className="block mb-2 font-medium">
+      <label htmlFor={id} className="mb-2 block font-medium">
         {label}
       </label>
       <input
         id={id}
         type={type}
         defaultValue={value}
-        className="w-full px-8 py-4 bg-white border border-border-warm rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/30"
+        className="w-full rounded-xl border border-border-warm bg-white px-4 py-3 text-foreground outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
       />
     </div>
   );
@@ -16,11 +16,16 @@ function ProfileInput({ id, label, type = "text", value }) {
 
 export function ProfileForm({ user }) {
   return (
-    <section className="bg-white rounded-2xl p-6 sm:p-8 border border-border-warm">
-      <h2 className="text-xl font-semibold mb-8">Informations personnelles</h2>
+    <section className="rounded-2xl border border-border-warm bg-white p-6 sm:p-8">
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold">Informations personnelles</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Gardez vos informations à jour pour faciliter vos commandes.
+        </p>
+      </div>
 
       <form className="space-y-5">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           <ProfileInput id="name" label="Nom complet" value={user.name} />
           <ProfileInput
             id="email"
@@ -30,18 +35,25 @@ export function ProfileForm({ user }) {
           />
         </div>
 
-        <ProfileInput
-          id="phone"
-          label="Téléphone"
-          type="tel"
-          value={user.phone}
-        />
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+          <ProfileInput
+            id="phone"
+            label="Téléphone"
+            type="tel"
+            value={user.phone}
+          />
+          <ProfileInput
+            id="memberSince"
+            label="Client depuis"
+            value={user.memberSince}
+          />
+        </div>
 
-        <ProfileInput id="address" label="Adresse" value={user.address} />
+        <ProfileInput id="address" label="Adresse principale" value={user.address} />
 
         <button
           type="submit"
-          className="px-6 py-3 bg-primary text-white rounded-xl font-semibold hover:bg-accent transition-colors"
+          className="rounded-xl bg-primary px-6 py-3 font-semibold text-white transition-colors hover:bg-accent"
         >
           Enregistrer les modifications
         </button>

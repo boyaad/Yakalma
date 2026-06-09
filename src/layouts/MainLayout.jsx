@@ -6,6 +6,8 @@ import { Footer } from "../components/ui/Footer";
 function MainLayout() {
   const { pathname } = useLocation();
   const hideFooter =
+    pathname === "/login" ||
+    pathname === "/register" ||
     pathname === "/dashboard" ||
     pathname === "/SellerDashboard" ||
     pathname === "/profile" ||
@@ -15,6 +17,8 @@ function MainLayout() {
     /^\/plats\/[^/]+$/.test(pathname) ||
     pathname.startsWith("/seller/");
   const hideNavbar =
+    pathname === "/login" ||
+    pathname === "/register" ||
     pathname === "/dashboard" ||
     pathname === "/SellerDashboard" ||
     pathname === "/profile" ||
