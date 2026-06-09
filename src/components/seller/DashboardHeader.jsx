@@ -10,6 +10,7 @@ export function DashboardHeader({
     if (activeSection === "dashboard") return "Tableau de bord";
     if (activeSection === "dishes") return "Mes plats";
     if (activeSection === "orders") return "Commandes";
+    if (activeSection === "profile") return "Profil vendeur";
     return "Dashboard";
   };
 
@@ -53,7 +54,7 @@ export function DashboardHeader({
 
             {/* User Profile */}
             <Link
-              to="/profile"
+              to="/seller/profile"
               className="flex items-center gap-1.5 sm:gap-3 px-1 sm:px-3 py-1 sm:py-2 hover:bg-muted rounded-lg sm:rounded-xl transition-all group"
             >
               <div className="flex items-center gap-1.5 sm:gap-3">

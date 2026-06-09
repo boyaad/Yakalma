@@ -6,7 +6,7 @@ const notificationOptions = [
   },
   {
     id: "orders",
-    label: "Notifications de nouvelles commandes",
+    label: "Notifications de suivi de commande",
     defaultChecked: true,
   },
   {
@@ -18,25 +18,30 @@ const notificationOptions = [
 
 export function ProfileSettings() {
   return (
-    <section className="bg-white rounded-2xl p-6 sm:p-8 border border-border-warm">
-      <h2 className="text-2xl font-semibold mb-8">Paramètres</h2>
+    <section className="rounded-2xl border border-border-warm bg-white p-6 sm:p-8">
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold">Paramètres</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Ajustez vos préférences de compte et de notifications.
+        </p>
+      </div>
 
       <div className="space-y-8">
         <div>
-          <h3 className="mb-4">Notifications</h3>
+          <h3 className="mb-4 font-semibold">Notifications</h3>
           <div className="space-y-3">
             {notificationOptions.map((option) => (
               <label
                 key={option.id}
                 htmlFor={option.id}
-                className="flex items-center justify-between gap-4 cursor-pointer"
+                className="flex cursor-pointer items-center justify-between gap-4 rounded-xl bg-background-warm px-4 py-3"
               >
                 <span>{option.label}</span>
                 <input
                   id={option.id}
                   type="checkbox"
                   defaultChecked={option.defaultChecked}
-                  className="w-4 h-4 rounded text-primary focus:ring-ring"
+                  className="h-4 w-4 rounded text-primary focus:ring-primary"
                 />
               </label>
             ))}
@@ -44,10 +49,10 @@ export function ProfileSettings() {
         </div>
 
         <div>
-          <h3 className="mb-4">Sécurité</h3>
+          <h3 className="mb-4 font-semibold">Sécurité</h3>
           <button
             type="button"
-            className="px-4 py-2 bg-muted rounded-lg hover:bg-muted/80 transition-colors"
+            className="rounded-lg bg-background-warm px-4 py-2 font-medium transition-colors hover:bg-primary hover:text-white"
           >
             Changer le mot de passe
           </button>

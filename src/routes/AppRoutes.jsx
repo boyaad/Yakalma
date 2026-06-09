@@ -12,6 +12,7 @@ import Favorites from "../pages/Favorites";
 import Profile from "../pages/Profile";
 import Dashboard from "../pages/Dashboard";
 import SellerDashboard from "../pages/SellerDashboard";
+import SellerProfile from "../pages/SellerProfile";
 import AddDish from "../pages/AddDish";
 import NotFound from "../pages/NotFound";
 
@@ -41,6 +42,7 @@ function AppRoutes() {
           <Route path="/SellerDashboard" element={<SellerDashboard />} />
           <Route path="/seller/dishes" element={<SellerDashboard />} />
           <Route path="/seller/add-dish" element={<AddDish />} />
+          <Route path="/seller/profile" element={<SellerProfile />} />
 
           <Route path="/seller/orders" element={<SellerDashboard />} />
         </Route>

@@ -48,7 +48,7 @@ export function Hero() {
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
-              to="/signup"
+              to="/register?role=chef"
               className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 border-2 border-white text-white rounded-xl font-semibold text-lg hover:bg-white/20 transition-all backdrop-blur-sm"
             >
               <ChefHat className="w-5 h-5" />
