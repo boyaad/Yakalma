@@ -10,10 +10,9 @@ import {
 } from "../components/admin/DashboardPreview";
 import { DishAdminCard } from "../components/admin/DishAdminCard";
 import { OrderCard } from "../components/admin/OrderCard";
-import { QuickStatCard } from "../components/admin/QuickStatCard";
+import CardStat from "../components/ui/CardStat";
 import { ReportCard } from "../components/admin/ReportCard";
 import { SellerAdminCard } from "../components/admin/SellerAdminCard";
-import { StatCard } from "../components/admin/StatCard";
 import { UserCard } from "../components/admin/UserCard";
 import {
   dishes,
@@ -107,13 +106,28 @@ function DashboardSection({ setActiveSection }) {
     <div className="space-y-6">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => (
-          <StatCard key={stat.label} stat={stat} />
+          <CardStat 
+            key={stat.label} 
+            label={stat.label} 
+            value={stat.value} 
+            icon={stat.icon} 
+            change={stat.change} 
+            iconBg={stat.color} 
+            iconColor={stat.iconColor} 
+          />
         ))}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {quickStats.map((item) => (
-          <QuickStatCard key={item.label} item={item} />
+          <CardStat 
+            key={item.label} 
+            label={item.label} 
+            value={item.value} 
+            icon={item.icon} 
+            className={item.className} 
+            layout="horizontal" 
+          />
         ))}
       </div>
 

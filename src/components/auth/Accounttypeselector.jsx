@@ -10,8 +10,8 @@ export function AccountTypeSelector({ accountType, onChange }) {
           onClick={() => onChange("customer")}
           className={`group p-4 border-2 rounded-xl transition-all ${
             accountType === "customer"
-              ? "bg-primary text-primary-foreground border-primary shadow-lg scale-105"
-              : "bg-white border-border hover:border-primary/30"
+              ? "bg-primary text-white border-primary shadow-lg scale-105"
+              : "bg-white border-gray-100 hover:border-primary/30"
           }`}
         >
           <ShoppingBag
@@ -30,8 +30,8 @@ export function AccountTypeSelector({ accountType, onChange }) {
           onClick={() => onChange("seller")}
           className={`group p-4 border-2 rounded-xl transition-all ${
             accountType === "seller"
-              ? "bg-primary text-primary-foreground border-primary shadow-lg scale-105"
-              : "bg-white border-border hover:border-primary/30"
+              ? "bg-primary text-white border-primary shadow-lg scale-105"
+              : "bg-white border-gray-100 hover:border-primary/30"
           }`}
         >
           <ChefHat

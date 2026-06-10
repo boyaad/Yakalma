@@ -18,7 +18,7 @@ function Loader({ fullScreen = false, text = "Chargement...", size = "md" }) {
   const currentSize = sizeClasses[size] || sizeClasses.md;
 
   const spinner = (
-    <div className="flex flex-col items-center justify-center gap-3">
+    <div className="flex flex-col items-center justify-center gap-3" aria-live="polite" aria-busy="true">
       <div
         className={`border-border-warm border-t-primary rounded-full animate-spin-custom ${currentSize}`}
         role="status"

@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
 import { ArrowRight, MapPin, Package, Star } from "lucide-react";
-import { ProfileStatCard } from "./ProfileStatCard";
+import CardStat from "../ui/CardStat";
+import Badge from "../ui/Badge";
+import Button from "../ui/Button";
 
 export function ProfileOverview({
   addresses,
@@ -17,7 +18,13 @@ export function ProfileOverview({
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {stats.map((stat) => (
-          <ProfileStatCard key={stat.label} stat={stat} />
+          <CardStat 
+            key={stat.label} 
+            label={stat.label} 
+            value={stat.value} 
+            icon={stat.icon} 
+            badgeText={stat.badge} 
+          />
         ))}
       </div>
 
@@ -30,13 +37,14 @@ export function ProfileOverview({
                 Retrouvez rapidement son état et ses détails.
               </p>
             </div>
-            <button
+            <Button
               type="button"
+              variant="link"
               onClick={() => onSectionChange("orders")}
-              className="text-sm font-semibold text-primary hover:underline"
+              className="p-0 h-auto font-semibold text-sm"
             >
               Voir tout
-            </button>
+            </Button>
           </div>
 
           <article className="rounded-xl bg-background-warm p-4">
@@ -55,9 +63,12 @@ export function ProfileOverview({
                   </p>
                 </div>
               </div>
-              <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
+              <Badge
+                variant="success"
+                className="normal-case tracking-normal px-3 py-1 font-medium text-sm"
+              >
                 Livré
-              </span>
+              </Badge>
             </div>
           </article>
         </section>
@@ -72,14 +83,15 @@ export function ProfileOverview({
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
             {mainAddress.address}
           </p>
-          <button
+          <Button
             type="button"
+            variant="link"
             onClick={() => onSectionChange("addresses")}
-            className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+            className="mt-5 inline-flex items-center gap-2 p-0 h-auto font-semibold text-sm"
           >
             Gérer mes adresses
             <ArrowRight className="h-4 w-4" />
-          </button>
+          </Button>
         </section>
       </div>
 
@@ -111,12 +123,13 @@ export function ProfileOverview({
               <span className="text-2xl font-bold text-primary">
                 {favoriteDish.price}€
               </span>
-              <Link
+              <Button
                 to={`/plats/${favoriteDish.id}`}
-                className="rounded-xl bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-accent"
+                variant="primary"
+                className="px-5 py-3"
               >
                 Voir le plat
-              </Link>
+              </Button>
             </div>
           </div>
         </div>

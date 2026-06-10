@@ -1,5 +1,6 @@
 import { Star } from "lucide-react";
 import Button from "../ui/Button";
+import Badge from "../ui/Badge";
 
 export function DashboardPreview({ title, actionLabel, onAction, children }) {
   return (
@@ -26,9 +27,12 @@ export function UserPreviewRow({ user }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
           <span className="font-semibold text-sm truncate">{user.name}</span>
-          <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+          <Badge
+            variant="primary"
+            className="px-2 py-0.5 normal-case tracking-normal"
+          >
             {user.type}
-          </span>
+          </Badge>
         </div>
         <div className="text-xs text-muted-foreground truncate">
           {user.email}
@@ -54,7 +58,7 @@ export function SellerPreviewRow({ seller }) {
         <div className="font-semibold text-sm truncate mb-1">{seller.name}</div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <div className="flex items-center gap-0.5">
-            <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+            <Star className="w-3 h-3 text-warning fill-warning" />
             <span>{seller.rating}</span>
           </div>
           <span>•</span>

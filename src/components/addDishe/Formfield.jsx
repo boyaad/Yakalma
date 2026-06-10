@@ -1,18 +1,18 @@
-import { XCircle } from "lucide-react";
-import { Input } from "./Input";
+import Input from "../ui/Input";
 
 /**
- * FormField  —  label + input/textarea/select + inline error
+ * FormField  —  wrapper léger autour de ui/Input
+ * Transmet label, required, as, touched, error, hint (helperText) et toutes les props.
  *
  * Props:
  *  label      : string
- *  required   : bool
- *  as         : forwarded to <Input> ("input" | "textarea" | "select")
+ *  required   : bool  (affiche * rouge dans le label)
+ *  as         : "input" | "textarea" | "select"
  *  touched    : bool
  *  error      : string
- *  hint       : node  — optional hint rendered below the field (e.g. char count)
- *  children   : forwarded to <Input> (used for <select> options)
- *  ...props   : forwarded to <Input>
+ *  hint       : string — texte d'aide sous le champ (alias helperText)
+ *  children   : options pour <select>
+ *  ...props   : transmis à ui/Input
  */
 export function FormField({
   label,
@@ -25,32 +25,24 @@ export function FormField({
   id,
   ...props
 }) {
+  // Construction du label avec indicateur obligatoire
+  const labelNode = label ? (
+    <span>
+      {label} {required && <span className="text-red-500">*</span>}
+    </span>
+  ) : undefined;
+
   return (
-    <div>
-      {label && (
-        <label htmlFor={id} className="block mb-2 font-medium">
-          {label} {required && <span className="text-red-500">*</span>}
-        </label>
-      )}
-      <Input
-        as={as}
-        id={id}
-        touched={touched}
-        error={error}
-        {...props}
-      >
-        {children}
-      </Input>
-      <div className="flex items-center justify-between mt-2">
-        {touched && error ? (
-          <p className="text-sm text-red-500 flex items-center gap-1">
-            <XCircle className="w-4 h-4 flex-shrink-0" />
-            {error}
-          </p>
-        ) : (
-          hint && <p className="text-sm text-muted-foreground">{hint}</p>
-        )}
-      </div>
-    </div>
+    <Input
+      as={as}
+      id={id}
+      label={labelNode}
+      touched={touched}
+      error={error}
+      helperText={!error && hint ? hint : undefined}
+      {...props}
+    >
+      {children}
+    </Input>
   );
 }

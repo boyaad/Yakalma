@@ -1,4 +1,5 @@
 import { MapPin, Plus } from "lucide-react";
+import Button from "../ui/Button";
 
 export function AddressBook({ addresses }) {
   return (
@@ -10,13 +11,14 @@ export function AddressBook({ addresses }) {
             Gérez les lieux utilisés pour vos livraisons.
           </p>
         </div>
-        <button
+        <Button
           type="button"
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-primary px-5 font-semibold text-white transition-colors hover:bg-accent"
+          variant="primary"
+          className="h-11 px-5"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-4 w-4 mr-2" />
           Ajouter
-        </button>
+        </Button>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -48,18 +50,20 @@ export function AddressBook({ addresses }) {
             </p>
 
             <div className="mt-5 flex gap-3">
-              <button
+              <Button
                 type="button"
-                className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-primary hover:text-white"
+                variant="ghost"
+                className="bg-white hover:bg-primary hover:text-white px-4 py-2 text-sm"
               >
                 Modifier
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
-                className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-primary"
+                variant="ghost"
+                className="bg-white text-muted-foreground hover:text-primary px-4 py-2 text-sm"
               >
                 Supprimer
-              </button>
+              </Button>
             </div>
           </article>
         ))}

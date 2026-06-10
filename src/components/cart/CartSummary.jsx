@@ -1,3 +1,5 @@
+import Button from "../ui/Button";
+
 export function CartSummary({ subtotal, deliveryFee, total, onCheckout }) {
   return (
     <aside className="bg-white rounded-xl p-6 sticky top-24">
@@ -21,19 +23,21 @@ export function CartSummary({ subtotal, deliveryFee, total, onCheckout }) {
         </span>
       </div>
 
-      <button
+      <Button
         type="button"
+        variant="primary"
         onClick={onCheckout}
-        className="w-full py-3 bg-primary text-white rounded-lg hover:bg-accent transition-colors mb-3"
+        className="w-full mb-3 py-3 rounded-lg"
       >
         Procéder au paiement
-      </button>
-      <button
+      </Button>
+      <Button
         type="button"
-        className="w-full py-3 bg-muted rounded-lg hover:bg-muted/80 transition-colors"
+        variant="ghost"
+        className="w-full bg-muted hover:bg-muted/80 py-3 rounded-lg text-foreground"
       >
         Ajouter un code promo
-      </button>
+      </Button>
     </aside>
   );
 }

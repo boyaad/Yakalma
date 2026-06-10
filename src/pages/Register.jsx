@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChefHat, Mail, User } from "lucide-react";
+import { ChefHat, Mail, User, Lock, ArrowRight } from "lucide-react";
 
-import { InputField } from "../components/auth/Inputfield";
-import { PasswordField } from "../components/auth/Passwordfield";
+import Input from "../components/ui/Input";
+import Button from "../components/ui/Button";
 import { TermsCheckbox } from "../components/auth/Termscheckbox";
-import { SubmitButton } from "../components/auth/Submitbutton";
 import { AccountTypeSelector } from "../components/auth/Accounttypeselector";
 import { LeftPanel } from "../components/auth/Leftpanel";
 
@@ -201,7 +200,7 @@ export default function Register() {
           />
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <InputField
+            <Input
               id="name"
               label="Nom complet"
               type="text"
@@ -211,10 +210,10 @@ export default function Register() {
               placeholder="Jean Dupont"
               touched={touched.name}
               error={errors.name}
-              icon={User}
+              icon={<User className="w-5 h-5" />}
             />
 
-            <InputField
+            <Input
               id="email"
               label="Adresse email"
               type="email"
@@ -224,28 +223,32 @@ export default function Register() {
               placeholder="votre@email.com"
               touched={touched.email}
               error={errors.email}
-              icon={Mail}
+              icon={<Mail className="w-5 h-5" />}
             />
 
-            <PasswordField
+            <Input
               id="password"
               label="Mot de passe"
+              type="password"
               value={formData.password}
               onChange={(e) => handleChange("password", e.target.value)}
               onBlur={() => handleBlur("password")}
               touched={touched.password}
               error={errors.password}
+              icon={<Lock className="w-5 h-5" />}
               showStrength
             />
 
-            <PasswordField
+            <Input
               id="confirmPassword"
               label="Confirmer le mot de passe"
+              type="password"
               value={formData.confirmPassword}
               onChange={(e) => handleChange("confirmPassword", e.target.value)}
               onBlur={() => handleBlur("confirmPassword")}
               touched={touched.confirmPassword}
               error={errors.confirmPassword}
+              icon={<Lock className="w-5 h-5" />}
             />
 
             <TermsCheckbox
@@ -260,7 +263,15 @@ export default function Register() {
               error={errors.acceptTerms}
             />
 
-            <SubmitButton isLoading={isLoading} />
+            <Button
+              type="submit"
+              variant="primary"
+              className="w-full mt-6"
+              isLoading={isLoading}
+            >
+              <span>Créer mon compte</span>
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
           </form>
 
           {/* Login Link */}

@@ -1,18 +1,5 @@
-function ProfileInput({ id, label, type = "text", value }) {
-  return (
-    <div>
-      <label htmlFor={id} className="mb-2 block font-medium">
-        {label}
-      </label>
-      <input
-        id={id}
-        type={type}
-        defaultValue={value}
-        className="w-full rounded-xl border border-border-warm bg-white px-4 py-3 text-foreground outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
-      />
-    </div>
-  );
-}
+import Input from "../ui/Input";
+import Button from "../ui/Button";
 
 export function ProfileForm({ user }) {
   return (
@@ -26,8 +13,8 @@ export function ProfileForm({ user }) {
 
       <form className="space-y-5">
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-          <ProfileInput id="name" label="Nom complet" value={user.name} />
-          <ProfileInput
+          <Input id="name" label="Nom complet" value={user.name} />
+          <Input
             id="email"
             label="Email"
             type="email"
@@ -36,27 +23,28 @@ export function ProfileForm({ user }) {
         </div>
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-          <ProfileInput
+          <Input
             id="phone"
             label="Téléphone"
             type="tel"
             value={user.phone}
           />
-          <ProfileInput
+          <Input
             id="memberSince"
             label="Client depuis"
             value={user.memberSince}
           />
         </div>
 
-        <ProfileInput id="address" label="Adresse principale" value={user.address} />
+        <Input id="address" label="Adresse principale" value={user.address} />
 
-        <button
+        <Button
           type="submit"
-          className="rounded-xl bg-primary px-6 py-3 font-semibold text-white transition-colors hover:bg-accent"
+          variant="primary"
+          className="px-6 py-3"
         >
           Enregistrer les modifications
-        </button>
+        </Button>
       </form>
     </section>
   );

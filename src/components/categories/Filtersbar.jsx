@@ -1,4 +1,6 @@
 import { Star, SlidersHorizontal, ChevronDown } from "lucide-react";
+import Button from "../ui/Button";
+import Input from "../ui/Input";
 
 export function FiltersBar({
   showFilters,
@@ -23,33 +25,36 @@ export function FiltersBar({
     <>
       {/* Sort and Filter Toggle Bar */}
       <div className="mb-6 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-        <button
+        <Button
+          type="button"
+          variant="ghost"
           onClick={() => setShowFilters(!showFilters)}
-          className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white  rounded-xl hover:bg-muted transition-colors"
+          className="bg-white hover:bg-muted px-4 py-2.5 justify-center"
         >
           <SlidersHorizontal className="w-4 h-4" />
           <span className="font-medium">Filtres avancés</span>
           {hasActiveFilters && (
             <span className="w-2 h-2 bg-primary rounded-full"></span>
           )}
-        </button>
+        </Button>
 
         <div className="flex items-center gap-3">
           <span className="text-sm text-muted-foreground hidden sm:block">
             Trier par:
           </span>
           <div className="relative flex-1 sm:flex-initial">
-            <select
+            <Input
+              as="select"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="w-full sm:w-auto appearance-none px-4 py-2.5 pr-10 bg-white border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer font-medium"
+              className="w-full sm:w-auto appearance-none pr-10 py-2.5 cursor-pointer font-medium"
             >
               <option value="popular">Les plus populaires</option>
               <option value="rating">Mieux notés</option>
               <option value="price-asc">Prix croissant</option>
               <option value="price-desc">Prix décroissant</option>
               <option value="distance">Plus proche</option>
-            </select>
+            </Input>
             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
           </div>
         </div>
@@ -60,12 +65,14 @@ export function FiltersBar({
         <div className="mb-6 bg-white rounded-2xl p-6 border border-border shadow-md">
           <div className="flex items-center justify-between mb-6">
             <h3 className="font-semibold">Filtres avancés</h3>
-            <button
+            <Button
+              type="button"
+              variant="link"
               onClick={resetFilters}
-              className="text-sm text-primary hover:underline font-medium"
+              className="p-0 h-auto text-sm font-medium"
             >
               Réinitialiser
-            </button>
+            </Button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

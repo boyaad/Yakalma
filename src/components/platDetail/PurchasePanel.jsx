@@ -1,5 +1,6 @@
 import { Heart, ShoppingCart } from "lucide-react";
 import { QuantityPicker } from "./QuantityPicker";
+import Button from "../ui/Button";
 
 export function PurchasePanel({
   isFavorite,
@@ -25,29 +26,31 @@ export function PurchasePanel({
       </div>
 
       <div className="flex gap-3">
-        <button
+        <Button
           type="button"
+          variant="primary"
           onClick={onAddToCart}
-          className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-6 font-poppins font-semibold text-white shadow-[0_6px_14px_rgba(160,67,10,0.22)] transition-colors hover:bg-accent"
+          className="flex-1 shadow-[0_6px_14px_rgba(160,67,10,0.22)] h-12"
         >
           <ShoppingCart className="h-5 w-5" />
           Ajouter au panier
-        </button>
+        </Button>
 
-        <button
+        <Button
           type="button"
+          variant="ghost"
           onClick={onToggleFavorite}
-          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border transition-colors ${
+          className={`w-12 p-0 h-12 shrink-0 border ${
             isFavorite
-              ? "border-primary bg-primary text-white"
-              : "border-border-warm bg-white text-foreground hover:bg-background-warm"
+              ? "border-primary bg-primary text-white hover:bg-accent"
+              : "border-border-warm bg-white text-foreground hover:bg-background-warm hover:text-foreground"
           }`}
           aria-label={
             isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"
           }
         >
           <Heart className={`h-5 w-5 ${isFavorite ? "fill-current" : ""}`} />
-        </button>
+        </Button>
       </div>
     </section>
   );

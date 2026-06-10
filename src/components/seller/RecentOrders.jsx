@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Package } from "lucide-react";
+import Badge from "../ui/Badge";
 
 export function RecentOrders({ orders, getStatusInfo }) {
   return (
@@ -28,11 +29,12 @@ export function RecentOrders({ orders, getStatusInfo }) {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-sm">{order.id}</span>
-                    <span
-                      className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusInfo.color} ${statusInfo.bgColor}`}
+                    <Badge
+                      variant={order.status}
+                      className="normal-case tracking-normal px-2 py-0.5 font-medium"
                     >
                       {statusInfo.text}
-                    </span>
+                    </Badge>
                   </div>
                   <div className="text-xs text-muted-foreground truncate">
                     {order.dish} • {order.customer}
