@@ -7,8 +7,13 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Catalogue from "../pages/Catalogue";
 import PlatDetail from "../pages/PlatDetail";
+import Cart from "../pages/Cart";
+import Favorites from "../pages/Favorites";
 import Profile from "../pages/Profile";
 import Dashboard from "../pages/Dashboard";
+import SellerDashboard from "../pages/SellerDashboard";
+import SellerProfile from "../pages/SellerProfile";
+import AddDish from "../pages/AddDish";
 import NotFound from "../pages/NotFound";
 
 function AppRoutes() {
@@ -22,20 +27,24 @@ function AppRoutes() {
 
           <Route path="/register" element={<Register />} />
 
-          <Route path="/plats" element={<Catalogue />} />
+        <Route path="/plats" element={<Catalogue />} />
 
           <Route path="/plats/:id" element={<PlatDetail />} />
 
+          <Route path="/panier" element={<Cart />} />
+
+          <Route path="/favoris" element={<Favorites />} />
+
           <Route path="/profile" element={<Profile />} />
 
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/dashboard" element={<Dashboard />} />
+
+          <Route path="/seller/dashboard" element={<SellerDashboard />} />
+          <Route path="/seller/dishes" element={<SellerDashboard />} />
+          <Route path="/seller/add-dish" element={<AddDish />} />
+          <Route path="/seller/profile" element={<SellerProfile />} />
+
+          <Route path="/seller/orders" element={<SellerDashboard />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

@@ -1,20 +1,39 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+import Navbar from "../components/ui/Navbar";
+import { Footer } from "../components/ui/Footer";
+  
 
 function MainLayout() {
-  return (
-    <>
-      <header>
-        <h2>Yakalma</h2>
-      </header>
+  const { pathname } = useLocation();
+  const hideFooter =
+    pathname === "/login" ||
+    pathname === "/register" ||
+    pathname === "/dashboard" ||
+    pathname === "/SellerDashboard" ||
+    pathname === "/profile" ||
+    pathname === "/panier" ||
+    pathname === "/favoris" ||
+    pathname === "/plats" ||
+    /^\/plats\/[^/]+$/.test(pathname) ||
+    pathname.startsWith("/seller/");
+  const hideNavbar =
+    pathname === "/login" ||
+    pathname === "/register" ||
+    pathname === "/dashboard" ||
+    pathname === "/SellerDashboard" ||
+    pathname === "/profile" ||
+    pathname.startsWith("/seller/");
 
-      <main>
+  return (
+    <div className="min-h-screen flex flex-col bg-background-warm">
+      {!hideNavbar && <Navbar />}
+
+      <main className="flex-grow">
         <Outlet />
       </main>
 
-      <footer>
-        <p>© Yakalma 2026</p>
-      </footer>
-    </>
+      {!hideFooter && <Footer />}
+    </div>
   );
 }
 
