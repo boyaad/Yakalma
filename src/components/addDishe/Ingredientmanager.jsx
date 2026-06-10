@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Plus, X, Info, XCircle } from "lucide-react";
+import Input from "../ui/Input";
+import Button from "../ui/Button";
 
 /**
  * IngredientManager
@@ -34,22 +36,23 @@ export function IngredientManager({ value = [], onChange, error }) {
     <div className="bg-white rounded-2xl p-6 shadow-sm">
       <h2 className="text-xl font-semibold mb-6">Ingrédients</h2>
 
-      <div className="flex gap-2 mb-4">
-        <input
+      <div className="flex gap-2 mb-4 items-start">
+        <Input
           type="text"
           value={newIngredient}
           onChange={(e) => setNewIngredient(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyPress}
           placeholder="Ex: Poulet, Légumes, Épices..."
-          className="flex-1 px-4 py-3.5 bg-white rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/10"
+          containerClassName="flex-1"
         />
-        <button
+        <Button
           type="button"
           onClick={handleAdd}
-          className="px-6 py-3.5 bg-primary text-primary-foreground rounded-xl hover:bg-accent transition-colors font-medium"
+          variant="primary"
+          className="h-[50px] px-6"
         >
           <Plus className="w-5 h-5" />
-        </button>
+        </Button>
       </div>
 
       {value.length > 0 && (
@@ -63,7 +66,7 @@ export function IngredientManager({ value = [], onChange, error }) {
               <button
                 type="button"
                 onClick={() => handleRemove(index)}
-                className="hover:text-red-600 transition-colors"
+                className="hover:text-error transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -75,7 +78,7 @@ export function IngredientManager({ value = [], onChange, error }) {
       {value.length === 0 && (
         <div className="flex items-start gap-2 p-4 bg-amber-50 rounded-xl">
           <Info className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-amber-800">
+          <p className="text-sm text-warning">
             Ajoutez au moins un ingrédient pour mieux décrire votre plat
           </p>
         </div>

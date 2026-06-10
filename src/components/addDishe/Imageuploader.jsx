@@ -97,7 +97,7 @@ export function ImageUploader({ value, onChange, error }) {
             <button
               type="button"
               onClick={handleRemove}
-              className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-lg hover:bg-red-50 text-red-600 transition-colors"
+              className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-lg hover:bg-red-50 text-error transition-colors"
             >
               <X className="w-5 h-5" />
             </button>

@@ -12,7 +12,7 @@ import {
 
 import { SellerSidebar } from "../components/seller/SellerSidebar";
 import { DashboardHeader } from "../components/seller/DashboardHeader";
-import { StatCard } from "../components/seller/StatCard";
+import CardStat from "../components/ui/CardStat";
 import { RecentOrders } from "../components/seller/RecentOrders";
 import { TopDishes } from "../components/seller/TopDishes";
 import { QuickActions } from "../components/seller/QuickActions";
@@ -137,7 +137,7 @@ const menuItems = [
     id: "dashboard",
     label: "Tableau de bord",
     icon: LayoutDashboard,
-    path: "/SellerDashboard",
+    path: "/seller/dashboard",
   },
   {
     id: "dishes",
@@ -176,7 +176,7 @@ export default function SellerDashboard() {
       pending: {
         text: "En attente",
         color: "text-amber-700",
-        bgColor: "bg-amber-100",
+        bgColor: "bg-warning/10",
       },
       preparing: {
         text: "En préparation",
@@ -220,7 +220,14 @@ export default function SellerDashboard() {
               {/* Stats Grid */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {stats.map((stat, index) => (
-                  <StatCard key={index} stat={stat} />
+                  <CardStat 
+                    key={index} 
+                    label={stat.label} 
+                    value={stat.value} 
+                    icon={stat.icon} 
+                    change={stat.change} 
+                    trend={stat.trend} 
+                  />
                 ))}
               </div>
 

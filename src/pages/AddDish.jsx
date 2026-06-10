@@ -1,14 +1,12 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft, CheckCircle } from "lucide-react";
 
-
 import { ImageUploader } from "../components/addDishe/Imageuploader";
-import { FormField } from "../components/addDishe/Formfield";
 import { IngredientManager } from "../components/addDishe/Ingredientmanager";
 import { AllergenSelector } from "../components/addDishe/Allergenselector";
-import { Button } from "../components/addDishe/Button";
-
+import Input from "../components/ui/Input";
+import Button from "../components/ui/Button";
 
 const INITIAL_FORM = {
   name: "",
@@ -101,13 +99,14 @@ export default function AddDish() {
     <div className="min-h-screen py-6 sm:py-8 px-4 sm:px-6 lg:px-8 bg-background">
       <div className="max-w-4xl mx-auto">
         {/* Back link */}
-        <Link
+        <Button
           to="/SellerDashboard"
-          className="inline-flex items-center gap-2 text-primary hover:underline mb-6 font-medium"
+          variant="link"
+          className="mb-6 font-medium text-primary p-0 h-auto"
         >
           <ArrowLeft className="w-4 h-4" />
           Retour au dashboard
-        </Link>
+        </Button>
 
         {/* Header */}
         <div className="mb-8">
@@ -131,7 +130,7 @@ export default function AddDish() {
               Informations générales
             </h2>
             <div className="space-y-5">
-              <FormField
+              <Input
                 id="name"
                 label="Nom du plat"
                 required
@@ -145,7 +144,7 @@ export default function AddDish() {
               />
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <FormField
+                <Input
                   id="price"
                   label="Prix (€)"
                   required
@@ -158,7 +157,7 @@ export default function AddDish() {
                   touched={touched.price}
                   error={errors.price}
                 />
-                <FormField
+                <Input
                   id="prepTime"
                   label="Temps de préparation"
                   type="text"
@@ -166,7 +165,7 @@ export default function AddDish() {
                   onChange={(e) => handleChange("prepTime", e.target.value)}
                   placeholder="45 min"
                 />
-                <FormField
+                <Input
                   id="servings"
                   label="Portions"
                   type="text"
@@ -176,7 +175,7 @@ export default function AddDish() {
                 />
               </div>
 
-              <FormField
+              <Input
                 id="category"
                 label="Catégorie"
                 required
@@ -192,9 +191,9 @@ export default function AddDish() {
                 <option value="mediterranean">Méditerranéen</option>
                 <option value="oriental">Oriental</option>
                 <option value="desserts">Desserts</option>
-              </FormField>
+              </Input>
 
-              <FormField
+              <Input
                 id="description"
                 label="Description"
                 required
@@ -206,7 +205,7 @@ export default function AddDish() {
                 placeholder="Décrivez votre plat en détail : ingrédients principaux, préparation, saveurs..."
                 touched={touched.description}
                 error={errors.description}
-                hint={`${formData.description.length} / 500 caractères`}
+                helperText={`${formData.description.length} / 500 caractères`}
               />
             </div>
           </div>
@@ -224,7 +223,8 @@ export default function AddDish() {
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4">
             <Button
-              variant="outline"
+              type="button"
+              variant="secondary"
               className="flex-1 py-4"
               onClick={() => navigate("/SellerDashboard")}
             >

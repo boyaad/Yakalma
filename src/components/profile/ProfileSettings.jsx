@@ -1,3 +1,5 @@
+import Button from "../ui/Button";
+
 const notificationOptions = [
   {
     id: "offers",
@@ -50,12 +52,13 @@ export function ProfileSettings() {
 
         <div>
           <h3 className="mb-4 font-semibold">Sécurité</h3>
-          <button
+          <Button
             type="button"
-            className="rounded-lg bg-background-warm px-4 py-2 font-medium transition-colors hover:bg-primary hover:text-white"
+            variant="ghost"
+            className="bg-background-warm hover:bg-primary hover:text-white px-4 py-2 font-medium"
           >
             Changer le mot de passe
-          </button>
+          </Button>
         </div>
       </div>
     </section>

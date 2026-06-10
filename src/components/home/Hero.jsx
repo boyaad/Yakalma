@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import { ChefHat, ArrowRight } from "lucide-react";
+import Button from "../ui/Button";
 
 export function Hero() {
   return (
@@ -40,20 +40,22 @@ export function Hero() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
-            <Link
+            <Button
               to="/catalog"
-              className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-primary rounded-xl font-semibold text-lg hover:bg-amber-50 transition-all shadow-xl hover:scale-105"
+              variant="white"
+              className="group px-8 py-4 text-lg hover:scale-105 shadow-xl"
             >
               <span>Explorer les plats</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link
+            </Button>
+            <Button
               to="/register?role=chef"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 border-2 border-white text-white rounded-xl font-semibold text-lg hover:bg-white/20 transition-all backdrop-blur-sm"
+              variant="outlineWhite"
+              className="px-8 py-4 text-lg backdrop-blur-sm"
             >
               <ChefHat className="w-5 h-5" />
               <span>Devenir chef</span>
-            </Link>
+            </Button>
           </div>
         </div>
       </div>

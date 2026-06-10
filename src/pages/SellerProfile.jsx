@@ -14,6 +14,8 @@ import {
 
 import { DashboardHeader } from "../components/seller/DashboardHeader";
 import { SellerSidebar } from "../components/seller/SellerSidebar";
+import Input from "../components/ui/Input";
+import Button from "../components/ui/Button";
 
 const seller = {
   name: "Fatima K.",
@@ -46,18 +48,6 @@ const menuItems = [
   { id: "orders", label: "Commandes", icon: Package, path: "/seller/orders" },
   { id: "profile", label: "Profil vendeur", icon: User, path: "/seller/profile" },
 ];
-
-function SellerProfileInput({ icon: Icon, label, value }) {
-  return (
-    <div>
-      <label className="mb-2 block font-medium text-foreground">{label}</label>
-      <div className="flex items-center gap-3 rounded-xl border border-border-warm bg-white px-4 py-3">
-        <Icon className="h-5 w-5 shrink-0 text-primary" />
-        <span className="text-foreground">{value}</span>
-      </div>
-    </div>
-  );
-}
 
 function SellerStat({ icon: Icon, label, value }) {
   return (
@@ -143,45 +133,65 @@ export default function SellerProfile() {
                 </div>
 
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                  <SellerProfileInput icon={User} label="Nom" value={seller.name} />
-                  <SellerProfileInput icon={Mail} label="Email" value={seller.email} />
-                  <SellerProfileInput
-                    icon={Phone}
+                  <Input
+                    id="seller-name"
+                    label="Nom"
+                    defaultValue={seller.name}
+                    icon={<User className="h-5 w-5" />}
+                    readOnly
+                  />
+                  <Input
+                    id="seller-email"
+                    label="Email"
+                    type="email"
+                    defaultValue={seller.email}
+                    icon={<Mail className="h-5 w-5" />}
+                    readOnly
+                  />
+                  <Input
+                    id="seller-phone"
                     label="Téléphone"
-                    value={seller.phone}
+                    type="tel"
+                    defaultValue={seller.phone}
+                    icon={<Phone className="h-5 w-5" />}
+                    readOnly
                   />
-                  <SellerProfileInput
-                    icon={ChefHat}
+                  <Input
+                    id="seller-speciality"
                     label="Spécialité"
-                    value={seller.speciality}
+                    defaultValue={seller.speciality}
+                    icon={<ChefHat className="h-5 w-5" />}
+                    readOnly
                   />
                 </div>
 
                 <div className="mt-5">
-                  <SellerProfileInput
-                    icon={MapPin}
+                  <Input
+                    id="seller-address"
                     label="Adresse de cuisine"
-                    value={seller.address}
+                    defaultValue={seller.address}
+                    icon={<MapPin className="h-5 w-5" />}
+                    readOnly
                   />
                 </div>
 
                 <div className="mt-5">
-                  <label className="mb-2 block font-medium text-foreground">
-                    Présentation
-                  </label>
-                  <textarea
-                    defaultValue={seller.bio}
+                  <Input
+                    id="seller-bio"
+                    label="Présentation"
+                    as="textarea"
                     rows={4}
-                    className="w-full resize-none rounded-xl border border-border-warm bg-white px-4 py-3 text-foreground outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    defaultValue={seller.bio}
                   />
                 </div>
 
-                <button
+                <Button
                   type="button"
-                  className="mt-6 rounded-xl bg-primary px-6 py-3 font-semibold text-white transition-colors hover:bg-accent"
+                  variant="primary"
+                  className="mt-6 px-6 py-3"
                 >
                   Enregistrer les modifications
-                </button>
+                </Button>
               </section>
             </div>
           </div>

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
-import { FormField } from "./FormField";
+import { Mail, Lock, ArrowRight } from "lucide-react";
+import Input from "../ui/Input";
+import Button from "../ui/Button";
 
 const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -22,7 +23,6 @@ export function LoginForm({ onSubmit, isLoading }) {
     password: "",
     rememberMe: false,
   });
-  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
@@ -62,7 +62,7 @@ export function LoginForm({ onSubmit, isLoading }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      <FormField
+      <Input
         id="email"
         label="Adresse email"
         type="email"
@@ -70,35 +70,22 @@ export function LoginForm({ onSubmit, isLoading }) {
         placeholder="votre@email.com"
         touched={touched.email}
         error={errors.email}
-        onChange={(val) => handleChange("email", val)}
+        onChange={(e) => handleChange("email", e.target.value)}
         onBlur={() => handleBlur("email")}
         icon={<Mail className="w-5 h-5" />}
       />
 
-      <FormField
+      <Input
         id="password"
         label="Mot de passe"
-        type={showPassword ? "text" : "password"}
+        type="password"
         value={formData.password}
         placeholder="••••••••"
         touched={touched.password}
         error={errors.password}
-        onChange={(val) => handleChange("password", val)}
+        onChange={(e) => handleChange("password", e.target.value)}
         onBlur={() => handleBlur("password")}
         icon={<Lock className="w-5 h-5" />}
-        rightSlot={
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {showPassword ? (
-              <EyeOff className="w-5 h-5" />
-            ) : (
-              <Eye className="w-5 h-5" />
-            )}
-          </button>
-        }
       />
 
       {/* Remember Me & Forgot Password */}
@@ -125,23 +112,16 @@ export function LoginForm({ onSubmit, isLoading }) {
       </div>
 
       {/* Submit Button */}
-      <button
+      <Button
         type="submit"
+        variant="primary"
+        className="w-full mt-6"
         disabled={isLoading || !isEmailValid || !isPasswordValid}
-        className="group w-full py-4 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-accent transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+        isLoading={isLoading}
       >
-        {isLoading ? (
-          <>
-            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-            <span>Connexion en cours...</span>
-          </>
-        ) : (
-          <>
-            <span>Se connecter</span>
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </>
-        )}
-      </button>
+        <span>Se connecter</span>
+        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+      </Button>
     </form>
   );
 }

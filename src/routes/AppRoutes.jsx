@@ -27,7 +27,7 @@ function AppRoutes() {
 
           <Route path="/register" element={<Register />} />
 
-          <Route path="/plats" element={<Catalogue />} />
+        <Route path="/plats" element={<Catalogue />} />
 
           <Route path="/plats/:id" element={<PlatDetail />} />
 
@@ -39,7 +39,7 @@ function AppRoutes() {
 
           <Route path="/dashboard" element={<Dashboard />} />
 
-          <Route path="/SellerDashboard" element={<SellerDashboard />} />
+          <Route path="/seller/dashboard" element={<SellerDashboard />} />
           <Route path="/seller/dishes" element={<SellerDashboard />} />
           <Route path="/seller/add-dish" element={<AddDish />} />
           <Route path="/seller/profile" element={<SellerProfile />} />

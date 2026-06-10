@@ -54,7 +54,7 @@ export function Testimonials() {
                 {Array.from({ length: testimonial.rating }).map((_, i) => (
                   <Star
                     key={i}
-                    className="w-4 h-4 text-amber-500 fill-amber-500"
+                    className="w-4 h-4 text-warning fill-warning"
                   />
                 ))}
               </div>

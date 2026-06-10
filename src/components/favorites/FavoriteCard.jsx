@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Star, Heart, MapPin } from "lucide-react";
+import Button from "../ui/Button";
 
 export function FavoriteCard({ dish, onRemove }) {
   return (
@@ -17,7 +18,7 @@ export function FavoriteCard({ dish, onRemove }) {
           <p className="text-sm text-muted-foreground mb-3">Par {dish.chef}</p>
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-1">
-              <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+              <Star className="w-4 h-4 text-warning fill-warning" />
               <span className="text-sm font-medium">
                 {dish.rating} ({dish.reviews})
               </span>
@@ -31,14 +32,17 @@ export function FavoriteCard({ dish, onRemove }) {
         </div>
       </Link>
       <div className="px-4 pb-4">
-        <button
+        <Button
+          type="button"
+          variant="primary"
           onClick={() => onRemove(dish.id)}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium"
+          className="w-full"
         >
           <Heart className="w-4 h-4 fill-current" />
           <span>Retirer des favoris</span>
-        </button>
+        </Button>
       </div>
     </div>
   );
 }
+

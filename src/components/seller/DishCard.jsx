@@ -1,4 +1,5 @@
 import { Eye, Edit, Trash2, Power, Star, ShoppingBag } from "lucide-react";
+import Badge from "../ui/Badge";
 
 export function DishCard({ dish, statusInfo }) {
   return (
@@ -9,18 +10,19 @@ export function DishCard({ dish, statusInfo }) {
           alt={dish.name}
           className="w-full h-40 object-cover"
         />
-        <div
-          className={`absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium backdrop-blur-sm ${statusInfo.color} ${statusInfo.bgColor}`}
+        <Badge
+          variant={dish.status}
+          className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 backdrop-blur-sm normal-case tracking-normal font-medium"
         >
           <Power className="w-3 h-3" />
           {statusInfo.text}
-        </div>
+        </Badge>
       </div>
       <div className="p-4">
         <h3 className="font-bold text-base mb-2 truncate">{dish.name}</h3>
         <div className="flex items-center gap-3 mb-3 text-sm text-muted-foreground">
           <div className="flex items-center gap-1">
-            <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+            <Star className="w-4 h-4 text-warning fill-warning" />
             <span className="font-semibold text-foreground">{dish.rating}</span>
             <span className="text-xs">({dish.reviews})</span>
           </div>

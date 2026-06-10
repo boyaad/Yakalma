@@ -1,35 +1,34 @@
 import { ChefHat, Eye, Users, UtensilsCrossed } from "lucide-react";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
+import Card from "../ui/Card";
 import { getStatusInfo } from "./adminStatus";
 
 export function OrderCard({ order }) {
   const statusInfo = getStatusInfo(order.status);
 
   return (
-    <div className="bg-white rounded-xl p-4 hover:shadow-md transition-all">
-      <div className="flex items-start justify-between mb-3">
-        <div>
-          <div className="font-bold text-base mb-1">{order.id}</div>
-          <div className="text-xs text-muted-foreground">{order.date}</div>
-        </div>
-        <Badge variant={statusInfo.variant}>{statusInfo.text}</Badge>
-      </div>
+    <Card>
+      <Card.Header
+        title={order.id}
+        subtitle={order.date}
+        action={<Badge variant={statusInfo.variant}>{statusInfo.text}</Badge>}
+      />
 
-      <div className="space-y-2 mb-4">
+      <Card.Content>
         <InfoRow icon={Users} value={order.customer} strong />
         <InfoRow icon={ChefHat} value={order.seller} />
         <InfoRow icon={UtensilsCrossed} value={order.dish} />
-      </div>
+      </Card.Content>
 
-      <div className="flex items-center justify-between pt-3">
+      <Card.Footer>
         <div className="text-2xl font-bold text-primary">{order.total}€</div>
         <Button variant="secondary" size="sm">
           <Eye className="w-3.5 h-3.5" />
           Détails
         </Button>
-      </div>
-    </div>
+      </Card.Footer>
+    </Card>
   );
 }
 

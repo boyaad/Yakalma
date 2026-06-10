@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import { ChefHat, ArrowRight } from "lucide-react";
+import Button from "../ui/Button";
 
 export function CtaSection() {
   return (
@@ -13,13 +13,14 @@ export function CtaSection() {
           Rejoignez notre communauté et partagez vos créations culinaires avec
           des milliers de gourmets
         </p>
-        <Link
+        <Button
           to="/signup"
-          className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-primary rounded-xl font-medium hover:bg-amber-50 transition-all shadow-lg hover:shadow-xl"
+          variant="white"
+          className="px-8 py-4 shadow-lg hover:shadow-xl"
         >
           <span>Devenir chef partenaire</span>
           <ArrowRight className="w-5 h-5" />
-        </Link>
+        </Button>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12 mt-12 pt-12 border-t border-white/20">
           <div className="text-center">
             <p className="text-3xl font-semibold mb-1">2,847</p>

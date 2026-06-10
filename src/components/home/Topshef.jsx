@@ -68,7 +68,7 @@ export function TopChefs() {
                     {chef.specialty}
                   </p>
                   <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                    <Star className="w-4 h-4 text-warning fill-warning" />
                     <span className="text-sm font-medium">{chef.rating}</span>
                   </div>
                 </div>

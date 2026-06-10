@@ -1,11 +1,20 @@
+import Badge from "../ui/Badge";
+import Button from "../ui/Button";
+
 const statusLabels = {
-  delivered: { text: "Livré", color: "bg-green-100 text-green-800" },
-  pending: { text: "En cours", color: "bg-amber-100 text-amber-800" },
-  cancelled: { text: "Annulé", color: "bg-red-100 text-red-800" },
+  delivered: { text: "Livré", color: "bg-success/10 text-success" },
+  pending: { text: "En cours", color: "bg-warning/10 text-warning" },
+  cancelled: { text: "Annulé", color: "bg-error/10 text-error" },
 };
 
 function OrderCard({ order }) {
   const statusInfo = statusLabels[order.status] || statusLabels.delivered;
+  
+  const getBadgeVariant = (status) => {
+    if (status === "delivered") return "success";
+    if (status === "cancelled") return "danger";
+    return "pending";
+  };
 
   return (
     <article className="rounded-xl bg-background-warm p-4 transition-all hover:shadow-sm">
@@ -17,16 +26,19 @@ function OrderCard({ order }) {
           </p>
           <p className="mt-2 text-sm text-muted-foreground">{order.summary}</p>
         </div>
-        <span className={`rounded-full px-3 py-1 text-sm ${statusInfo.color}`}>
+        <Badge
+          variant={getBadgeVariant(order.status)}
+          className="normal-case tracking-normal text-sm font-normal px-3 py-1"
+        >
           {statusInfo.text}
-        </span>
+        </Badge>
       </div>
 
       <div className="flex items-center justify-between gap-4">
         <span className="font-semibold text-primary">{order.total}€</span>
-        <button type="button" className="text-sm text-primary hover:underline">
+        <Button variant="link" className="p-0 h-auto font-normal text-sm">
           Voir les détails
-        </button>
+        </Button>
       </div>
     </article>
   );

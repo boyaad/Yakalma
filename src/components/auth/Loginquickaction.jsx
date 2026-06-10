@@ -30,13 +30,13 @@ export function LoginQuickActions() {
       {/* Quick Action Buttons */}
       <div className="grid grid-cols-2 gap-3">
         <Link
-          to="/catalog"
+          to="/plats"
           className="flex items-center justify-center gap-2 px-4 py-3 bg-white border-2 border-border rounded-xl hover:bg-muted transition-colors"
         >
           <span className="text-sm font-medium">Continuer sans compte</span>
         </Link>
         <Link
-          to="/signup"
+          to="/register?role=chef"
           className="flex items-center justify-center gap-2 px-4 py-3 bg-white border-2 border-primary text-primary rounded-xl hover:bg-primary/5 transition-colors"
         >
           <ChefHat className="w-4 h-4" />

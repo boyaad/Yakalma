@@ -28,7 +28,7 @@ export function TopDishes({ dishes }) {
               <div className="font-semibold text-sm truncate">{dish.name}</div>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <div className="flex items-center gap-0.5">
-                  <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+                  <Star className="w-3 h-3 text-warning fill-warning" />
                   <span>{dish.rating}</span>
                 </div>
                 <span>•</span>

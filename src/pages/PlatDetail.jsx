@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { DishSummary, ReviewsList } from "../components/platDetail";
 import { allDishes } from "../data/Dishes";
+import Button from "../components/ui/Button";
 
 const dishReviews = [
   {
@@ -143,12 +144,13 @@ function PlatDetail() {
           <p className="mb-6 text-muted-foreground">
             Ce plat n'existe pas ou n'est plus disponible.
           </p>
-          <Link
+          <Button
             to="/plats"
-            className="inline-flex h-12 items-center justify-center rounded-xl bg-primary px-6 font-poppins font-semibold text-white hover:bg-accent"
+            variant="primary"
+            className="h-12 px-6"
           >
             Retour au catalogue
-          </Link>
+          </Button>
         </div>
       </div>
     );

@@ -56,7 +56,7 @@ export function DishCard({ dish, isFavorite, onToggleFavorite }) {
         {/* Rating and Delivery */}
         <div className="flex items-center gap-3 mb-3">
           <div className="flex items-center gap-1">
-            <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+            <Star className="w-4 h-4 text-warning fill-warning" />
             <span className="text-sm font-medium">{dish.rating}</span>
             <span className="text-xs text-muted-foreground">
               ({dish.reviews})

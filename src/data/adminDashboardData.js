@@ -41,8 +41,8 @@ export const stats = [
     value: "156",
     icon: ChefHat,
     change: "+8.3%",
-    color: "bg-orange-100",
-    iconColor: "text-orange-600",
+    color: "bg-warning/10",
+    iconColor: "text-warning",
   },
   {
     label: "Commandes du mois",
@@ -57,8 +57,8 @@ export const stats = [
     value: "45,680€",
     icon: DollarSign,
     change: "+18.7%",
-    color: "bg-amber-100",
-    iconColor: "text-amber-600",
+    color: "bg-warning/10",
+    iconColor: "text-warning",
   },
 ];
 
@@ -73,13 +73,13 @@ export const quickStats = [
     label: "En attente validation",
     value: "12",
     icon: AlertCircle,
-    className: "bg-amber-50 border-amber-200 text-amber-700",
+    className: "bg-warning/10 border-warning/20 text-warning",
   },
   {
     label: "Signalements actifs",
     value: "7",
     icon: Flag,
-    className: "bg-orange-50 border-orange-200 text-orange-700",
+    className: "bg-error/10 border-error/20 text-error",
   },
 ];
 
