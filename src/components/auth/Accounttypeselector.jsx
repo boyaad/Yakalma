@@ -7,16 +7,16 @@ export function AccountTypeSelector({ accountType, onChange }) {
       <div className="grid grid-cols-2 gap-3">
         <button
           type="button"
-          onClick={() => onChange("customer")}
+          onClick={() => onChange("acheteur")}
           className={`group p-4 border-2 rounded-xl transition-all ${
-            accountType === "customer"
+            accountType === "acheteur"
               ? "bg-primary text-white border-primary shadow-lg scale-105"
               : "bg-white border-gray-100 hover:border-primary/30"
           }`}
         >
           <ShoppingBag
             className={`w-6 h-6 mx-auto mb-2 ${
-              accountType === "customer"
+              accountType === "acheteur"
                 ? "text-primary-foreground"
                 : "text-primary"
             }`}
@@ -27,16 +27,16 @@ export function AccountTypeSelector({ accountType, onChange }) {
 
         <button
           type="button"
-          onClick={() => onChange("seller")}
+          onClick={() => onChange("vendeur")}
           className={`group p-4 border-2 rounded-xl transition-all ${
-            accountType === "seller"
+            accountType === "vendeur"
               ? "bg-primary text-white border-primary shadow-lg scale-105"
               : "bg-white border-gray-100 hover:border-primary/30"
           }`}
         >
           <ChefHat
             className={`w-6 h-6 mx-auto mb-2 ${
-              accountType === "seller"
+              accountType === "vendeur"
                 ? "text-primary-foreground"
                 : "text-primary"
             }`}

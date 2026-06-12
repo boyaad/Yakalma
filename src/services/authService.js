@@ -32,3 +32,4 @@ export async function signOut() {
 export async function resetPassword(email) {
   return await supabase.auth.resetPasswordForEmail(email);
 }
+

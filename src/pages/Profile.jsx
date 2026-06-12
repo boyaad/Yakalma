@@ -20,6 +20,7 @@ import { ProfileOverview } from "../components/profile/ProfileOverview";
 import { ProfileSettings } from "../components/profile/ProfileSettings";
 import { ProfileSidebar } from "../components/profile/ProfileSidebar";
 import { allDishes } from "../data/Dishes";
+import { signOut } from "../services/authService";
 
 const user = {
   firstName: "Marie",
@@ -114,7 +115,12 @@ export default function Profile() {
   ];
 
   const handleLogout = () => {
-    navigate("/login");
+    const { error } = signOut();
+    if (!error) {
+      navigate("/login");
+    } else {
+      console.error("Erreur lors de la déconnexion :", error);
+    }
   };
 
   return (
@@ -136,7 +142,7 @@ export default function Profile() {
           user={user}
         />
 
-        <div className="mx-auto max-w-[1600px] p-4 sm:p-6">
+        <div className="mx-auto max-w-400 p-4 sm:p-6">
           {activeSection === "overview" && (
             <ProfileOverview
               addresses={addresses}

@@ -15,36 +15,40 @@ import SellerDashboard from "../pages/SellerDashboard";
 import SellerProfile from "../pages/SellerProfile";
 import AddDish from "../pages/AddDish";
 import NotFound from "../pages/NotFound";
+import RoleRoute from "../components/RoleRoute";
 
 function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
         <Route element={<MainLayout />}>
+          {/* Public Routes */}
           <Route path="/" element={<Home />} />
-
           <Route path="/login" element={<Login />} />
-
           <Route path="/register" element={<Register />} />
-
-        <Route path="/plats" element={<Catalogue />} />
-
+          <Route path="/plats" element={<Catalogue />} />
           <Route path="/plats/:id" element={<PlatDetail />} />
 
-          <Route path="/panier" element={<Cart />} />
-
-          <Route path="/favoris" element={<Favorites />} />
-
-          <Route path="/profile" element={<Profile />} />
+          {/* Protected Routes */}
+          <Route path="/panier" element={
+              <ProtectedRoute>
+                <RoleRoute userRole={"acheteur"} allowedRoles={["acheteur"]}>
+                  <Cart />
+                </RoleRoute>
+              </ProtectedRoute>
+            } 
+          />
+          <Route path="/favoris" element={<ProtectedRoute><RoleRoute userRole={"acheteur"} allowedRoles={["acheteur"]}><Favorites /></RoleRoute></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><RoleRoute userRole={"acheteur"} allowedRoles={["acheteur"]}><Profile /></RoleRoute></ProtectedRoute>} />
 
           <Route path="/dashboard" element={<Dashboard />} />
 
-          <Route path="/seller/dashboard" element={<SellerDashboard />} />
-          <Route path="/seller/dishes" element={<SellerDashboard />} />
-          <Route path="/seller/add-dish" element={<AddDish />} />
-          <Route path="/seller/profile" element={<SellerProfile />} />
-
-          <Route path="/seller/orders" element={<SellerDashboard />} />
+          {/* Seller Routes */}
+          <Route path="/seller/dashboard" element={<ProtectedRoute><RoleRoute userRole="vendeur" allowedRoles={["vendeur"]}><SellerDashboard /></RoleRoute></ProtectedRoute>} />
+          <Route path="/seller/dishes" element={<ProtectedRoute><RoleRoute userRole="vendeur" allowedRoles={["vendeur"]}><SellerDashboard /></RoleRoute></ProtectedRoute>} />
+          <Route path="/seller/add-dish" element={<ProtectedRoute><RoleRoute userRole="vendeur" allowedRoles={["vendeur"]}><AddDish /></RoleRoute></ProtectedRoute>} />
+          <Route path="/seller/profile" element={<ProtectedRoute><RoleRoute userRole="vendeur" allowedRoles={["vendeur"]}><SellerProfile /></RoleRoute></ProtectedRoute>} />
+          <Route path="/seller/orders" element={<ProtectedRoute><RoleRoute userRole="vendeur" allowedRoles={["vendeur"]}><SellerDashboard /></RoleRoute></ProtectedRoute>} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

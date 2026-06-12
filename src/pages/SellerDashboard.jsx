@@ -19,6 +19,7 @@ import { QuickActions } from "../components/seller/QuickActions";
 import { PerformanceCard } from "../components/seller/PerformanceCard";
 import { DishCard } from "../components/seller/DishCard";
 import { OrderCard } from "../components/seller/OrderCard";
+import { signOut } from "../services/authService";
 
 const stats = [
   {
@@ -189,7 +190,12 @@ export default function SellerDashboard() {
   };
 
   const handleLogout = () => {
-    navigate("/login");
+    const { error } = signOut();
+    if (!error) {
+      navigate("/login");
+    } else {
+      console.error("Erreur lors de la déconnexion :", error);
+    }
   };
 
   return (

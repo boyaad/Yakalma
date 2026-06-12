@@ -153,12 +153,13 @@ export default function Register() {
     email: "",
     password: "",
     confirmPassword: "",
-    accountType: "customer",
+    accountType: "acheteur",
     acceptTerms: false,
-    avatar: "",
     telephone: "",
     localisation: "",
   });
+
+  const [avatar, setAvatar] = useState(null);
 
   const [errors, setErrors] =
     useState({});
@@ -235,7 +236,7 @@ export default function Register() {
           ...prev,
           avatar:
             validateAvatar(
-              formData.avatar,
+              avatar,
             ),
         }));
         break;
@@ -367,7 +368,7 @@ export default function Register() {
   };
 
   const handleSubmit = async (
-    e,
+    e
   ) => {
     e.preventDefault();
 
@@ -390,7 +391,7 @@ export default function Register() {
       );
     const avatarError =
       validateAvatar(
-        formData.avatar,
+        avatar,
       );
     const telephoneError =
       validatePhone(
@@ -472,16 +473,21 @@ export default function Register() {
       }
 
       let avatarUrl = null;
-      if (formData.avatar) {
+      if (avatar) {
+        const ext = avatar.name.split(".").pop();
+        const filePath = `${data.user.id}/avatar.${ext}`;
         const {
-          data: uploadData,
           error: uploadError,
         } =
           await supabase.storage
             .from("avatars")
             .upload(
-              `avatars/${data.user.id}/${formData.avatar.name}`,
-              formData.avatar,
+              filePath,
+              avatar, 
+              {
+                upsert: true,
+                contentType: avatar.type,
+              }
             );
         if (uploadError) {
           toast.error(
@@ -494,16 +500,11 @@ export default function Register() {
           return;
         }
 
-        avatarUrl =
-          supabase.storage
-            .from("avatars")
-            .getPublicUrl(
-              uploadData.path,
-            ).publicURL;
+        const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(filePath);
+        avatarUrl = publicUrl;
       }
 
       const {
-        data: profileData,
         error: profileError,
       } = await createProfile(
         formData.name,
@@ -514,32 +515,23 @@ export default function Register() {
         formData.localisation,
       );
 
-      if (
-        profileError ||
-        !profileData
-      ) {
-        const errorMessage =
-          profileError?.message ||
-          "Impossible de créer le profil.";
-        toast.error(
-          "Erreur lors de la création du profil : " +
-            errorMessage,
-        );
+      if (profileError) {
+        const errorMessage = profileError?.message || "Impossible de créer le profil.";
+        toast.error("Erreur lors de la création du profil : " + errorMessage);
         return;
       }
 
       toast.success(
-        "Compte créé avec succès ! Veuillez vérifier votre email pour confirmer votre compte.",
+        "Compte créé avec succès ! Veuillez vérifier votre email pour confirmer votre compte."
       );
       setFormData({
         name: "",
         email: "",
         password: "",
         confirmPassword: "",
-        accountType:
-          "customer",
+        accountType: "acheteur",
         acceptTerms: false,
-        avatar: "",
+        avatar: null,
         telephone: "",
         localisation: "",
       });
@@ -589,21 +581,17 @@ export default function Register() {
             accountType={
               formData.accountType
             }
-            onChange={(
-              type,
-            ) =>
-              setFormData(
+            onChange={(type) => setFormData(
                 (prev) => ({
                   ...prev,
-                  accountType:
-                    type,
+                  accountType: type,
                 }),
               )
             }
           />
 
           <form
-            encType="multipart/form-data"
+            method="POST"
             onSubmit={
               handleSubmit
             }
@@ -614,17 +602,10 @@ export default function Register() {
               label="Photo de profil"
               type="file"
               onChange={(e) =>
-                handleChange(
-                  "avatar",
-                  e.target
-                    .files?.[0] ??
-                    null,
-                )
+                setAvatar(e.target.files?.[0])
               }
               onBlur={() =>
-                handleBlur(
-                  "avatar",
-                )
+                handleBlur("avatar")
               }
               placeholder="Jean Dupont"
               touched={

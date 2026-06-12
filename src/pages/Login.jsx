@@ -9,6 +9,8 @@ import { LoginForm } from "../components/auth/Loginform";
 import { LoginIllustration } from "../components/auth/Loginillustration";
 import { LoginQuickActions } from "../components/auth/Loginquickaction";
 import { signIn } from "../services/authService";
+import { supabase } from "../services/supabase";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const navigate =
@@ -18,31 +20,28 @@ export default function Login() {
     setIsLoading,
   ] = useState(false);
 
-  const handleSubmit = async (
-    formData,
-  ) => {
+  const handleSubmit = async (formData) => {
     setIsLoading(true);
 
     try {
-      const user =
-        await signIn(
-          formData,
-        );
-      const role =
-        user?.profiles?.role;
+      const { data: userData, error: userError } = await signIn(formData.email, formData.password);
+      if (userError) throw userError;
 
-      if (
-        role === "customer"
-      ) {
+      const { data, error } = await supabase.from("profiles").select("*").eq("user_id", userData.user.id).single();
+      if (error) throw error;
+
+      if (data.role === "acheteur") {
         navigate("/");
-      } else {
+        toast.success("Connexion réussie !");
+      } else if(data.role == "vendeur") {
         navigate(
           "/seller/dashboard",
         );
+        toast.success("Connexion réussie !");
       }
     } catch (error) {
       console.error(
-        "Login failed",
+        "Erreur de la connexion :",
         error,
       );
     } finally {

@@ -16,6 +16,9 @@ import { DashboardHeader } from "../components/seller/DashboardHeader";
 import { SellerSidebar } from "../components/seller/SellerSidebar";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
+import { useAuth } from "../context/AuthContext";
+import { signOut } from "../services/authService";
+import { toast } from "react-toastify";
 
 const seller = {
   name: "Fatima K.",
@@ -62,11 +65,38 @@ function SellerStat({ icon: Icon, label, value }) {
 }
 
 export default function SellerProfile() {
+  const { user, profile } = useAuth();
+  const [formData, setFormData] = useState({
+    nom_complet: profile?.nom_complet || "",
+    email: user?.email || "",
+    telephone: profile?.telephone || "",
+    localisation: profile?.localisation || "",
+  });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Logique de mise à jour du profil vendeur
+    try {
+      console.log("Données du formulaire :", formData);
+    } catch (error) {
+      toast.error("Error updating seller profile:", error);
+    }
+  }
+
   const handleLogout = () => {
-    navigate("/login");
+    const { error } = signOut();
+    if (error) {
+      console.error("Error logging out:", error);
+    } else {
+      navigate("/login");
+    }
   };
 
   return (
@@ -86,23 +116,20 @@ export default function SellerProfile() {
           setSidebarOpen={setSidebarOpen}
         />
 
-        <div className="mx-auto max-w-[1600px] p-4 sm:p-6">
+        <div className="mx-auto max-w-400 p-4 sm:p-6">
           <div className="grid gap-6 lg:grid-cols-[360px_minmax(0,1fr)]">
             <section className="rounded-2xl border border-border-warm bg-white p-6">
               <div className="text-center">
                 <img
-                  src={seller.avatar}
-                  alt={seller.name}
+                  src={profile?.avatar || seller.avatar}
+                  alt={profile?.nom_complet || seller.name}
                   className="mx-auto mb-5 h-28 w-28 rounded-full object-cover ring-4 ring-primary/20"
                 />
                 <h1 className="text-2xl font-semibold text-foreground">
-                  {seller.name}
+                  {profile?.nom_complet || seller.name}
                 </h1>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {seller.role}
-                </p>
-                <p className="mt-4 rounded-xl bg-background-warm px-4 py-3 text-sm font-medium text-primary">
-                  {seller.speciality}
+                  {profile?.role || seller.role}
                 </p>
               </div>
             </section>
@@ -122,7 +149,7 @@ export default function SellerProfile() {
                 />
               </div>
 
-              <section className="rounded-2xl border border-border-warm bg-white p-6 sm:p-8">
+              <form onSubmit={handleSubmit} className="rounded-2xl border border-border-warm bg-white p-6 sm:p-8">
                 <div className="mb-8">
                   <h2 className="text-2xl font-semibold">
                     Informations vendeur
@@ -136,63 +163,47 @@ export default function SellerProfile() {
                   <Input
                     id="seller-name"
                     label="Nom"
-                    defaultValue={seller.name}
+                    defaultValue={formData.nom_complet}
                     icon={<User className="h-5 w-5" />}
                     readOnly
+                    onChange={handleChange}
                   />
                   <Input
                     id="seller-email"
                     label="Email"
                     type="email"
-                    defaultValue={seller.email}
+                    defaultValue={formData.email}
                     icon={<Mail className="h-5 w-5" />}
                     readOnly
+                    onChange={handleChange}
                   />
                   <Input
                     id="seller-phone"
                     label="Téléphone"
                     type="tel"
-                    defaultValue={seller.phone}
+                    defaultValue={formData.telephone}
                     icon={<Phone className="h-5 w-5" />}
                     readOnly
+                    onChange={handleChange}
                   />
-                  <Input
-                    id="seller-speciality"
-                    label="Spécialité"
-                    defaultValue={seller.speciality}
-                    icon={<ChefHat className="h-5 w-5" />}
-                    readOnly
-                  />
-                </div>
-
-                <div className="mt-5">
                   <Input
                     id="seller-address"
                     label="Adresse de cuisine"
-                    defaultValue={seller.address}
+                    defaultValue={formData.localisation}
                     icon={<MapPin className="h-5 w-5" />}
                     readOnly
-                  />
-                </div>
-
-                <div className="mt-5">
-                  <Input
-                    id="seller-bio"
-                    label="Présentation"
-                    as="textarea"
-                    rows={4}
-                    defaultValue={seller.bio}
+                    onChange={handleChange}
                   />
                 </div>
 
                 <Button
-                  type="button"
+                  type="submit"
                   variant="primary"
                   className="mt-6 px-6 py-3"
                 >
                   Enregistrer les modifications
                 </Button>
-              </section>
+              </form>
             </div>
           </div>
         </div>
