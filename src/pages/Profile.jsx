@@ -21,6 +21,7 @@ import { ProfileSettings } from "../components/profile/ProfileSettings";
 import { ProfileSidebar } from "../components/profile/ProfileSidebar";
 import { allDishes } from "../data/Dishes";
 import { signOut } from "../services/authService";
+import { useUserInfo } from "../context/UserInfoContext";
 
 const user = {
   firstName: "Marie",
@@ -85,6 +86,7 @@ const menuItems = [
 ];
 
 export default function Profile() {
+  const { commandes, favorites, addresses: userInfoAddresses } = useUserInfo();
   const [activeSection, setActiveSection] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
@@ -93,13 +95,13 @@ export default function Profile() {
   const stats = [
     {
       label: "Commandes",
-      value: orders.length,
+      value: commandes?.length,
       icon: ShoppingBag,
       badge: "+1",
     },
     {
       label: "Favoris",
-      value: favoriteDishes.length,
+      value: favorites?.length,
       icon: Heart,
     },
     {
@@ -109,7 +111,7 @@ export default function Profile() {
     },
     {
       label: "Adresses",
-      value: addresses.length,
+      value: userInfoAddresses?.length,
       icon: MapPin,
     },
   ];
@@ -146,17 +148,17 @@ export default function Profile() {
           {activeSection === "overview" && (
             <ProfileOverview
               addresses={addresses}
-              favoriteDishes={favoriteDishes}
               onSectionChange={setActiveSection}
               orders={orders}
               stats={stats}
+              favoriteDishes={favoriteDishes}
             />
           )}
 
           {activeSection === "profile" && <ProfileForm user={user} />}
-          {activeSection === "orders" && <OrderHistory orders={orders} />}
+          {activeSection === "orders" && <OrderHistory />}
           {activeSection === "favorites" && (
-            <FavoriteDishes dishes={favoriteDishes} />
+            <FavoriteDishes />
           )}
           {activeSection === "addresses" && (
             <AddressBook addresses={addresses} />

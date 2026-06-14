@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  ChefHat,
   LayoutDashboard,
   Mail,
   MapPin,
@@ -9,7 +8,7 @@ import {
   Phone,
   Star,
   UtensilsCrossed,
-  User,
+  User
 } from "lucide-react";
 
 import { DashboardHeader } from "../components/seller/DashboardHeader";
@@ -19,6 +18,8 @@ import Button from "../components/ui/Button";
 import { useAuth } from "../context/AuthContext";
 import { signOut } from "../services/authService";
 import { toast } from "react-toastify";
+import { supabase } from "../services/supabase";
+import { dishes } from "../data/adminDashboardData";
 
 const seller = {
   name: "Fatima K.",
@@ -75,20 +76,70 @@ export default function SellerProfile() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { id, value } = e.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
-  }
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logique de mise à jour du profil vendeur
+    // Handle profile update logic here
     try {
-      console.log("Données du formulaire :", formData);
+      const profileChanged =
+        formData.nom_complet !== profile.nom_complet ||
+        formData.telephone !== profile.telephone ||
+        formData.localisation !== profile.localisation;
+
+      const emailChanged =
+        formData.email !== user.email;
+
+      if (!profileChanged && !emailChanged) {
+        toast.info("Aucune modification détectée.");
+        return;
+      }
+
+      // Mise à jour du profil
+      if (profileChanged) {
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .update({
+            nom_complet: formData.nom_complet,
+            telephone: formData.telephone,
+            localisation: formData.localisation,
+          })
+          .eq("user_id", user.id);
+
+        if (profileError) throw profileError;
+      }
+
+      // Mise à jour de l'email
+      if (emailChanged) {
+        const { error: emailError } =
+          await supabase.auth.updateUser({
+            email: formData.email,
+            options: {
+              emailRedirectTo:
+                "http://localhost:5173/seller/dashboard",
+            },
+          });
+
+        if (emailError) throw emailError;
+
+        toast.info("Consultez votre mail et cliquez sur le lien de confirmation !");
+      }
+
+      if (profileChanged && !emailChanged) {
+        toast.success("Profil mis à jour avec succès !");
+      }
+
+      if (!profileChanged && emailChanged) {
+        toast.success("Demande de changement d'email envoyée !");
+      }
+
+      if (profileChanged && emailChanged) {
+        toast.success(
+          "Profil mis à jour et demande de changement d'email envoyée !"
+        );
+      }
     } catch (error) {
-      toast.error("Error updating seller profile:", error);
+      toast.error("Erreur lors de la mise à jour du profil: " + error.message);
     }
-  }
+  };
 
   const handleLogout = () => {
     const { error } = signOut();
@@ -140,12 +191,12 @@ export default function SellerProfile() {
                 <SellerStat
                   icon={UtensilsCrossed}
                   label="Plats actifs"
-                  value={seller.dishesCount}
+                  value={dishes.length}
                 />
                 <SellerStat
                   icon={Package}
                   label="Commandes"
-                  value={seller.ordersCount}
+                  value={0}
                 />
               </div>
 
@@ -163,36 +214,30 @@ export default function SellerProfile() {
                   <Input
                     id="seller-name"
                     label="Nom"
-                    defaultValue={formData.nom_complet}
+                    value={formData.nom_complet}
                     icon={<User className="h-5 w-5" />}
-                    readOnly
-                    onChange={handleChange}
+                    onChange={(e) => setFormData({ ...formData, nom_complet: e.target.value })}
                   />
                   <Input
                     id="seller-email"
                     label="Email"
-                    type="email"
-                    defaultValue={formData.email}
+                    value={formData.email}
                     icon={<Mail className="h-5 w-5" />}
-                    readOnly
-                    onChange={handleChange}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   />
                   <Input
                     id="seller-phone"
                     label="Téléphone"
-                    type="tel"
-                    defaultValue={formData.telephone}
+                    value={formData.telephone}
                     icon={<Phone className="h-5 w-5" />}
-                    readOnly
-                    onChange={handleChange}
+                    onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
                   />
                   <Input
                     id="seller-address"
                     label="Adresse de cuisine"
-                    defaultValue={formData.localisation}
+                    value={formData.localisation}
                     icon={<MapPin className="h-5 w-5" />}
-                    readOnly
-                    onChange={handleChange}
+                    onChange={(e) => setFormData({ ...formData, localisation: e.target.value })}
                   />
                 </div>
 

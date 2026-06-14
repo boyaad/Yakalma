@@ -12,37 +12,24 @@ const AuthContext =
   createContext();
 
 export function AuthProvider({
-  children,
+  children
 }) {
-  const [user, setUser] =
-    useState(null);
-  const [
-    profile,
-    setProfile,
-  ] = useState(null); // profile remains null until the user session is loaded and the profile is fetched
-  const [
-    loading,
-    setLoading,
-  ] = useState(true);
+  const [user, setUser] = useState(null);
+  const [profile, setProfile,] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function getSession() {
-      const {
-        data: { session },
-      } =
-        await supabase.auth.getSession();
+      const { data: { session } } = await supabase.auth.getSession();
 
-      setUser(
-        session?.user ?? null,
-      );
+      setUser(session?.user ?? null);
       setLoading(false);
     }
 
     getSession();
 
     const {
-      data: { subscription },
-    } =
+      data: { subscription } } =
       supabase.auth.onAuthStateChange(
         (_event, session) => {
           setUser(
@@ -60,16 +47,10 @@ export function AuthProvider({
   useEffect(() => {
     async function fetchProfile() {
       if (user) {
-        const {
-          data,
-          error,
-        } = await supabase
+        const { data, error, } = await supabase
           .from("profiles")
           .select("*")
-          .eq(
-            "user_id",
-            user.id,
-          )
+          .eq("user_id", user?.id)
           .single();
 
         if (error) {
@@ -89,13 +70,6 @@ export function AuthProvider({
     fetchProfile();
   }, [user]);
 
-  useEffect(() => {
-    console.log(
-      "Données du profil dans le AuthContext :",
-      profile,
-    );
-  }, [profile]);
-
   return (
     <AuthContext.Provider
       value={{
@@ -110,7 +84,9 @@ export function AuthProvider({
 }
 
 export function useAuth() {
-  return useContext(
+  const context =  useContext(
     AuthContext,
   );
+
+  return context;
 }

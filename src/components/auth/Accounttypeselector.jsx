@@ -3,7 +3,7 @@ import { ShoppingBag, ChefHat } from "lucide-react";
 export function AccountTypeSelector({ accountType, onChange }) {
   return (
     <div className="mb-6">
-      <label className="block mb-3 font-medium">Je suis</label>
+      <label className="block mb-3 font-medium text-xl">Je suis</label>
       <div className="grid grid-cols-2 gap-3">
         <button
           type="button"

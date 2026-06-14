@@ -10,13 +10,15 @@ import {
 } from "react-icons/lu";
 import {
   Home,
+  ShoppingCart,
+  User,
   UtensilsCrossed,
 } from "lucide-react";
 import logo from "../../assets/logo.png";
 import { useAuth } from "../../context/AuthContext";
 
 function Navbar() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const location =
     useLocation();
   const [isOpen, setIsOpen] =
@@ -74,19 +76,33 @@ function Navbar() {
           <div className="hidden md:flex items-center gap-8 shrink-0">
             {user ? (
               <>
-                {/* Link Panier */}
-                <Link
-                  to="/panier"
-                  className="font-poppins font-semibold text-xl text-foreground hover:text-primary transition-colors"
-                >
-                  Panier
-                </Link>
-                <Link
-                  to="/profile"
-                  className="font-poppins font-semibold text-xl text-foreground hover:text-primary transition-colors"
-                >
-                  Mon compte
-                </Link>
+                {
+                  profile?.role === "acheteur" ? (
+                    <>
+                      <Link
+                        to="/panier"
+                        className="font-poppins font-semibold text-xl text-foreground hover:text-primary transition-colors"
+                      >
+                        <ShoppingCart color="black" size={24} />
+                      </Link>
+                      <Link
+                        to="/profile"
+                        className="font-poppins font-semibold text-xl text-foreground hover:text-primary transition-colors"
+                      >
+                        <User color="black" size={24} />
+                      </Link>
+                    </>
+                  ) :  profile?.role === "vendeur" && (
+                    <>
+                      <Link
+                        to="/seller/dashboard"
+                        className="font-poppins font-semibold text-xl text-foreground hover:text-primary transition-colors"
+                      >
+                        Dashboard
+                      </Link>
+                    </>
+                  )
+                }
               </>
             ) : (
               <>

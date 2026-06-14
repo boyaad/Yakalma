@@ -2,41 +2,19 @@ import {
   ArrowRight,
   ChefHat,
   Lock,
-  Mail,
-  MapPin,
-  Phone,
-  PictureInPicture,
-  User,
+  Mail
 } from "lucide-react";
 import { useState } from "react";
-import {
-  Link,
-  useNavigate,
-} from "react-router-dom";
-
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { AccountTypeSelector } from "../components/auth/Accounttypeselector";
+
 import { LeftPanel } from "../components/auth/Leftpanel";
 import { TermsCheckbox } from "../components/auth/Termscheckbox";
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
-import {
-  createProfile,
-  signUp,
-} from "../services/authService";
-import { supabase } from "../services/supabase";
+import { signUp } from "../services/authService";
 
-function validateName(name) {
-  if (!name)
-    return "Le nom est requis";
-  if (name.length < 2)
-    return "Le nom doit contenir au moins 2 caractères";
-  return "";
-}
-
-function validateEmail(
-  email,
-) {
+function validateEmail(email) {
   const emailRegex =
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email)
@@ -46,9 +24,7 @@ function validateEmail(
   return "";
 }
 
-function validatePassword(
-  password,
-) {
+function validatePassword(password) {
   if (!password)
     return "Le mot de passe est requis";
   if (password.length < 8)
@@ -72,10 +48,7 @@ function validatePassword(
   return "";
 }
 
-function validateConfirmPassword(
-  confirmPassword,
-  password,
-) {
+function validateConfirmPassword(confirmPassword, password) {
   if (!confirmPassword)
     return "Confirmez votre mot de passe";
   if (
@@ -86,87 +59,16 @@ function validateConfirmPassword(
   return "";
 }
 
-function validateAvatar(
-  avatar,
-) {
-  if (avatar) {
-    const allowedTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/gif",
-      "image/jpg",
-    ];
-    if (
-      !allowedTypes.includes(
-        avatar.type,
-      )
-    ) {
-      return "Format de fichier non supporté (jpeg, jpg, png, gif uniquement)";
-    } else if (
-      avatar.size >
-      5 * 1024 * 1024
-    ) {
-      return "Le fichier est trop volumineux (max 5MB)";
-    }
-  }
-  return "";
-}
-
-function validatePhone(
-  telephone,
-) {
-  // Numéro de téléphone sénégalais : peut commencer par 77 ou 78 ou 75 ou 70, suivi de 7 autres chiffres
-  const phoneRegex =
-    /^(77|78|75|70)\d{7}$/;
-  if (
-    telephone &&
-    !phoneRegex.test(
-      telephone,
-    )
-  ) {
-    return "Numéro de téléphone invalide";
-  }
-  return "";
-}
-
-function validateLocation(
-  localisation,
-) {
-  if (
-    localisation &&
-    localisation.length < 2
-  ) {
-    return "La localisation doit contenir au moins 2 caractères";
-  }
-  return "";
-}
 
 export default function Register() {
-  const navigate =
-    useNavigate();
-
-  const [
-    formData,
-    setFormData,
-  ] = useState({
-    name: "",
+  const [formData, setFormData] = useState({
     email: "",
     password: "",
     confirmPassword: "",
-    accountType: "acheteur",
-    acceptTerms: false,
-    telephone: "",
-    localisation: "",
+    acceptTerms: false
   });
-
-  const [avatar, setAvatar] = useState(null);
-
-  const [errors, setErrors] =
-    useState({});
-  const [
-    touched,
-    setTouched,
-  ] = useState({});
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
   const [
     isLoading,
     setIsLoading,
@@ -181,14 +83,6 @@ export default function Register() {
     }));
 
     switch (field) {
-      case "name":
-        setErrors((prev) => ({
-          ...prev,
-          name: validateName(
-            formData.name,
-          ),
-        }));
-        break;
       case "email":
         setErrors((prev) => ({
           ...prev,
@@ -231,33 +125,6 @@ export default function Register() {
             ),
         }));
         break;
-      case "avatar":
-        setErrors((prev) => ({
-          ...prev,
-          avatar:
-            validateAvatar(
-              avatar,
-            ),
-        }));
-        break;
-      case "telephone":
-        setErrors((prev) => ({
-          ...prev,
-          telephone:
-            validatePhone(
-              formData.telephone,
-            ),
-        }));
-        break;
-      case "localisation":
-        setErrors((prev) => ({
-          ...prev,
-          localisation:
-            validateLocation(
-              formData.localisation,
-            ),
-        }));
-        break;
     }
   };
 
@@ -272,16 +139,6 @@ export default function Register() {
 
     if (touched[field]) {
       switch (field) {
-        case "name":
-          setErrors(
-            (prev) => ({
-              ...prev,
-              name: validateName(
-                value,
-              ),
-            }),
-          );
-          break;
         case "email":
           setErrors(
             (prev) => ({
@@ -330,39 +187,6 @@ export default function Register() {
             }),
           );
           break;
-        case "avatar":
-          setErrors(
-            (prev) => ({
-              ...prev,
-              avatar:
-                validateAvatar(
-                  value,
-                ),
-            }),
-          );
-          break;
-        case "telephone":
-          setErrors(
-            (prev) => ({
-              ...prev,
-              telephone:
-                validatePhone(
-                  value,
-                ),
-            }),
-          );
-          break;
-        case "localisation":
-          setErrors(
-            (prev) => ({
-              ...prev,
-              localisation:
-                validateLocation(
-                  value,
-                ),
-            }),
-          );
-          break;
       }
     }
   };
@@ -372,10 +196,6 @@ export default function Register() {
   ) => {
     e.preventDefault();
 
-    const nameError =
-      validateName(
-        formData.name,
-      );
     const emailError =
       validateEmail(
         formData.email,
@@ -388,18 +208,6 @@ export default function Register() {
       validateConfirmPassword(
         formData.confirmPassword,
         formData.password,
-      );
-    const avatarError =
-      validateAvatar(
-        avatar,
-      );
-    const telephoneError =
-      validatePhone(
-        formData.telephone,
-      );
-    const localisationError =
-      validateLocation(
-        formData.localisation,
       );
 
     if (
@@ -414,35 +222,21 @@ export default function Register() {
     }
 
     if (
-      nameError ||
       emailError ||
       passwordError ||
-      confirmPasswordError ||
-      avatarError ||
-      telephoneError ||
-      localisationError
+      confirmPasswordError
     ) {
       setErrors({
-        name: nameError,
         email: emailError,
         password:
           passwordError,
         confirmPassword:
           confirmPasswordError,
-        avatar: avatarError,
-        telephone:
-          telephoneError,
-        localisation:
-          localisationError,
       });
       setTouched({
-        name: true,
         email: true,
         password: true,
         confirmPassword: true,
-        avatar: true,
-        telephone: true,
-        localisation: true,
       });
       return;
     }
@@ -450,7 +244,7 @@ export default function Register() {
     try {
       setIsLoading(true);
       // Créer le compte utilisateur avec Supabase Auth
-      const { data, error } =
+      const { error } =
         await signUp(
           formData.email,
           formData.password,
@@ -465,77 +259,15 @@ export default function Register() {
         return;
       }
 
-      if (!data?.user?.id) {
-        toast.error(
-          "Erreur : ID utilisateur introuvable après inscription.",
-        );
-        return;
-      }
-
-      let avatarUrl = null;
-      if (avatar) {
-        const ext = avatar.name.split(".").pop();
-        const filePath = `${data.user.id}/avatar.${ext}`;
-        const {
-          error: uploadError,
-        } =
-          await supabase.storage
-            .from("avatars")
-            .upload(
-              filePath,
-              avatar, 
-              {
-                upsert: true,
-                contentType: avatar.type,
-              }
-            );
-        if (uploadError) {
-          toast.error(
-            "Erreur lors de l'upload de l'avatar : " +
-              (uploadError.message ||
-                String(
-                  uploadError,
-                )),
-          );
-          return;
-        }
-
-        const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(filePath);
-        avatarUrl = publicUrl;
-      }
-
-      const {
-        error: profileError,
-      } = await createProfile(
-        formData.name,
-        formData.accountType,
-        data.user.id,
-        avatarUrl,
-        formData.telephone,
-        formData.localisation,
-      );
-
-      if (profileError) {
-        const errorMessage = profileError?.message || "Impossible de créer le profil.";
-        toast.error("Erreur lors de la création du profil : " + errorMessage);
-        return;
-      }
-
       toast.success(
         "Compte créé avec succès ! Veuillez vérifier votre email pour confirmer votre compte."
       );
       setFormData({
-        name: "",
         email: "",
         password: "",
         confirmPassword: "",
-        accountType: "acheteur",
         acceptTerms: false,
-        avatar: null,
-        telephone: "",
-        localisation: "",
       });
-      navigate("/login");
     } catch (error) {
       toast.error("Erreur : " + error.message);
     } finally {
@@ -577,19 +309,6 @@ export default function Register() {
             </p>
           </div>
 
-          <AccountTypeSelector
-            accountType={
-              formData.accountType
-            }
-            onChange={(type) => setFormData(
-                (prev) => ({
-                  ...prev,
-                  accountType: type,
-                }),
-              )
-            }
-          />
-
           <form
             method="POST"
             onSubmit={
@@ -597,59 +316,6 @@ export default function Register() {
             }
             className="space-y-4"
           >
-            <Input
-              id="avatar"
-              label="Photo de profil"
-              type="file"
-              onChange={(e) =>
-                setAvatar(e.target.files?.[0])
-              }
-              onBlur={() =>
-                handleBlur("avatar")
-              }
-              placeholder="Jean Dupont"
-              touched={
-                touched.avatar
-              }
-              error={
-                errors.avatar
-              }
-              icon={
-                <PictureInPicture className="w-5 h-5" />
-              }
-            />
-
-            <Input
-              id="name"
-              label="Nom complet"
-              type="text"
-              value={
-                formData.name
-              }
-              onChange={(e) =>
-                handleChange(
-                  "name",
-                  e.target
-                    .value,
-                )
-              }
-              onBlur={() =>
-                handleBlur(
-                  "name",
-                )
-              }
-              placeholder="Jean Dupont"
-              touched={
-                touched.name
-              }
-              error={
-                errors.name
-              }
-              icon={
-                <User className="w-5 h-5" />
-              }
-            />
-
             <Input
               id="email"
               label="Adresse email"
@@ -678,68 +344,6 @@ export default function Register() {
               }
               icon={
                 <Mail className="w-5 h-5" />
-              }
-            />
-
-            <Input
-              id="telephone"
-              label="Numéro de téléphone"
-              type="tel"
-              value={
-                formData.telephone
-              }
-              onChange={(e) =>
-                handleChange(
-                  "telephone",
-                  e.target
-                    .value,
-                )
-              }
-              onBlur={() =>
-                handleBlur(
-                  "telephone",
-                )
-              }
-              placeholder="77 123 45 67"
-              touched={
-                touched.telephone
-              }
-              error={
-                errors.telephone
-              }
-              icon={
-                <Phone className="w-5 h-5" />
-              }
-            />
-
-            <Input
-              id="localisation"
-              label="Localisation"
-              type="text"
-              value={
-                formData.localisation
-              }
-              onChange={(e) =>
-                handleChange(
-                  "localisation",
-                  e.target
-                    .value,
-                )
-              }
-              onBlur={() =>
-                handleBlur(
-                  "localisation",
-                )
-              }
-              placeholder="Dakar, Medina"
-              touched={
-                touched.localisation
-              }
-              error={
-                errors.localisation
-              }
-              icon={
-                <MapPin className="w-5 h-5" />
               }
             />
 

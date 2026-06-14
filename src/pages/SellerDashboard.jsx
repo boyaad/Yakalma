@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import {
   LayoutDashboard,
   UtensilsCrossed,
@@ -20,6 +20,7 @@ import { PerformanceCard } from "../components/seller/PerformanceCard";
 import { DishCard } from "../components/seller/DishCard";
 import { OrderCard } from "../components/seller/OrderCard";
 import { signOut } from "../services/authService";
+import { useSeller } from "../context/SellerInfoContext";
 
 const stats = [
   {
@@ -150,6 +151,7 @@ const menuItems = [
 ];
 
 export default function SellerDashboard() {
+  const { plats, platsLoading } = useSeller()
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -219,7 +221,7 @@ export default function SellerDashboard() {
         />
 
         {/* Content Area */}
-        <div className="p-4 sm:p-6 max-w-[1600px] mx-auto">
+        <div className="p-4 sm:p-6 max-w-400 mx-auto">
           {/* Dashboard Section */}
           {activeSection === "dashboard" && (
             <div className="space-y-6">
@@ -260,13 +262,32 @@ export default function SellerDashboard() {
           {/* Dishes Section */}
           {activeSection === "dishes" && (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-              {dishes.map((dish) => (
-                <DishCard
-                  key={dish.id}
-                  dish={dish}
-                  statusInfo={getStatusInfo(dish.status)}
-                />
-              ))}
+              {
+                platsLoading ? 
+                  <div className="flex justify-center items-center border">
+                    <p className="text-center">Chargement des plats...</p>
+                  </div>
+                :
+                plats.length !== 0 ?
+                  plats.map((dish) => (
+                    <DishCard
+                      key={dish.id}
+                      dish={dish}
+                      statusInfo={getStatusInfo(dish.status)}
+                    />
+                  )) :
+                  (
+                    <div className="w-full mx-auto flex flex-col justify-center items-center gap-2 text-center">
+                      <p>Vous n'avez ajouté aucun plat !</p>
+                      <Link
+                        to="/seller/add-dish"
+                        className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent"
+                      >
+                        Ajouter un plat
+                      </Link>
+                    </div>
+                  )
+              }
             </div>
           )}
 

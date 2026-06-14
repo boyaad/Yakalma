@@ -40,7 +40,7 @@ export default function Login() {
         toast.success("Connexion réussie !");
       }
     } catch (error) {
-      console.error(
+      toast.error(
         "Erreur de la connexion :",
         error,
       );
