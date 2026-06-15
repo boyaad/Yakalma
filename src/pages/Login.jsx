@@ -1,22 +1,52 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+} from "react-router-dom";
 
-import { LoginIllustration } from "../components/auth/Loginillustration";
-import { LoginQuickActions } from "../components/auth/Loginquickaction";
 import { ChefHat } from "lucide-react";
 import { LoginForm } from "../components/auth/Loginform";
+import { LoginIllustration } from "../components/auth/Loginillustration";
+import { LoginQuickActions } from "../components/auth/Loginquickaction";
+import { signIn } from "../services/authService";
+import { supabase } from "../services/supabase";
+import { toast } from "react-toastify";
 
 export default function Login() {
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  const navigate =
+    useNavigate();
+  const [
+    isLoading,
+    setIsLoading,
+  ] = useState(false);
 
-  const handleSubmit = (formData) => {
+  const handleSubmit = async (formData) => {
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
+
+    try {
+      const { data: userData, error: userError } = await signIn(formData.email, formData.password);
+      if (userError) throw userError;
+
+      const { data, error } = await supabase.from("profiles").select("*").eq("user_id", userData.user.id).single();
+      if (error) throw error;
+
+      if (data.role === "acheteur") {
+        navigate("/");
+        toast.success("Connexion réussie !");
+      } else if(data.role == "vendeur") {
+        navigate(
+          "/seller/dashboard",
+        );
+        toast.success("Connexion réussie !");
+      }
+    } catch (error) {
+      toast.error(
+        "Erreur de la connexion :",
+        error,
+      );
+    } finally {
       setIsLoading(false);
-      navigate("/catalog");
-    }, 1500);
+    }
   };
 
   return (
@@ -32,18 +62,32 @@ export default function Login() {
             className="inline-flex items-center gap-2 mb-8 lg:hidden"
           >
             <ChefHat className="w-8 h-8 text-primary" />
-            <span className="text-primary font-semibold text-2xl">Yakalma</span>
+            <span className="text-primary font-semibold text-2xl">
+              Yakalma
+            </span>
           </Link>
 
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl sm:text-4xl mb-3">Connexion</h1>
+            <h1 className="text-3xl sm:text-4xl mb-3">
+              Connexion
+            </h1>
             <p className="text-muted-foreground text-lg">
-              Connectez-vous pour savourer vos plats préférés
+              Connectez-vous
+              pour savourer
+              vos plats
+              préférés
             </p>
           </div>
 
-          <LoginForm onSubmit={handleSubmit} isLoading={isLoading} />
+          <LoginForm
+            onSubmit={
+              handleSubmit
+            }
+            isLoading={
+              isLoading
+            }
+          />
 
           <LoginQuickActions />
         </div>

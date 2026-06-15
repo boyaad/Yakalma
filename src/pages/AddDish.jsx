@@ -100,7 +100,7 @@ export default function AddDish() {
       <div className="max-w-4xl mx-auto">
         {/* Back link */}
         <Button
-          to="/SellerDashboard"
+          to="/seller/dashboard"
           variant="link"
           className="mb-6 font-medium text-primary p-0 h-auto"
         >
