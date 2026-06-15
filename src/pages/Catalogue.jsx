@@ -1,118 +1,162 @@
-import React from "react";
-import PlatCard from "../components/PlatCard";
-import "../styles/Catalogue.css";
+import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
-function Catalogue() {
-  const plats = [
-    {
-      id: 1,
-      nom: "Thiéboudienne rouge",
-      vendeur: "Awa Cuisine",
-      localisation: "Plateau",
-      note: 4.8,
-      disponible: true,
-      prix: 2500,
-      image:
-        "https://images.unsplash.com/photo-1665332195309-9d75071138f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
-    },
-    {
-      id: 2,
-      nom: "Yassa poulet citron",
-      vendeur: "Chez Fatou",
-      localisation: "Almadies",
-      note: 4.9,
-      disponible: true,
-      prix: 2000,
-      image:
-        "https://images.unsplash.com/photo-1543826173-1beeb97525d8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
-    },
-    {
-      id: 3,
-      nom: "Mafé boeuf",
-      vendeur: "Délices d'Aminata",
-      localisation: "Mermoz",
-      note: 4.7,
-      disponible: false,
-      prix: 2200,
-      image:
-        "https://images.unsplash.com/photo-1665332561290-cc6757172890?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
-    },
-    {
-      id: 4,
-      nom: "Thieb blanc poisson",
-      vendeur: "Awa Cuisine",
-      localisation: "Plateau",
-      note: 4.8,
-      disponible: true,
-      prix: 2300,
-      image:
-        "https://images.unsplash.com/photo-1664992960082-0ea299a9c53e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
-    },
-    {
-      id: 5,
-      nom: "Mafé poulet",
-      vendeur: "Délices d'Aminata",
-      localisation: "Mermoz",
-      note: 4.6,
-      disponible: true,
-      prix: 1800,
-      image:
-        "https://images.unsplash.com/photo-1644946762933-8716dd20d0b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
-    },
-    {
-      id: 6,
-      nom: "Thiéb guinar",
-      vendeur: "Awa Cuisine",
-      localisation: "Plateau",
-      note: 4.9,
-      disponible: true,
-      prix: 2400,
-      image:
-        "https://images.unsplash.com/photo-1664993101841-036f189719b6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
-    },
-    {
-      id: 7,
-      nom: "Jus bissap frais",
-      vendeur: "Boisson de Mariama",
-      localisation: "Point E",
-      note: 4.5,
-      disponible: true,
-      prix: 500,
-      image:
-        "https://images.unsplash.com/photo-1506802913710-40e2e66339c9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
-    },
-    {
-      id: 8,
-      nom: "Thiakry vanille",
-      vendeur: "Douceurs Sénégalaises",
-      localisation: "Sacré Coeur",
-      note: 4.7,
-      disponible: true,
-      prix: 800,
-      image:
-        "https://images.unsplash.com/photo-1665833613236-7c1d087463b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
-    },
-  ];
+
+import { allDishes } from "../data/Dishes";
+import { SearchBar } from "../components/categories/Searchbar";
+import { CategoryTabs } from "../components/categories/Categorytabs";
+import { FiltersBar } from "../components/categories/Filtersbar";
+import { EmptyState } from "../components/categories/Emptystate";
+import { Pagination } from "../components/categories/Pagination";
+import CardPlat from "../components/ui/CardPlat";
+
+const ITEMS_PER_PAGE = 9;
+
+export default function Catalog() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [selectedCategory, setSelectedCategory] = useState(
+    searchParams.get("category") || "all",
+  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
+  const [priceRange, setPriceRange] = useState([0, 50]);
+  const [selectedRating, setSelectedRating] = useState(0);
+  const [maxDistance, setMaxDistance] = useState(10);
+  const [sortBy, setSortBy] = useState("popular");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const handleOrder = (dishId) => {
+    navigate(`/plats/${dishId}`);
+  };
+
+  const resetFilters = () => {
+    setPriceRange([0, 50]);
+    setSelectedRating(0);
+    setMaxDistance(10);
+    setSelectedCategory("all");
+    setSearchQuery("");
+  };
+
+  // Filtrage
+  let filteredDishes = allDishes.filter((dish) => {
+    const matchesCategory =
+      selectedCategory === "all" || dish.category === selectedCategory;
+    const matchesSearch =
+      dish.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      dish.chef.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesPrice =
+      dish.price >= priceRange[0] && dish.price <= priceRange[1];
+    const matchesRating = dish.rating >= selectedRating;
+    const matchesDistance = dish.distance <= maxDistance;
+    return (
+      matchesCategory &&
+      matchesSearch &&
+      matchesPrice &&
+      matchesRating &&
+      matchesDistance
+    );
+  });
+
+  // Tri
+  filteredDishes = [...filteredDishes].sort((a, b) => {
+    switch (sortBy) {
+      case "price-asc":
+        return a.price - b.price;
+      case "price-desc":
+        return b.price - a.price;
+      case "rating":
+        return b.rating - a.rating;
+      case "distance":
+        return a.distance - b.distance;
+      default:
+        return b.reviews - a.reviews;
+    }
+  });
+
+  // Pagination
+  const totalPages = Math.ceil(filteredDishes.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedDishes = filteredDishes.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE,
+  );
+
   return (
-    <div>
-      <h1>Explorer</h1>
-      <div className="plats-grid">
-        {plats.map((plat) => (
-          <PlatCard
-            key={plat.id}
-            id={plat.id}
-            nom={plat.nom}
-            vendeur={plat.vendeur}
-            localisation={plat.localisation}
-            note={plat.note}
-            disponible={plat.disponible}
-            prix={plat.prix}
-            image={plat.image}
-          />
-        ))}
+    <div className="min-h-screen py-6 sm:py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-6 sm:mb-9">
+          <h1 className="mb-2">Catalogue des plats</h1>
+          <p className="text-muted-foreground">
+            Découvrez {filteredDishes.length} plats faits maison près de chez
+            vous
+          </p>
+        </div>
+
+        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+
+        <CategoryTabs
+          dishes={allDishes}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          setCurrentPage={setCurrentPage}
+        />
+
+        <FiltersBar
+          showFilters={showFilters}
+          setShowFilters={setShowFilters}
+          priceRange={priceRange}
+          setPriceRange={setPriceRange}
+          selectedRating={selectedRating}
+          setSelectedRating={setSelectedRating}
+          maxDistance={maxDistance}
+          setMaxDistance={setMaxDistance}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          resetFilters={resetFilters}
+        />
+
+        {/* Results Count */}
+        <div className="mb-4 text-sm text-muted-foreground">
+          {filteredDishes.length} résultat{filteredDishes.length > 1 ? "s" : ""}
+          {searchQuery && ` pour "${searchQuery}"`}
+        </div>
+
+        {/* Dishes Grid or Empty State */}
+        {paginatedDishes.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {paginatedDishes.map((dish) => (
+              <CardPlat
+                key={dish.id}
+                id={dish.id}
+                image={dish.image}
+                title={dish.name}
+                chefName={dish.chef}
+                rating={dish.rating}
+                reviewsCount={dish.reviews}
+                price={dish.price}
+                currency="€"
+                badgeText={dish.badge}
+                badgeVariant={
+                  dish.badge?.toLowerCase() === "populaire"
+                    ? "populaire"
+                    : "nouveau"
+                }
+                onOrder={handleOrder}
+              />
+            ))}
+          </div>
+        ) : (
+          <EmptyState resetFilters={resetFilters} />
+        )}
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+        />
       </div>
     </div>
   );
 }
-
-export default Catalogue;

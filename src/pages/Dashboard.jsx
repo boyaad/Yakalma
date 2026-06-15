@@ -1,14 +1,5 @@
-import { useAuth } from "../context/AuthContext";
+import AdminDashboard from "./AdminDashboard";
 
-function Dashboard() {
-  const { user } = useAuth();
-
-  return (
-    <>
-      <h1>Dashboard</h1>
-      <p>{user?.email}</p>
-    </>
-  );
+export default function Dashboard() {
+  return <AdminDashboard />;
 }
-
-export default Dashboard;
