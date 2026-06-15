@@ -259,8 +259,8 @@ export default function Register() {
         return;
       }
 
-      toast.success(
-        "Compte créé avec succès ! Veuillez vérifier votre email pour confirmer votre compte."
+      toast.info(
+        "Veuillez vérifier votre email pour confirmer votre compte."
       );
       setFormData({
         email: "",
