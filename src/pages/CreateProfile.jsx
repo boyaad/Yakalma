@@ -78,16 +78,23 @@ export default function CreateProfile() {
         const initUser = async () => {
             const { data, error } = await supabase.auth.getUser();
 
-            if (error || !data?.user) {
-                toast.error("Utilisateur non connecté. Veuillez vous reconnecter.");
+            if(data?.user?.email_confirmed_at) {
+                navigate("/")
                 return;
             }
+
+            if (error || !data?.user) {
+                toast.error("Utilisateur non connecté. Veuillez vous reconnecter.");
+                navigate("/login")
+                return;
+            }
+
 
             setUser(data.user);
         };
 
         initUser();
-    }, []);
+    }, [navigate]);
 
     const handleBlur = (field) => {
         setTouched((prev) => ({
