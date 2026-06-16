@@ -5,12 +5,12 @@ import {
 } from "react-router-dom";
 
 import { ChefHat } from "lucide-react";
+import { toast } from "react-toastify";
 import { LoginForm } from "../components/auth/Loginform";
 import { LoginIllustration } from "../components/auth/Loginillustration";
 import { LoginQuickActions } from "../components/auth/Loginquickaction";
 import { signIn } from "../services/authService";
 import { supabase } from "../services/supabase";
-import { toast } from "react-toastify";
 
 export default function Login() {
   const navigate =
@@ -20,24 +20,56 @@ export default function Login() {
     setIsLoading,
   ] = useState(false);
 
-  const handleSubmit = async (formData) => {
+  const handleSubmit = async (
+    formData,
+  ) => {
     setIsLoading(true);
 
     try {
-      const { data: userData, error: userError } = await signIn(formData.email, formData.password);
-      if (userError) throw userError;
+      const {
+        data: userData,
+        error: userError,
+      } = await signIn(
+        formData.email,
+        formData.password,
+      );
+      if (userError)
+        throw userError;
 
-      const { data, error } = await supabase.from("profiles").select("*").eq("user_id", userData.user.id).single();
+      const { data, error } =
+        await supabase
+          .from("profiles")
+          .select("*")
+          .eq(
+            "user_id",
+            userData.user.id,
+          )
+          .maybeSingle();
       if (error) throw error;
 
-      if (data.role === "acheteur") {
+      if (!data) {
+        throw new Error(
+          "Profil introuvable",
+        );
+      }
+
+      if (
+        data.role ===
+        "acheteur"
+      ) {
         navigate("/");
-        toast.success("Connexion réussie !");
-      } else if(data.role == "vendeur") {
+        toast.success(
+          "Connexion réussie !",
+        );
+      } else if (
+        data.role == "vendeur"
+      ) {
         navigate(
           "/seller/dashboard",
         );
-        toast.success("Connexion réussie !");
+        toast.success(
+          "Connexion réussie !",
+        );
       }
     } catch (error) {
       toast.error(

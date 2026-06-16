@@ -391,28 +391,30 @@ export default function CreateProfile() {
         return;
       }
 
+      if (
+        formData.accountType ===
+        "vendeur"
+      ) {
+        navigate(
+          "/seller/dashboard",
+        );
+        return;
+      }
+
       toast.success(
         "Profil créé avec succès !",
       );
 
       setFormData({
         name: "",
-        accountType:
-          "acheteur",
+        accountType: "acheteur",
         telephone: "",
         localisation: "",
       });
 
       setAvatar(null);
       console.log(data);
-      if (
-        data.role ===
-        "vendeur"
-      ) {
-        navigate(
-          "seller/dashboard",
-        );
-      }
+
       navigate("/");
     } catch (error) {
       toast.error(
