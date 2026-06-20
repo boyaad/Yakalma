@@ -144,11 +144,7 @@ function PlatDetail() {
           <p className="mb-6 text-muted-foreground">
             Ce plat n'existe pas ou n'est plus disponible.
           </p>
-          <Button
-            to="/plats"
-            variant="primary"
-            className="h-12 px-6"
-          >
+          <Button to="/plats" variant="primary" className="h-12 px-6">
             Retour au catalogue
           </Button>
         </div>
