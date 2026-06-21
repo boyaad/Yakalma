@@ -16,7 +16,20 @@ export async function getPlats() {
 }
 
 export async function getPlatById(id) {
-  return await supabase.from("plats").select("*").eq("id", id).single();
+  return await supabase
+    .from("plats")
+    .select(
+      `
+      *,
+      profiles (
+        nom_complet,
+        localisation,
+        avatar
+      )
+    `,
+    )
+    .eq("id", id)
+    .single();
 }
 
 export async function addPlat(platData) {
