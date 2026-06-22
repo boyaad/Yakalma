@@ -1,10 +1,5 @@
-const CATEGORIES = [
-  { id: "all", name: "Tous" },
-  { id: "moroccan", name: "Marocain" },
-  { id: "mediterranean", name: "Méditerranéen" },
-  { id: "oriental", name: "Oriental" },
-  { id: "desserts", name: "Desserts" },
-];
+import { useState, useEffect } from "react";
+import { getCategories } from "../../services/platService";
 
 export function CategoryTabs({
   dishes = [],
@@ -12,18 +7,30 @@ export function CategoryTabs({
   setSelectedCategory,
   setCurrentPage,
 }) {
-  const categories = CATEGORIES.map((category) => ({
-    ...category,
-    count:
-      category.id === "all"
-        ? dishes.length
-        : dishes.filter((dish) => dish.category === category.id).length,
-  }));
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    async function chargerCategories() {
+      const { data, error } = await getCategories();
+      if (!error) setCategories(data);
+    }
+    chargerCategories();
+  }, []);
+
+  // On construit la liste avec "Tous" en premier
+  const categoriesAvecTous = [
+    { id: "all", nom: "Tous", count: dishes.length },
+    ...categories.map((cat) => ({
+      id: cat.id,
+      nom: cat.nom,
+      count: dishes.filter((dish) => dish.category === cat.id).length,
+    })),
+  ];
 
   return (
     <div className="mb-6 overflow-x-auto pb-2">
       <div className="flex gap-3 min-w-max sm:min-w-0">
-        {categories.map((category) => (
+        {categoriesAvecTous.map((category) => (
           <button
             key={category.id}
             onClick={() => {
@@ -32,11 +39,11 @@ export function CategoryTabs({
             }}
             className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl transition-all font-medium whitespace-nowrap ${
               selectedCategory === category.id
-                ? "bg-primary  text-white shadow-md scale-105"
-                : "bg-white  hover:bg-white hover:border-primary/30"
+                ? "bg-primary text-white shadow-md scale-105"
+                : "bg-white hover:bg-white hover:border-primary/30"
             }`}
           >
-            {category.name}
+            {category.nom}
             <span className="ml-2 text-xs opacity-75">({category.count})</span>
           </button>
         ))}
