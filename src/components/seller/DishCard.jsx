@@ -34,7 +34,9 @@ export function DishCard({ dish, statusInfo, onDelete, onEdit }) {
         </div>
         <div className="flex items-center justify-between pt-3 border-t border-border-warm">
           <div>
-            <div className="text-2xl font-bold text-primary">{dish.prix}€</div>
+            <div className="text-2xl font-bold text-primary">
+              {dish.prix} FCFA
+            </div>
             <div className="text-xs text-muted-foreground">
               Rev: {dish.revenue}
             </div>

@@ -26,7 +26,7 @@ function CardPlat({
   rating = 5.0,
   reviewsCount = 0,
   price,
-  currency = "€",
+  currency = "FCFA",
   badgeText,
   badgeVariant = "nouveau",
   onOrder,

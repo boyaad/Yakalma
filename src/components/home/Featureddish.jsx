@@ -89,7 +89,9 @@ function FeaturedDishCard({ dish }) {
         </div>
 
         <div className="mt-auto flex items-center justify-between gap-4">
-          <span className="text-xl font-bold text-primary">{dish.price}€</span>
+          <span className="text-xl font-bold text-primary">
+            {dish.price} FCFA
+          </span>
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-foreground transition-colors group-hover:bg-primary group-hover:text-white">
             <ArrowRight className="h-5 w-5" />
           </span>

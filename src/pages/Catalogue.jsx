@@ -168,7 +168,7 @@ export default function Catalog() {
                 rating={dish.rating}
                 reviewsCount={dish.reviews}
                 price={dish.price}
-                currency="€"
+                currency=" FCFA"
                 badgeText={dish.badge}
                 badgeVariant={
                   dish.badge?.toLowerCase() === "populaire"
