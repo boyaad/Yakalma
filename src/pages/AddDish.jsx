@@ -211,7 +211,7 @@ export default function AddDish() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Input
                   id="price"
-                  label="Prix (€)"
+                  label="Prix (FCFA)"
                   required
                   type="number"
                   step="0.01"
