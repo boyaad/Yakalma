@@ -1,13 +1,11 @@
 import { Link } from "react-router-dom";
 import { Menu, Plus } from "lucide-react";
-import { useAuth } from "../../context/AuthContext";
 
 export function DashboardHeader({
   activeSection,
   sidebarOpen,
   setSidebarOpen,
 }) {
-  const { user, profile } = useAuth();
   const getSectionTitle = () => {
     if (activeSection === "dashboard") return "Tableau de bord";
     if (activeSection === "dishes") return "Mes plats";
@@ -35,7 +33,7 @@ export function DashboardHeader({
                 {getSectionTitle()}
               </h1>
               <p className="text-muted-foreground text-xs sm:text-sm lg:text-base truncate">
-                Bienvenue {profile?.nom_complet} !
+                Bienvenue Fatima !
               </p>
             </div>
           </div>
@@ -62,7 +60,7 @@ export function DashboardHeader({
               <div className="flex items-center gap-1.5 sm:gap-3">
                 <div className="hidden sm:block text-right">
                   <div className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
-                    {profile?.nom_complet || "Kaniel Outis"}
+                    Fatima K.
                   </div>
                   <div className="text-xs text-muted-foreground">
                     Chef vendeur
@@ -70,8 +68,8 @@ export function DashboardHeader({
                 </div>
                 <div className="w-9 h-9 sm:w-11 sm:h-11 bg-primary rounded-full flex items-center justify-center overflow-hidden ring-2 ring-transparent group-hover:ring-primary/20 transition-all">
                   <img
-                    src={profile?.avatar || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80"}
-                    alt={profile?.nom_complet || "Kaniel Outis"}
+                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80"
+                    alt="Fatima K."
                     className="w-full h-full object-cover"
                   />
                 </div>

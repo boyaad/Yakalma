@@ -56,7 +56,6 @@ export function ProfileSettings() {
             type="button"
             variant="ghost"
             className="bg-background-warm hover:bg-primary hover:text-white px-4 py-2 font-medium"
-            onClick={() => alert("Fonctionnalité de changement de mot de passe à implémenter")}
           >
             Changer le mot de passe
           </Button>

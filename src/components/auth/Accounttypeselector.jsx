@@ -3,20 +3,20 @@ import { ShoppingBag, ChefHat } from "lucide-react";
 export function AccountTypeSelector({ accountType, onChange }) {
   return (
     <div className="mb-6">
-      <label className="block mb-3 font-medium text-xl">Je suis</label>
+      <label className="block mb-3 font-medium">Je suis</label>
       <div className="grid grid-cols-2 gap-3">
         <button
           type="button"
-          onClick={() => onChange("acheteur")}
+          onClick={() => onChange("customer")}
           className={`group p-4 border-2 rounded-xl transition-all ${
-            accountType === "acheteur"
+            accountType === "customer"
               ? "bg-primary text-white border-primary shadow-lg scale-105"
               : "bg-white border-gray-100 hover:border-primary/30"
           }`}
         >
           <ShoppingBag
             className={`w-6 h-6 mx-auto mb-2 ${
-              accountType === "acheteur"
+              accountType === "customer"
                 ? "text-primary-foreground"
                 : "text-primary"
             }`}
@@ -27,16 +27,16 @@ export function AccountTypeSelector({ accountType, onChange }) {
 
         <button
           type="button"
-          onClick={() => onChange("vendeur")}
+          onClick={() => onChange("seller")}
           className={`group p-4 border-2 rounded-xl transition-all ${
-            accountType === "vendeur"
+            accountType === "seller"
               ? "bg-primary text-white border-primary shadow-lg scale-105"
               : "bg-white border-gray-100 hover:border-primary/30"
           }`}
         >
           <ChefHat
             className={`w-6 h-6 mx-auto mb-2 ${
-              accountType === "vendeur"
+              accountType === "seller"
                 ? "text-primary-foreground"
                 : "text-primary"
             }`}

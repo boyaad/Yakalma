@@ -9,7 +9,7 @@ export function LoginQuickActions() {
         <p className="text-muted-foreground">
           Pas encore de compte ?{" "}
           <Link
-            to="/register"
+            to="/signup"
             className="text-primary font-semibold hover:underline"
           >
             Inscrivez-vous gratuitement

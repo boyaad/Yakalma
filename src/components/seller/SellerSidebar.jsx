@@ -40,7 +40,7 @@ export function SellerSidebar({
                   : "text-foreground hover:bg-muted/70 active:bg-primary active:text-white"
               }`}
             >
-              <item.icon className="w-5 h-5 shrink-0" />
+              <item.icon className="w-5 h-5 flex-shrink-0" />
               <span>{item.label}</span>
             </Link>
           ))}
@@ -52,7 +52,7 @@ export function SellerSidebar({
             onClick={onLogout}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-foreground hover:bg-muted/70 active:bg-primary active:text-white transition-all font-medium"
           >
-            <LogOut className="w-5 h-5 shrink-0" />
+            <LogOut className="w-5 h-5 flex-shrink-0" />
             <span>Déconnexion</span>
           </button>
         </div>

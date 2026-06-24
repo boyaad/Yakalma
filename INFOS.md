@@ -8,10 +8,10 @@ Yakalma est une plateforme web développée dans le cadre d'un projet de fin de 
 
 L'application permet :
 
-- Aux vendeurs de publier leurs plats faits maison
-- Aux acheteurs de rechercher et commander des plats
-- De gérer les avis et notations
-- De favoriser la visibilité des cuisiniers locaux
+* Aux vendeurs de publier leurs plats faits maison
+* Aux acheteurs de rechercher et commander des plats
+* De gérer les avis et notations
+* De favoriser la visibilité des cuisiniers locaux
 
 ---
 
@@ -181,46 +181,46 @@ chore(core): configuration Supabase
 
 Chef de projet & Architecte logiciel
 
-- Architecture React
-- Intégration Supabase
-- Gestion globale
-- Déploiement
-- Intégration finale
+* Architecture React
+* Intégration Supabase
+* Gestion globale
+* Déploiement
+* Intégration finale
 
 ## Cheikhou Mamou Ciss
 
-- Authentification
-- Gestion des profils utilisateurs
+* Authentification
+* Gestion des profils utilisateurs
 
 ## Famata Diallo
 
-- Gestion des plats
-- Catégories
-- Upload des images
+* Gestion des plats
+* Catégories
+* Upload des images
 
 ## Ibrahima Diagne
 
-- Commandes
-- Avis et notations
-- Notifications
+* Commandes
+* Avis et notations
+* Notifications
 
 ## Joseph Junior Diop Sagna
 
-- UI/UX
-- Intégration Figma
-- Responsive Design
+* UI/UX
+* Intégration Figma
+* Responsive Design
 
 ---
 
 # 📋 Règles du projet
 
-- Ne jamais travailler directement sur `main`.
-- Ne jamais développer directement sur `develop`.
-- Toujours travailler sur sa branche dédiée.
-- Faire des commits réguliers.
-- Tester avant chaque Push.
-- Utiliser des messages de commit clairs.
-- Passer par une Pull Request avant toute fusion.
+* Ne jamais travailler directement sur `main`.
+* Ne jamais développer directement sur `develop`.
+* Toujours travailler sur sa branche dédiée.
+* Faire des commits réguliers.
+* Tester avant chaque Push.
+* Utiliser des messages de commit clairs.
+* Passer par une Pull Request avant toute fusion.
 
 ---
 
@@ -228,7 +228,9 @@ Chef de projet & Architecte logiciel
 
 Projet académique réalisé dans le cadre du projet de fin de cycle.
 
+
 ---
+
 
 # 🛠️ Commandes Git utiles
 
@@ -319,7 +321,6 @@ Après une fusion, si Git signale un conflit :
 2. Rechercher les marqueurs :
 
 ```text
-
 ```
 
 3. Conserver la bonne version du code.

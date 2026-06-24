@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
-import { getPlats } from "../services/platService";
+import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
+
+import { allDishes } from "../data/Dishes";
 import { SearchBar } from "../components/categories/Searchbar";
 import { CategoryTabs } from "../components/categories/Categorytabs";
 import { FiltersBar } from "../components/categories/Filtersbar";
@@ -25,32 +26,6 @@ export default function Catalog() {
   const [sortBy, setSortBy] = useState("popular");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [dishes, setDishes] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function chargerPlats() {
-      const { data, error } = await getPlats();
-      console.log("DATA =", data);
-      console.log("ERROR =", error);
-      const platsTransformes = data.map((plat) => ({
-        id: plat.id,
-        name: plat.titre,
-        price: plat.prix,
-        image: plat.image_url,
-        category: plat.categorie_id,
-        chef: plat.profiles?.nom_complet || "Vendeur inconnu",
-        quartier: plat.profiles?.localisation || "",
-        rating: 0,
-        reviews: 0,
-        distance: 0,
-        badge: null,
-      }));
-      setDishes(platsTransformes);
-      setLoading(false);
-    }
-    chargerPlats();
-  }, []);
   const handleOrder = (dishId) => {
     navigate(`/plats/${dishId}`);
   };
@@ -64,7 +39,7 @@ export default function Catalog() {
   };
 
   // Filtrage
-  let filteredDishes = dishes.filter((dish) => {
+  let filteredDishes = allDishes.filter((dish) => {
     const matchesCategory =
       selectedCategory === "all" || dish.category === selectedCategory;
     const matchesSearch =
@@ -106,13 +81,6 @@ export default function Catalog() {
     startIndex,
     startIndex + ITEMS_PER_PAGE,
   );
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Chargement des plats...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen py-6 sm:py-8 px-4 sm:px-6 lg:px-8">
@@ -129,7 +97,7 @@ export default function Catalog() {
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
         <CategoryTabs
-          dishes={dishes}
+          dishes={allDishes}
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
           setCurrentPage={setCurrentPage}
@@ -168,7 +136,7 @@ export default function Catalog() {
                 rating={dish.rating}
                 reviewsCount={dish.reviews}
                 price={dish.price}
-                currency=" FCFA"
+                currency="€"
                 badgeText={dish.badge}
                 badgeVariant={
                   dish.badge?.toLowerCase() === "populaire"

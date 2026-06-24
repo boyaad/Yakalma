@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   UtensilsCrossed,
@@ -19,10 +19,6 @@ import { QuickActions } from "../components/seller/QuickActions";
 import { PerformanceCard } from "../components/seller/PerformanceCard";
 import { DishCard } from "../components/seller/DishCard";
 import { OrderCard } from "../components/seller/OrderCard";
-import { signOut } from "../services/authService";
-import { useSeller } from "../context/SellerInfoContext";
-import { deletePlat } from "../services/platService";
-import { toast } from "react-toastify";
 
 const stats = [
   {
@@ -153,21 +149,6 @@ const menuItems = [
 ];
 
 export default function SellerDashboard() {
-  const { plats, platsLoading } = useSeller();
-  const handleDelete = async (id) => {
-    const { error } = await deletePlat(id);
-    if (error) {
-      console.error("Erreur suppression:", error);
-      toast.error("Erreur lors de la suppression");
-      return;
-    }
-    // Rafraîchir la page pour voir les changements
-    window.location.reload();
-  };
-  const handleEdit = (id) => {
-    navigate(`/seller/edit-dish/${id}`);
-  };
-
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -208,12 +189,7 @@ export default function SellerDashboard() {
   };
 
   const handleLogout = () => {
-    const { error } = signOut();
-    if (!error) {
-      navigate("/login");
-    } else {
-      console.error("Erreur lors de la déconnexion :", error);
-    }
+    navigate("/login");
   };
 
   return (
@@ -237,20 +213,20 @@ export default function SellerDashboard() {
         />
 
         {/* Content Area */}
-        <div className="p-4 sm:p-6 max-w-400 mx-auto">
+        <div className="p-4 sm:p-6 max-w-[1600px] mx-auto">
           {/* Dashboard Section */}
           {activeSection === "dashboard" && (
             <div className="space-y-6">
               {/* Stats Grid */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {stats.map((stat, index) => (
-                  <CardStat
-                    key={index}
-                    label={stat.label}
-                    value={stat.value}
-                    icon={stat.icon}
-                    change={stat.change}
-                    trend={stat.trend}
+                  <CardStat 
+                    key={index} 
+                    label={stat.label} 
+                    value={stat.value} 
+                    icon={stat.icon} 
+                    change={stat.change} 
+                    trend={stat.trend} 
                   />
                 ))}
               </div>
@@ -278,31 +254,13 @@ export default function SellerDashboard() {
           {/* Dishes Section */}
           {activeSection === "dishes" && (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-              {platsLoading ? (
-                <div className="flex justify-center items-center border">
-                  <p className="text-center">Chargement des plats...</p>
-                </div>
-              ) : plats.length !== 0 ? (
-                plats.map((dish) => (
-                  <DishCard
-                    key={dish.id}
-                    dish={dish}
-                    statusInfo={getStatusInfo(dish.status)}
-                    onDelete={handleDelete}
-                    onEdit={handleEdit}
-                  />
-                ))
-              ) : (
-                <div className="w-full mx-auto flex flex-col justify-center items-center gap-2 text-center">
-                  <p>Vous n'avez ajouté aucun plat !</p>
-                  <Link
-                    to="/seller/add-dish"
-                    className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent"
-                  >
-                    Ajouter un plat
-                  </Link>
-                </div>
-              )}
+              {dishes.map((dish) => (
+                <DishCard
+                  key={dish.id}
+                  dish={dish}
+                  statusInfo={getStatusInfo(dish.status)}
+                />
+              ))}
             </div>
           )}
 

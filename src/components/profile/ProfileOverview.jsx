@@ -10,7 +10,6 @@ export function ProfileOverview({
   orders,
   stats,
 }) {
-  // A supprimer une fois que les données réelles seront intégrées
   const lastOrder = orders[0];
   const mainAddress = addresses[0];
   const favoriteDish = favoriteDishes[0];

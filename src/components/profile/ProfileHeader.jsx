@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Home, Menu, ShoppingBag } from "lucide-react";
+import { Menu, ShoppingBag } from "lucide-react";
 
 const sectionTitles = {
   overview: "Mon espace client",
@@ -44,9 +44,7 @@ export function ProfileHeader({ activeSection, setSidebarOpen, user }) {
               Commander
             </Link>
 
-            <Link to={"/"} className="size-12 flex justify-center items-center rounded-full hover:bg-slate-100" title="Retourner à la page acceuil">
-              <Home color="black" size={24} />
-            </Link>
+            
           </div>
         </div>
       </div>

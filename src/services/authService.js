@@ -4,20 +4,6 @@ export async function signUp(email, password) {
   return await supabase.auth.signUp({
     email,
     password,
-    options: {
-      emailRedirectTo: "http://localhost:5173/create-profile"
-    }
-  });
-}
-
-export async function createProfile(nom_complet, role, user_id, avatar, telephone, localisation) {
-  return await supabase.from("profiles").insert({
-    nom_complet,
-    role,
-    user_id,
-    avatar,
-    telephone,
-    localisation,
   });
 }
 
@@ -35,4 +21,3 @@ export async function signOut() {
 export async function resetPassword(email) {
   return await supabase.auth.resetPasswordForEmail(email);
 }
-

@@ -20,8 +20,6 @@ import { ProfileOverview } from "../components/profile/ProfileOverview";
 import { ProfileSettings } from "../components/profile/ProfileSettings";
 import { ProfileSidebar } from "../components/profile/ProfileSidebar";
 import { allDishes } from "../data/Dishes";
-import { signOut } from "../services/authService";
-import { useUserInfo } from "../context/UserInfoContext";
 
 const user = {
   firstName: "Marie",
@@ -86,7 +84,6 @@ const menuItems = [
 ];
 
 export default function Profile() {
-  const { commandes, favorites, addresses: userInfoAddresses } = useUserInfo();
   const [activeSection, setActiveSection] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
@@ -95,13 +92,13 @@ export default function Profile() {
   const stats = [
     {
       label: "Commandes",
-      value: commandes?.length,
+      value: orders.length,
       icon: ShoppingBag,
       badge: "+1",
     },
     {
       label: "Favoris",
-      value: favorites?.length,
+      value: favoriteDishes.length,
       icon: Heart,
     },
     {
@@ -111,18 +108,13 @@ export default function Profile() {
     },
     {
       label: "Adresses",
-      value: userInfoAddresses?.length,
+      value: addresses.length,
       icon: MapPin,
     },
   ];
 
   const handleLogout = () => {
-    const { error } = signOut();
-    if (!error) {
-      navigate("/login");
-    } else {
-      console.error("Erreur lors de la déconnexion :", error);
-    }
+    navigate("/login");
   };
 
   return (
@@ -144,21 +136,21 @@ export default function Profile() {
           user={user}
         />
 
-        <div className="mx-auto max-w-400 p-4 sm:p-6">
+        <div className="mx-auto max-w-[1600px] p-4 sm:p-6">
           {activeSection === "overview" && (
             <ProfileOverview
               addresses={addresses}
+              favoriteDishes={favoriteDishes}
               onSectionChange={setActiveSection}
               orders={orders}
               stats={stats}
-              favoriteDishes={favoriteDishes}
             />
           )}
 
           {activeSection === "profile" && <ProfileForm user={user} />}
-          {activeSection === "orders" && <OrderHistory />}
+          {activeSection === "orders" && <OrderHistory orders={orders} />}
           {activeSection === "favorites" && (
-            <FavoriteDishes />
+            <FavoriteDishes dishes={favoriteDishes} />
           )}
           {activeSection === "addresses" && (
             <AddressBook addresses={addresses} />
