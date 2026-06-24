@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getPlats } from "../services/platService";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { FALLBACK_PLATS } from "../data/plats";
 
 import { SearchBar } from "../components/categories/Searchbar";
 import { CategoryTabs } from "../components/categories/Categorytabs";
@@ -19,7 +20,7 @@ export default function Catalog() {
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
-  const [priceRange, setPriceRange] = useState([0, 50]);
+  const [priceRange, setPriceRange] = useState([0, 10000]);
   const [selectedRating, setSelectedRating] = useState(0);
   const [maxDistance, setMaxDistance] = useState(10);
   const [sortBy, setSortBy] = useState("popular");
@@ -30,33 +31,60 @@ export default function Catalog() {
 
   useEffect(() => {
     async function chargerPlats() {
-      const { data, error } = await getPlats();
-      console.log("DATA =", data);
-      console.log("ERROR =", error);
-      const platsTransformes = data.map((plat) => ({
-        id: plat.id,
-        name: plat.titre,
-        price: plat.prix,
-        image: plat.image_url,
-        category: plat.categorie_id,
-        chef: plat.profiles?.nom_complet || "Vendeur inconnu",
-        quartier: plat.profiles?.localisation || "",
-        rating: 0,
-        reviews: 0,
-        distance: 0,
-        badge: null,
-      }));
-      setDishes(platsTransformes);
-      setLoading(false);
+      try {
+        const { data, error } = await getPlats();
+        console.log("DATA =", data);
+        console.log("ERROR =", error);
+
+        let rawPlats = data;
+        if (error || !data || data.length === 0) {
+          console.warn("Utilisation des plats de secours (offline)");
+          rawPlats = FALLBACK_PLATS;
+        }
+
+        const platsTransformes = rawPlats.map((plat) => ({
+          id: plat.id,
+          name: plat.titre,
+          price: Number(plat.prix),
+          image: plat.image_url,
+          category: plat.categorie_id,
+          chef: plat.profiles?.nom_complet || "Vendeur inconnu",
+          quartier: plat.profiles?.localisation || "",
+          rating: plat.rating ?? 0,
+          reviews: plat.reviews ?? 0,
+          distance: 0,
+          badge: null,
+        }));
+        setDishes(platsTransformes);
+      } catch (err) {
+        console.error("Erreur de chargement, utilisation des données offline:", err);
+        const platsTransformes = FALLBACK_PLATS.map((plat) => ({
+          id: plat.id,
+          name: plat.titre,
+          price: Number(plat.prix),
+          image: plat.image_url,
+          category: plat.categorie_id,
+          chef: plat.profiles?.nom_complet || "Vendeur inconnu",
+          quartier: plat.profiles?.localisation || "",
+          rating: plat.rating ?? 0,
+          reviews: plat.reviews ?? 0,
+          distance: 0,
+          badge: null,
+        }));
+        setDishes(platsTransformes);
+      } finally {
+        setLoading(false);
+      }
     }
     chargerPlats();
   }, []);
+
   const handleOrder = (dishId) => {
     navigate(`/plats/${dishId}`);
   };
 
   const resetFilters = () => {
-    setPriceRange([0, 50]);
+    setPriceRange([0, 10000]);
     setSelectedRating(0);
     setMaxDistance(10);
     setSelectedCategory("all");

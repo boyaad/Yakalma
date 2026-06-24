@@ -14,10 +14,11 @@ export function FiltersBar({
   sortBy,
   setSortBy,
   resetFilters,
+  currency = " FCFA",
 }) {
   const hasActiveFilters =
     priceRange[0] > 0 ||
-    priceRange[1] < 50 ||
+    priceRange[1] < 10000 ||
     selectedRating > 0 ||
     maxDistance < 10;
 
@@ -79,12 +80,13 @@ export function FiltersBar({
             {/* Price Range */}
             <div>
               <label className="block text-sm font-medium mb-3">
-                Prix: {priceRange[0]}€ - {priceRange[1]}€
+                Prix: {priceRange[0]}{currency} - {priceRange[1]}{currency}
               </label>
               <input
                 type="range"
                 min="0"
-                max="50"
+                max="10000"
+                step="500"
                 value={priceRange[1]}
                 onChange={(e) =>
                   setPriceRange([priceRange[0], Number(e.target.value)])
