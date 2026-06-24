@@ -13,11 +13,13 @@ function MainLayout() {
     pathname === "/profile" ||
     pathname === "/panier" ||
     pathname === "/favoris" ||
+    pathname === "/create-profile" ||
     pathname === "/plats" ||
     /^\/plats\/[^/]+$/.test(pathname) ||
     pathname.startsWith("/seller/");
-  const hideNavbar =
+    const hideNavbar =
     pathname === "/login" ||
+    pathname === "/create-profile" ||
     pathname === "/register" ||
     pathname === "/dashboard" ||
     pathname === "/SellerDashboard" ||
@@ -28,7 +30,7 @@ function MainLayout() {
     <div className="min-h-screen flex flex-col bg-background-warm">
       {!hideNavbar && <Navbar />}
 
-      <main className="flex-grow">
+      <main className="grow">
         <Outlet />
       </main>
 

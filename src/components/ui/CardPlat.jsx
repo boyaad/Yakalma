@@ -4,7 +4,7 @@ import Badge from "./Badge";
 
 /**
  * Reusable CardPlat (Dish Card) component matching Yakalma Design System
- * 
+ *
  * @param {Object} props
  * @param {string} props.id - Dish identifier
  * @param {string} props.image - URL of the dish image
@@ -26,7 +26,7 @@ function CardPlat({
   rating = 5.0,
   reviewsCount = 0,
   price,
-  currency = "€",
+  currency = "FCFA",
   badgeText,
   badgeVariant = "nouveau",
   onOrder,
@@ -71,10 +71,10 @@ function CardPlat({
           <h4 className="font-poppins font-semibold text-lg text-foreground mb-1 line-clamp-1 group-hover:text-primary transition-colors">
             {title}
           </h4>
-          
+
           {/* Chef info */}
           <p className="font-poppins text-sm text-muted-foreground mb-3">
-            Par <span className="font-medium text-foreground/80">{chefName}</span>
+            <span className="font-medium text-foreground/80">{chefName}</span>
           </p>
 
           {/* Rating */}
@@ -95,7 +95,9 @@ function CardPlat({
             <span className="font-poppins font-bold text-2xl text-primary">
               {price}
             </span>
-            <span className="font-poppins text-sm text-primary font-bold ml-0.5">{currency}</span>
+            <span className="font-poppins text-sm text-primary font-bold ml-0.5">
+              {currency}
+            </span>
           </div>
 
           <button

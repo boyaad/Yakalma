@@ -76,7 +76,7 @@ export function DishCard({ dish, isFavorite, onToggleFavorite }) {
             <span className="text-sm">{dish.distance} km</span>
           </div>
           <span className="text-lg font-semibold text-primary">
-            {dish.price}€
+            {dish.price} FCFA
           </span>
         </div>
       </div>
