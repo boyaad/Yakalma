@@ -1,85 +1,94 @@
 import { Link } from "react-router-dom";
-import { allDishes } from "../../data/Dishes";
 import { supabase } from "../../services/supabase";
 import { useEffect, useState } from "react";
+import { FALLBACK_PLATS, FALLBACK_CATEGORIES } from "../../data/plats";
 
-const CATEGORY_METADATA = [
-  {
-    id: "moroccan",
-    name: "Marocain",
-    image:
-      "https://images.unsplash.com/photo-1574484284002-952d92456975?w=800&q=80",
-  },
-  {
-    id: "mediterranean",
-    name: "Méditerranéen",
-    image:
-      "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=800&q=80",
-  },
-  {
-    id: "oriental",
-    name: "Oriental",
-    image:
-      "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=800&q=80",
-  },
-  {
-    id: "desserts",
-    name: "Desserts",
-    image:
-      "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=800&q=80",
-  },
-];
+// Images correspondant exactement aux catégories sénégalaises
+const IMAGES_PAR_CATEGORIE = {
+  // Catégories BDD réelle
+  "Plat principal":
+    "https://images.unsplash.com/photo-1665332195309-9d75071138f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkZWxpY2lvdXMlMjByaWNlJTIwZmlzaCUyMG1lYWx8ZW58MXx8fHwxNzgwNTg0MTgxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+  "Thiéboudienne Rouge":
+    "https://images.unsplash.com/photo-1665332195309-9d75071138f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkZWxpY2lvdXMlMjByaWNlJTIwZmlzaCUyMG1lYWx8ZW58MXx8fHwxNzgwNTg0MTgxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+  "Yassa poulet":
+    "https://images.unsplash.com/photo-1665400808116-f0e6339b7e9a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzZW5lZ2FsZXNlJTIwZm9vZCUyMHlhc3NhJTIwY2hpY2tlbnxlbnwxfHx8fDE3ODA1ODQxNzd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+  "Mafé":
+    "https://images.unsplash.com/photo-1608500218861-01091cdc501e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cmFkaXRpb25hbCUyMHN0ZXclMjBtZWF0JTIwdmVnZXRhYmxlc3xlbnwxfHx8fDE3ODA1ODQxODN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+  "Desserts":
+    "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=800&q=80",
+  "Jus locaux":
+    "https://images.unsplash.com/photo-1546173159-315724a31696?w=800&q=80",
 
-export function Categories({ dishes = allDishes }) {
+  // Catégories fallback
+  "Thiéboudienne":
+    "https://images.unsplash.com/photo-1665332195309-9d75071138f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkZWxpY2lvdXMlMjByaWNlJTIwZmlzaCUyMG1lYWx8ZW58MXx8fHwxNzgwNTg0MTgxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+  "Yassa":
+    "https://images.unsplash.com/photo-1665400808116-f0e6339b7e9a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzZW5lZ2FsZXNlJTIwZm9vZCUyMHlhc3NhJTIwY2hpY2tlbnxlbnwxfHx8fDE3ODA1ODQxNzd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+  "Mafé / Domoda":
+    "https://images.unsplash.com/photo-1608500218861-01091cdc501e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cmFkaXRpb25hbCUyMHN0ZXclMjBtZWF0JTIwdmVnZXRhYmxlc3xlbnwxfHx8fDE3ODA1ODQxODN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+  "Grillades":
+    "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxncmlsbGVkJTIwY2hpY2tlbiUyMHJpY2UlMjB2ZWdldGFibGVzfGVufDF8fHx8MTc4MDU2NTMxOHww&ixlib=rb-4.1.0&q=80&w=1080",
+  "Poisson":
+    "https://images.unsplash.com/photo-1548704087-b11dab0fbec0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmllZCUyMGZpc2glMjBwbGFudGFpbnMlMjBtZWFsfGVufDF8fHx8MTc4MDU4NDE4M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+};
+
+const IMAGE_DEFAUT =
+  "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&q=80";
+
+export function Categories() {
   const [categories, setCategories] = useState([]);
   const [vraisPlats, setVraisPlats] = useState([]);
 
+  // 1. Charger les plats
   useEffect(() => {
     async function chargerPlats() {
-      const { data } = await supabase.from("plats").select("*");
-      if (data) setVraisPlats(data);
+      try {
+        const { data, error } = await supabase.from("plats").select("*");
+        if (error || !data || data.length === 0) {
+          setVraisPlats(FALLBACK_PLATS);
+        } else {
+          setVraisPlats(data);
+        }
+      } catch (err) {
+        setVraisPlats(FALLBACK_PLATS);
+      }
     }
     chargerPlats();
   }, []);
 
-  async function getCategories() {
-    let { data, error } = await supabase.from("categories").select("*");
+  // 2. Charger les catégories une fois les plats disponibles
+  useEffect(() => {
+    if (vraisPlats.length === 0) return;
 
-    if (data) {
-      const imagesParCategorie = {
-        Thiéb:
-          "https://images.unsplash.com/photo-1574484284002-952d92456975?w=800&q=80",
-        Yassa:
-          "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=800&q=80",
-        Mafé: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=800&q=80",
-        Desserts:
-          "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=800&q=80",
-        "Jus locaux":
-          "https://images.unsplash.com/photo-1546173159-315724a31696?w=800&q=80",
-      };
+    async function chargerCategories() {
+      let rawCategories = [];
+      try {
+        const { data, error } = await supabase.from("categories").select("*");
+        if (error || !data || data.length === 0) {
+          rawCategories = FALLBACK_CATEGORIES;
+        } else {
+          rawCategories = data;
+        }
+      } catch (err) {
+        rawCategories = FALLBACK_CATEGORIES;
+      }
 
-      const categoriesAvecCount = data.map((cat) => ({
+      // On associe l'image correcte + le nombre de plats pour chaque catégorie
+      const avecDetails = rawCategories.map((cat) => ({
         ...cat,
-        image:
-          imagesParCategorie[cat.nom] ||
-          "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&q=80",
-        count: vraisPlats.filter((dish) => dish.categorie_id === cat.id).length,
+        image: IMAGES_PAR_CATEGORIE[cat.nom] || IMAGE_DEFAUT,
+        count: vraisPlats.filter((p) => p.categorie_id === cat.id).length,
       }));
 
-      setCategories(categoriesAvecCount);
+      // On n'affiche que les catégories qui ont au moins 1 plat
+      setCategories(avecDetails.filter((cat) => cat.count > 0));
     }
-  }
 
-  useEffect(() => {
-    if (vraisPlats.length > 0) {
-      getCategories();
-    }
+    chargerCategories();
   }, [vraisPlats]);
 
-  const Placeholder = CATEGORY_METADATA.map((category) => ({
-    ...category,
-    count: vraisPlats.filter((dish) => dish.category === category.id).length,
-  }));
+  // Pas encore chargé
+  if (categories.length === 0) return null;
 
   return (
     <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-white">
@@ -90,52 +99,28 @@ export function Categories({ dishes = allDishes }) {
             Découvrez une variété de cuisines authentiques
           </p>
         </div>
+
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {categories.length > 0
-            ? categories.map((category) => (
-                <Link
-                  key={category.id}
-                  to={`/plats?category=${category.id}`}
-                  className="group relative overflow-hidden rounded-2xl aspect-square shadow-md hover:shadow-xl transition-all"
-                >
-                  <img
-                    src={category.image}
-                    alt={category.nom}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
-                  <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
-                    <h3 className="text-lg sm:text-xl font-semibold mb-1">
-                      {category.nom}
-                    </h3>
-                    <p className="text-sm text-white/80">
-                      {category.count} plats
-                    </p>
-                  </div>
-                </Link>
-              ))
-            : Placeholder.map((category) => (
-                <Link
-                  key={category.id}
-                  to={`/plats?category=${category.id}`}
-                  className="group relative overflow-hidden rounded-2xl aspect-square shadow-md hover:shadow-xl transition-all"
-                >
-                  <img
-                    src={category.image}
-                    alt={category.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
-                  <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
-                    <h3 className="text-lg sm:text-xl font-semibold mb-1">
-                      {category.name}
-                    </h3>
-                    <p className="text-sm text-white/80">
-                      {category.count} plats
-                    </p>
-                  </div>
-                </Link>
-              ))}
+          {categories.map((category) => (
+            <Link
+              key={category.id}
+              to={`/plats?category=${category.id}`}
+              className="group relative overflow-hidden rounded-2xl aspect-square shadow-md hover:shadow-xl transition-all"
+            >
+              <img
+                src={category.image}
+                alt={category.nom}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
+                <h3 className="text-lg sm:text-xl font-semibold mb-1">
+                  {category.nom}
+                </h3>
+                <p className="text-sm text-white/80">{category.count} plat{category.count > 1 ? "s" : ""}</p>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </section>

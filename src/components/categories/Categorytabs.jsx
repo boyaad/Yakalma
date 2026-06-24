@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { getCategories } from "../../services/platService";
+import { FALLBACK_CATEGORIES } from "../../data/plats";
 
 export function CategoryTabs({
   dishes = [],
@@ -11,20 +12,34 @@ export function CategoryTabs({
 
   useEffect(() => {
     async function chargerCategories() {
-      const { data, error } = await getCategories();
-      if (!error) setCategories(data);
+      try {
+        const { data, error } = await getCategories();
+        if (!error && data && data.length > 0) {
+          setCategories(data);
+        } else {
+          setCategories(FALLBACK_CATEGORIES);
+        }
+      } catch (err) {
+        setCategories(FALLBACK_CATEGORIES);
+      }
     }
     chargerCategories();
   }, []);
 
-  // On construit la liste avec "Tous" en premier
+  // On construit la liste des catégories avec leur nombre de plats
+  const categoriesAvecCount = categories.map((cat) => ({
+    id: cat.id,
+    nom: cat.nom,
+    count: dishes.filter((dish) => dish.category === cat.id).length,
+  }));
+
+  // On garde uniquement les catégories qui ont au moins 1 plat
+  const categoriesActives = categoriesAvecCount.filter((cat) => cat.count > 0);
+
+  // On ajoute "Tous" en premier (toujours visible)
   const categoriesAvecTous = [
     { id: "all", nom: "Tous", count: dishes.length },
-    ...categories.map((cat) => ({
-      id: cat.id,
-      nom: cat.nom,
-      count: dishes.filter((dish) => dish.category === cat.id).length,
-    })),
+    ...categoriesActives,
   ];
 
   return (

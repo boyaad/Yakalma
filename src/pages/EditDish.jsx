@@ -11,6 +11,7 @@ import {
   uploadImagePlat,
   getCategories,
 } from "../services/platService";
+import { FALLBACK_CATEGORIES } from "../data/plats";
 
 function dataURLtoFile(dataUrl, nomFichier) {
   const [entete, base64] = dataUrl.split(",");
@@ -65,8 +66,17 @@ export default function EditDish() {
 
   useEffect(() => {
     async function chargerCategories() {
-      const { data, error } = await getCategories();
-      if (!error) setCategories(data);
+      try {
+        const { data, error } = await getCategories();
+        if (!error && data && data.length > 0) {
+          setCategories(data);
+        } else {
+          setCategories(FALLBACK_CATEGORIES);
+        }
+      } catch (err) {
+        console.error("Erreur catégories, utilisation du fallback:", err);
+        setCategories(FALLBACK_CATEGORIES);
+      }
     }
     chargerCategories();
   }, []);
