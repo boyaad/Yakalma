@@ -1,5 +1,7 @@
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
+import { Link } from "react-router-dom";
+import { useUserInfo } from "../../context/UserInfoContext";
 
 const statusLabels = {
   delivered: { text: "Livré", color: "bg-success/10 text-success" },
@@ -24,10 +26,10 @@ function OrderCard({ order }) {
           <p className="text-sm text-muted-foreground">
             {order.date} • {order.items} articles
           </p>
-          <p className="mt-2 text-sm text-muted-foreground">{order.summary}</p>
+          <p className="mt-2 text-sm text-muted-foreground">{order.summary || "Voir les détails"}</p>
         </div>
         <Badge
-          variant={getBadgeVariant(order.status)}
+          variant={getBadgeVariant(order.order_status)}
           className="normal-case tracking-normal text-sm font-normal px-3 py-1"
         >
           {statusInfo.text}
@@ -44,7 +46,9 @@ function OrderCard({ order }) {
   );
 }
 
-export function OrderHistory({ orders }) {
+export function OrderHistory() {
+  const { commandes, commandesLoading: loading } = useUserInfo();
+
   return (
     <section className="rounded-2xl border border-border-warm bg-white p-6 sm:p-8">
       <div className="mb-8">
@@ -55,9 +59,26 @@ export function OrderHistory({ orders }) {
       </div>
 
       <div className="space-y-4">
-        {orders.map((order) => (
-          <OrderCard key={order.id} order={order} />
-        ))}
+        {
+          loading ? (
+            <p className="text-muted-foreground text-center">Chargement des commandes...</p>
+          ) :
+          commandes.length > 0 ? (
+            commandes.map((order) => (
+              <OrderCard key={order.id} order={order} />
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center gap-4">
+              <p className="text-muted-foreground">Vous n'avez pas encore de commandes.</p>
+              <Link
+                  to="/plats"
+                  className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent"
+              >
+                Explorer le catalogue
+              </Link>
+            </div>
+          )
+        }
       </div>
     </section>
   );

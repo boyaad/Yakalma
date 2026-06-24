@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, CheckCircle } from "lucide-react";
-
 import { ImageUploader } from "../components/addDishe/Imageuploader";
 import { IngredientManager } from "../components/addDishe/Ingredientmanager";
 import { AllergenSelector } from "../components/addDishe/Allergenselector";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
+import { useAuth } from "../context/AuthContext";
+import { addPlat, uploadImagePlat } from "../services/platService";
+import { toast } from "react-toastify";
+import { getCategories } from "../services/platService";
 
 const INITIAL_FORM = {
   name: "",
@@ -37,6 +40,16 @@ function validateField(name, value) {
       return "";
   }
 }
+function dataURLtoFile(dataUrl, nomFichier) {
+  const [entete, base64] = dataUrl.split(",");
+  const type = entete.match(/:(.*?);/)[1];
+  const binaire = atob(base64);
+  const tableau = new Uint8Array(binaire.length);
+  for (let i = 0; i < binaire.length; i++) {
+    tableau[i] = binaire.charCodeAt(i);
+  }
+  return new File([tableau], nomFichier, { type });
+}
 
 export default function AddDish() {
   const navigate = useNavigate();
@@ -48,6 +61,25 @@ export default function AddDish() {
   const [ingredients, setIngredients] = useState([]);
   const [allergens, setAllergens] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = useAuth();
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    async function chargerCategories() {
+      const { data, error } = await getCategories();
+
+      console.log("CATEGORIES =", data);
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      setCategories(data);
+    }
+
+    chargerCategories();
+  }, []);
 
   function handleChange(field, value) {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -64,35 +96,68 @@ export default function AddDish() {
     }));
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     const newErrors = {};
+
     Object.keys(formData).forEach((key) => {
       const error = validateField(key, formData[key]);
-      if (error) newErrors[key] = error;
+
+      if (error) {
+        newErrors[key] = error;
+      }
     });
 
-    if (!imagePreview) newErrors.image = "Une photo est requise";
-    if (ingredients.length === 0)
-      newErrors.ingredients = "Ajoutez au moins un ingrédient";
+    if (!imagePreview) {
+      newErrors.image = "Une photo est requise";
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      setTouched(
-        Object.keys(formData).reduce(
-          (acc, key) => ({ ...acc, [key]: true }),
-          {},
-        ),
-      );
       return;
     }
 
-    setIsSubmitting(true);
-    setTimeout(() => {
+    try {
+      setIsSubmitting(true);
+      const fichierImage = dataURLtoFile(
+        imagePreview,
+        `plat-${Date.now()}.jpg`,
+      );
+      const { url, error: uploadError } = await uploadImagePlat(fichierImage);
+
+      if (uploadError) {
+        console.error("Erreur upload image:", uploadError);
+        toast.error("Erreur lors de l'upload de l'image");
+        return;
+      }
+      const nouveauPlat = {
+        vendeur_id: user.id,
+        categorie_id: formData.category,
+        titre: formData.name,
+        description: formData.description,
+        prix: Number(formData.price),
+        image_url: url,
+        disponibilite: true,
+      };
+
+      const { error } = await addPlat(nouveauPlat);
+
+      if (error) {
+        console.error(error);
+        toast.error("Erreur lors de l'ajout du plat");
+        return;
+      }
+
+      toast.success("Plat ajouté avec succès !");
+
+      navigate("/seller/dishes");
+    } catch (error) {
+      console.error(error);
+      toast.error("Une erreur est survenue");
+    } finally {
       setIsSubmitting(false);
-      navigate("/SellerDashboard");
-    }, 1500);
+    }
   }
 
   return (
@@ -100,7 +165,7 @@ export default function AddDish() {
       <div className="max-w-4xl mx-auto">
         {/* Back link */}
         <Button
-          to="/SellerDashboard"
+          to="/seller/dashboard"
           variant="link"
           className="mb-6 font-medium text-primary p-0 h-auto"
         >
@@ -146,7 +211,7 @@ export default function AddDish() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Input
                   id="price"
-                  label="Prix (€)"
+                  label="Prix (FCFA)"
                   required
                   type="number"
                   step="0.01"
@@ -187,10 +252,12 @@ export default function AddDish() {
                 error={errors.category}
               >
                 <option value="">Sélectionner une catégorie</option>
-                <option value="moroccan">Marocain</option>
-                <option value="mediterranean">Méditerranéen</option>
-                <option value="oriental">Oriental</option>
-                <option value="desserts">Desserts</option>
+
+                {categories.map((categorie) => (
+                  <option key={categorie.id} value={categorie.id}>
+                    {categorie.nom}
+                  </option>
+                ))}
               </Input>
 
               <Input
@@ -226,7 +293,7 @@ export default function AddDish() {
               type="button"
               variant="secondary"
               className="flex-1 py-4"
-              onClick={() => navigate("/SellerDashboard")}
+              onClick={() => navigate("/seller/dashboard")}
             >
               Annuler
             </Button>

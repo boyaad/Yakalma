@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  ChefHat,
   LayoutDashboard,
   Mail,
   MapPin,
@@ -9,13 +8,18 @@ import {
   Phone,
   Star,
   UtensilsCrossed,
-  User,
+  User
 } from "lucide-react";
 
 import { DashboardHeader } from "../components/seller/DashboardHeader";
 import { SellerSidebar } from "../components/seller/SellerSidebar";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
+import { useAuth } from "../context/AuthContext";
+import { signOut } from "../services/authService";
+import { toast } from "react-toastify";
+import { supabase } from "../services/supabase";
+import { dishes } from "../data/adminDashboardData";
 
 const seller = {
   name: "Fatima K.",
@@ -62,11 +66,88 @@ function SellerStat({ icon: Icon, label, value }) {
 }
 
 export default function SellerProfile() {
+  const { user, profile } = useAuth();
+  const [formData, setFormData] = useState({
+    nom_complet: profile?.nom_complet || "",
+    email: user?.email || "",
+    telephone: profile?.telephone || "",
+    localisation: profile?.localisation || "",
+  });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // Handle profile update logic here
+    try {
+      const profileChanged =
+        formData.nom_complet !== profile.nom_complet ||
+        formData.telephone !== profile.telephone ||
+        formData.localisation !== profile.localisation;
+
+      const emailChanged =
+        formData.email !== user.email;
+
+      if (!profileChanged && !emailChanged) {
+        toast.info("Aucune modification détectée.");
+        return;
+      }
+
+      // Mise à jour du profil
+      if (profileChanged) {
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .update({
+            nom_complet: formData.nom_complet,
+            telephone: formData.telephone,
+            localisation: formData.localisation,
+          })
+          .eq("user_id", user.id);
+
+        if (profileError) throw profileError;
+      }
+
+      // Mise à jour de l'email
+      if (emailChanged) {
+        const { error: emailError } =
+          await supabase.auth.updateUser({
+            email: formData.email,
+            options: {
+              emailRedirectTo:
+                "http://localhost:5173/seller/dashboard",
+            },
+          });
+
+        if (emailError) throw emailError;
+
+        toast.info("Consultez votre mail et cliquez sur le lien de confirmation !");
+      }
+
+      if (profileChanged && !emailChanged) {
+        toast.success("Profil mis à jour avec succès !");
+      }
+
+      if (!profileChanged && emailChanged) {
+        toast.success("Demande de changement d'email envoyée !");
+      }
+
+      if (profileChanged && emailChanged) {
+        toast.success(
+          "Profil mis à jour et demande de changement d'email envoyée !"
+        );
+      }
+    } catch (error) {
+      toast.error("Erreur lors de la mise à jour du profil: " + error.message);
+    }
+  };
+
   const handleLogout = () => {
-    navigate("/login");
+    const { error } = signOut();
+    if (error) {
+      console.error("Error logging out:", error);
+    } else {
+      navigate("/login");
+    }
   };
 
   return (
@@ -86,23 +167,20 @@ export default function SellerProfile() {
           setSidebarOpen={setSidebarOpen}
         />
 
-        <div className="mx-auto max-w-[1600px] p-4 sm:p-6">
+        <div className="mx-auto max-w-400 p-4 sm:p-6">
           <div className="grid gap-6 lg:grid-cols-[360px_minmax(0,1fr)]">
             <section className="rounded-2xl border border-border-warm bg-white p-6">
               <div className="text-center">
                 <img
-                  src={seller.avatar}
-                  alt={seller.name}
+                  src={profile?.avatar || seller.avatar}
+                  alt={profile?.nom_complet || seller.name}
                   className="mx-auto mb-5 h-28 w-28 rounded-full object-cover ring-4 ring-primary/20"
                 />
                 <h1 className="text-2xl font-semibold text-foreground">
-                  {seller.name}
+                  {profile?.nom_complet || seller.name}
                 </h1>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {seller.role}
-                </p>
-                <p className="mt-4 rounded-xl bg-background-warm px-4 py-3 text-sm font-medium text-primary">
-                  {seller.speciality}
+                  {profile?.role || seller.role}
                 </p>
               </div>
             </section>
@@ -113,16 +191,16 @@ export default function SellerProfile() {
                 <SellerStat
                   icon={UtensilsCrossed}
                   label="Plats actifs"
-                  value={seller.dishesCount}
+                  value={dishes.length}
                 />
                 <SellerStat
                   icon={Package}
                   label="Commandes"
-                  value={seller.ordersCount}
+                  value={0}
                 />
               </div>
 
-              <section className="rounded-2xl border border-border-warm bg-white p-6 sm:p-8">
+              <form onSubmit={handleSubmit} className="rounded-2xl border border-border-warm bg-white p-6 sm:p-8">
                 <div className="mb-8">
                   <h2 className="text-2xl font-semibold">
                     Informations vendeur
@@ -136,63 +214,41 @@ export default function SellerProfile() {
                   <Input
                     id="seller-name"
                     label="Nom"
-                    defaultValue={seller.name}
+                    value={formData.nom_complet}
                     icon={<User className="h-5 w-5" />}
-                    readOnly
+                    onChange={(e) => setFormData({ ...formData, nom_complet: e.target.value })}
                   />
                   <Input
                     id="seller-email"
                     label="Email"
-                    type="email"
-                    defaultValue={seller.email}
+                    value={formData.email}
                     icon={<Mail className="h-5 w-5" />}
-                    readOnly
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   />
                   <Input
                     id="seller-phone"
                     label="Téléphone"
-                    type="tel"
-                    defaultValue={seller.phone}
+                    value={formData.telephone}
                     icon={<Phone className="h-5 w-5" />}
-                    readOnly
+                    onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
                   />
-                  <Input
-                    id="seller-speciality"
-                    label="Spécialité"
-                    defaultValue={seller.speciality}
-                    icon={<ChefHat className="h-5 w-5" />}
-                    readOnly
-                  />
-                </div>
-
-                <div className="mt-5">
                   <Input
                     id="seller-address"
                     label="Adresse de cuisine"
-                    defaultValue={seller.address}
+                    value={formData.localisation}
                     icon={<MapPin className="h-5 w-5" />}
-                    readOnly
-                  />
-                </div>
-
-                <div className="mt-5">
-                  <Input
-                    id="seller-bio"
-                    label="Présentation"
-                    as="textarea"
-                    rows={4}
-                    defaultValue={seller.bio}
+                    onChange={(e) => setFormData({ ...formData, localisation: e.target.value })}
                   />
                 </div>
 
                 <Button
-                  type="button"
+                  type="submit"
                   variant="primary"
                   className="mt-6 px-6 py-3"
                 >
                   Enregistrer les modifications
                 </Button>
-              </section>
+              </form>
             </div>
           </div>
         </div>
