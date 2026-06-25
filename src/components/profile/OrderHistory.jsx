@@ -114,7 +114,7 @@ function OrderCard({ order, onCancel, onHide, onDelete, isHidden, onRestore }) {
                 : "text-muted-foreground border-border-warm hover:bg-background-warm hover:text-foreground"
             } disabled:opacity-50`}
           >
-            {isHidden ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+            {isHidden ? <Eye className="h-4 w-4 cursor-pointer" /> : <EyeOff className="h-4 w-4 cursor-pointer" />}
           </button>
 
           {/* Bouton Supprimer (Icône uniquement, seulement pour les commandes terminées/annulées) */}
@@ -123,7 +123,7 @@ function OrderCard({ order, onCancel, onHide, onDelete, isHidden, onRestore }) {
               onClick={handleDelete}
               disabled={isDeleting}
               title="Supprimer définitivement"
-              className="p-2 text-error border border-error/20 bg-error/5 hover:bg-error/10 hover:border-error rounded-lg transition-all disabled:opacity-50"
+              className="p-2 text-error cursor-pointer border border-error/20 bg-error/5 hover:bg-error/10 hover:border-error rounded-lg transition-all disabled:opacity-50"
             >
               <Trash2 className="h-4 w-4" />
             </button>
