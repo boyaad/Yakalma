@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -140,20 +140,53 @@ export default function SellerDashboard() {
     },
   ];
 
-  // Adapter la liste de plats pour le tableau de bord
-  const formattedDishes = plats
-    ? plats.slice(0, 4).map((p) => ({
-        id: p.id,
-        name: p.titre,
-        image: p.image_url,
-        price: p.prix,
-        status: p.disponibilite ? "active" : "inactive",
-        orders: 0, // Optionnel
-        rating: 5.0,
-        reviews: 0,
-        revenue: "0 FCFA",
-      }))
+  // Enrichir les plats avec les ventes, revenus et avis calculés
+  const enrichedDishes = plats
+    ? plats.map((p) => {
+        let dishOrders = 0;
+        let dishRevenue = 0;
+        
+        if (commandes) {
+          commandes.forEach((order) => {
+            const isValidSale = order.order_status === "livre" || order.order_status === "ready";
+            if (isValidSale && order.ligne_commandes) {
+              order.ligne_commandes.forEach((line) => {
+                if (line.plat_id === p.id) {
+                  dishOrders += line.quantite || 0;
+                  dishRevenue += line.sous_total || (line.quantite * (line.plats?.prix || p.prix)) || 0;
+                }
+              });
+            }
+          });
+        }
+
+        const totalReviews = p.avis ? p.avis.length : 0;
+        const rating = totalReviews > 0
+          ? parseFloat((p.avis.reduce((sum, a) => sum + a.note, 0) / totalReviews).toFixed(1))
+          : 5.0;
+
+        return {
+          ...p,
+          orders: dishOrders,
+          rating: rating,
+          reviews: totalReviews,
+          revenue: `${dishRevenue} FCFA`,
+        };
+      })
     : [];
+
+  // Adapter la liste de plats pour le tableau de bord
+  const formattedDishes = enrichedDishes.slice(0, 4).map((d) => ({
+    id: d.id,
+    name: d.titre,
+    image: d.image_url,
+    price: d.prix,
+    status: d.disponibilite ? "active" : "inactive",
+    orders: d.orders,
+    rating: d.rating,
+    reviews: d.reviews,
+    revenue: d.revenue,
+  }));
 
   // Adapter les commandes pour l'UI des commandes récentes
   const recentOrdersList = commandes
@@ -242,8 +275,8 @@ export default function SellerDashboard() {
                 <div className="col-span-full py-12 text-center">
                   <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary" />
                 </div>
-              ) : plats && plats.length !== 0 ? (
-                plats.map((dish) => (
+              ) : enrichedDishes && enrichedDishes.length !== 0 ? (
+                enrichedDishes.map((dish) => (
                   <DishCard
                     key={dish.id}
                     dish={dish}

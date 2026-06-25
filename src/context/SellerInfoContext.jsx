@@ -31,7 +31,12 @@ export default function SellerInfoProvider({ children }) {
       setPlatsLoading(true);
       const { data, error } = await supabase
         .from("plats")
-        .select("*")
+        .select(`
+          *,
+          avis (
+            note
+          )
+        `)
         .eq("vendeur_id", user.id)
         .order("created_at", { ascending: false });
 
@@ -56,9 +61,12 @@ export default function SellerInfoProvider({ children }) {
           *,
           ligne_commandes (
             id,
+            plat_id,
             quantite,
+            sous_total,
             plats (
-              titre
+              titre,
+              prix
             )
           )
         `)
