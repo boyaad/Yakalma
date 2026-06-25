@@ -14,7 +14,7 @@ export function CtaSection() {
           des milliers de gourmets
         </p>
         <Button
-          to="/signup"
+          to="/register?role=chef"
           variant="white"
           className="px-8 py-4 shadow-lg hover:shadow-xl"
         >
