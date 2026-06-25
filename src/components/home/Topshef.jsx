@@ -119,7 +119,7 @@ export function TopChefs() {
           {/* Chargement */}
           {loading &&
             [...Array(3)].map((_, i) => (
-              <div key={i} className="w-full md:w-[calc(33.333%-1.5rem)] max-w-[380px]">
+              <div key={i} className="w-full md:w-[calc(33.333%-1.5rem)] max-w-95">
                 <SkeletonChefCard />
               </div>
             ))}
@@ -142,7 +142,7 @@ export function TopChefs() {
           {!loading &&
             !error &&
             chefs.map((chef) => (
-              <div key={chef.id} className="w-full md:w-[calc(33.333%-1.5rem)] max-w-[380px]">
+              <div key={chef.id} className="w-full md:w-[calc(33.333%-1.5rem)] max-w-95">
                 <ChefCard chef={chef} />
               </div>
             ))}
