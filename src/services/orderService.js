@@ -103,6 +103,38 @@ export async function updateOrderStatus(orderId, newStatus) {
   return data;
 }
 
+export async function deleteOrder(orderId) {
+  // Vérifier que la commande est bien terminée avant de la supprimer
+  const { data: order, error: fetchError } = await supabase
+    .from("commandes")
+    .select("order_status")
+    .eq("id", orderId)
+    .single();
+
+  if (fetchError) throw fetchError;
+
+  const terminatedStatuses = ["livre", "delivered", "annulee", "cancelled"];
+  if (!terminatedStatuses.includes(order.order_status)) {
+    throw new Error("Seules les commandes terminées ou annulées peuvent être supprimées.");
+  }
+
+  // Supprimer d'abord les lignes de commande associées
+  const { error: linesDeleteError } = await supabase
+    .from("ligne_commandes")
+    .delete()
+    .eq("commande_id", orderId);
+
+  if (linesDeleteError) throw linesDeleteError;
+
+  // Puis supprimer la commande
+  const { error: deleteError } = await supabase
+    .from("commandes")
+    .delete()
+    .eq("id", orderId);
+
+  if (deleteError) throw deleteError;
+}
+
 export async function cancelOrder(orderId) {
   // On ne peut annuler une commande que si son statut est 'en_attente'
   const { data: order, error: fetchError } = await supabase
@@ -119,6 +151,18 @@ export async function cancelOrder(orderId) {
   const { data, error } = await supabase
     .from("commandes")
     .update({ order_status: "annulee" })
+    .eq("id", orderId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function hideOrder(orderId, isHidden) {
+  const { data, error } = await supabase
+    .from("commandes")
+    .update({ masquee: isHidden })
     .eq("id", orderId)
     .select()
     .single();
