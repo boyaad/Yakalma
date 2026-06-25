@@ -14,7 +14,7 @@ function SkeletonCard() {
           <div key={i} className="w-4 h-4 bg-gray-200 rounded" />
         ))}
       </div>
-      <div className="flex-grow space-y-2 mb-6">
+      <div className="grow space-y-2 mb-6">
         <div className="h-3 bg-gray-200 rounded w-full" />
         <div className="h-3 bg-gray-200 rounded w-5/6" />
         <div className="h-3 bg-gray-200 rounded w-4/6" />
@@ -49,10 +49,10 @@ function TestimonialCard({ testimonial }) {
 
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">
-      <Quote className="w-10 h-10 text-primary/20 mb-4 flex-shrink-0" />
+      <Quote className="w-10 h-10 text-primary/20 mb-4 shrink-0" />
 
       {/* Étoiles */}
-      <div className="flex gap-1 mb-4 flex-shrink-0">
+      <div className="flex gap-1 mb-4 shrink-0">
         {[...Array(5)].map((_, i) => (
           <Star
             key={i}
@@ -66,7 +66,7 @@ function TestimonialCard({ testimonial }) {
       </div>
 
       {/* Texte — zone qui pousse le footer vers le bas */}
-      <div className="flex-grow mb-6">
+      <div className="grow mb-6">
         <p className="text-muted-foreground leading-relaxed">
           "{displayText}"
         </p>
@@ -81,15 +81,15 @@ function TestimonialCard({ testimonial }) {
       </div>
 
       {/* Footer auteur */}
-      <div className="flex items-center gap-3 pt-4 border-t border-border flex-shrink-0">
+      <div className="flex items-center gap-3 pt-4 border-t border-border shrink-0">
         {testimonial.avatar ? (
           <img
             src={testimonial.avatar}
             alt={testimonial.name}
-            className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+            className="w-12 h-12 rounded-full object-cover shrink-0"
           />
         ) : (
-          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
             <span className="text-primary font-semibold text-sm">{initials}</span>
           </div>
         )}
@@ -119,7 +119,7 @@ export function Testimonials() {
   }, []);
 
   return (
-    <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/5 to-accent/5">
+    <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-primary/5 to-accent/5">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl mb-4">
@@ -134,7 +134,7 @@ export function Testimonials() {
           {/* Chargement */}
           {loading &&
             [...Array(3)].map((_, i) => (
-              <div key={i} className="w-full md:w-[calc(33.333%-1.5rem)] max-w-[380px]">
+              <div key={i} className="w-full md:w-[calc(33.333%-1.5rem)] max-w-95">
                 <SkeletonCard />
               </div>
             ))}
@@ -157,7 +157,7 @@ export function Testimonials() {
           {!loading &&
             !error &&
             testimonials.map((testimonial) => (
-              <div key={testimonial.id} className="w-full md:w-[calc(33.333%-1.5rem)] max-w-[380px]">
+              <div key={testimonial.id} className="w-full md:w-[calc(33.333%-1.5rem)] max-w-95">
                 <TestimonialCard testimonial={testimonial} />
               </div>
             ))}

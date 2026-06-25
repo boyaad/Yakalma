@@ -7,7 +7,7 @@ function SkeletonChefCard() {
   return (
     <div className="bg-[#FFF8F2] rounded-2xl p-6 flex flex-col h-full animate-pulse">
       <div className="flex items-start gap-4 mb-4">
-        <div className="w-16 h-16 rounded-full bg-gray-200 flex-shrink-0" />
+        <div className="w-16 h-16 rounded-full bg-gray-200 shrink-0" />
         <div className="flex-1 space-y-2 pt-1">
           <div className="h-4 bg-gray-200 rounded w-32" />
           <div className="h-3 bg-gray-200 rounded w-24" />
@@ -40,15 +40,15 @@ function ChefCard({ chef }) {
   return (
     <div className="bg-[#FFF8F2] rounded-2xl p-6 hover:shadow-lg transition-all flex flex-col h-full">
       {/* En-tête : avatar + infos */}
-      <div className="flex items-start gap-4 mb-4 flex-shrink-0">
+      <div className="flex items-start gap-4 mb-4 shrink-0">
         {chef.avatar ? (
           <img
             src={chef.avatar}
             alt={chef.name}
-            className="w-16 h-16 rounded-full object-cover border-2 border-primary flex-shrink-0"
+            className="w-16 h-16 rounded-full object-cover border-2 border-primary shrink-0"
           />
         ) : (
-          <div className="w-16 h-16 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center flex-shrink-0">
+          <div className="w-16 h-16 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center shrink-0">
             <span className="text-primary font-semibold text-lg">{initials}</span>
           </div>
         )}
@@ -67,7 +67,7 @@ function ChefCard({ chef }) {
       </div>
 
       {/* Stats : plats + commandes */}
-      <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border flex-shrink-0 mt-auto">
+      <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border shrink-0 mt-auto">
         <div>
           <p className="text-2xl font-semibold text-primary">{chef.dishes}</p>
           <p className="text-xs text-muted-foreground">Plats</p>
