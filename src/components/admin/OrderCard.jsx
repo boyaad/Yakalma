@@ -22,7 +22,7 @@ export function OrderCard({ order }) {
       </Card.Content>
 
       <Card.Footer>
-        <div className="text-2xl font-bold text-primary">{order.total}€</div>
+        <div className="text-2xl font-bold text-primary">{order.total} FCFA</div>
         <Button variant="secondary" size="sm">
           <Eye className="w-3.5 h-3.5" />
           Détails

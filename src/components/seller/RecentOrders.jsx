@@ -30,7 +30,7 @@ export function RecentOrders({ orders, getStatusInfo }) {
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-sm">{order.id}</span>
                     <Badge
-                      variant={order.status}
+                      variant={statusInfo.variant || order.status}
                       className="normal-case tracking-normal px-2 py-0.5 font-medium"
                     >
                       {statusInfo.text}
@@ -42,7 +42,7 @@ export function RecentOrders({ orders, getStatusInfo }) {
                 </div>
               </div>
               <div className="text-right flex-shrink-0">
-                <div className="font-bold text-primary">{order.total}€</div>
+                <div className="font-bold text-primary">{order.total} FCFA</div>
                 <div className="text-xs text-muted-foreground">
                   {order.time}
                 </div>

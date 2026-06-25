@@ -14,7 +14,7 @@ export function DishAdminCard({ dish }) {
         rating={dish.rating || 0}
         reviewsCount={dish.orders}
         price={dish.price}
-        currency="€"
+        currency="FCFA"
         badgeText={statusInfo.text}
         badgeVariant={statusInfo.variant}
       />

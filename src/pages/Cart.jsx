@@ -1,65 +1,52 @@
-import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { CartItem } from "../components/cart/CartItem";
 import { CartSummary } from "../components/cart/CartSummary";
 import { EmptyCart } from "../components/cart/EmptyCart";
+import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
 
-const initialCartItems = [
-  {
-    id: 1,
-    name: "Couscous Royal",
-    chef: "Fatima K.",
-    image:
-      "https://images.unsplash.com/photo-1574484284002-952d92456975?w=400&q=80",
-    price: 15,
-    quantity: 2,
-  },
-  {
-    id: 2,
-    name: "Tajine Poulet Citron",
-    chef: "Rachid M.",
-    image:
-      "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400&q=80",
-    price: 12,
-    quantity: 1,
-  },
-  {
-    id: 3,
-    name: "Baklava Maison",
-    chef: "Karim S.",
-    image:
-      "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=400&q=80",
-    price: 8,
-    quantity: 2,
-  },
-];
-
-const DELIVERY_FEE = 3.5;
+const DELIVERY_FEE = 500;
 
 export default function Cart() {
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState(initialCartItems);
-
-  const updateQuantity = (id, delta) => {
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity + delta) }
-          : item,
-      ),
-    );
-  };
-
-  const removeItem = (id) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
-  };
+  const { user } = useAuth();
+  const { cartItems, loading, updateQuantity, removeItem } = useCart();
 
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0,
   );
-  const total = subtotal + DELIVERY_FEE;
+  const total = subtotal + (cartItems.length > 0 ? DELIVERY_FEE : 0);
+
+  // État de chargement
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // Utilisateur non connecté
+  if (!user) {
+    return (
+      <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto text-center py-16 bg-white rounded-2xl">
+          <h2 className="mb-2">Connectez-vous pour voir votre panier</h2>
+          <p className="text-muted-foreground mb-6">
+            Vous devez être connecté pour gérer votre panier.
+          </p>
+          <Link
+            to="/login"
+            className="inline-flex px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-accent transition-colors"
+          >
+            Se connecter
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">

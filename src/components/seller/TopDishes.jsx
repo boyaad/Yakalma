@@ -36,7 +36,7 @@ export function TopDishes({ dishes }) {
               </div>
             </div>
             <div className="text-right flex-shrink-0">
-              <div className="font-bold text-primary">{dish.price}€</div>
+              <div className="font-bold text-primary">{dish.price} FCFA</div>
               <div className="text-xs text-muted-foreground">
                 {dish.revenue}
               </div>

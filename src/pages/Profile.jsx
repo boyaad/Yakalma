@@ -22,59 +22,7 @@ import { ProfileSidebar } from "../components/profile/ProfileSidebar";
 import { allDishes } from "../data/Dishes";
 import { signOut } from "../services/authService";
 import { useUserInfo } from "../context/UserInfoContext";
-
-const user = {
-  firstName: "Marie",
-  name: "Marie Dubois",
-  email: "marie.dubois@email.com",
-  phone: "+33 6 12 34 56 78",
-  address: "45 Rue de la République, 75011 Paris",
-  avatar:
-    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80",
-  memberSince: "Janvier 2024",
-};
-
-const orders = [
-  {
-    id: "CMD-001",
-    date: "28 Mai 2026",
-    status: "delivered",
-    total: 42,
-    items: 3,
-    summary: "Couscous Royal, Baklava Maison et Salade Orientale",
-  },
-  {
-    id: "CMD-002",
-    date: "25 Mai 2026",
-    status: "delivered",
-    total: 28,
-    items: 2,
-    summary: "Tajine Poulet Citron et Harira Traditionnelle",
-  },
-  {
-    id: "CMD-003",
-    date: "20 Mai 2026",
-    status: "pending",
-    total: 35,
-    items: 2,
-    summary: "Pastilla au Poulet et Mezze Libanais",
-  },
-];
-
-const addresses = [
-  {
-    id: 1,
-    label: "Maison",
-    address: "45 Rue de la République, 75011 Paris",
-    isDefault: true,
-  },
-  {
-    id: 2,
-    label: "Bureau",
-    address: "18 Avenue Parmentier, 75011 Paris",
-    isDefault: false,
-  },
-];
+import { useAuth } from "../context/AuthContext";
 
 const menuItems = [
   { id: "overview", label: "Aperçu", icon: Home },
@@ -86,22 +34,34 @@ const menuItems = [
 ];
 
 export default function Profile() {
+  const { user: authUser, profile } = useAuth();
   const { commandes, favorites, addresses: userInfoAddresses } = useUserInfo();
   const [activeSection, setActiveSection] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
-  const favoriteDishes = allDishes.slice(0, 3);
+  
+  // Plats favoris réels
+  const favoriteDishes = favorites || [];
+
+  const userObj = {
+    firstName: profile?.nom_complet?.split(" ")[0] || authUser?.email?.split("@")[0] || "Client",
+    name: profile?.nom_complet || "Client connecté",
+    email: authUser?.email || "",
+    phone: profile?.telephone || "Non renseigné",
+    address: profile?.localisation || "Non renseignée",
+    avatar: profile?.avatar || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80",
+    memberSince: profile?.created_at ? new Date(profile.created_at).toLocaleDateString("fr-FR", { month: "long", year: "numeric" }) : "Récemment",
+  };
 
   const stats = [
     {
       label: "Commandes",
-      value: commandes?.length,
+      value: commandes?.length || 0,
       icon: ShoppingBag,
-      badge: "+1",
     },
     {
       label: "Favoris",
-      value: favorites?.length,
+      value: favorites?.length || 0,
       icon: Heart,
     },
     {
@@ -111,7 +71,7 @@ export default function Profile() {
     },
     {
       label: "Adresses",
-      value: userInfoAddresses?.length,
+      value: userInfoAddresses?.length || 0,
       icon: MapPin,
     },
   ];
@@ -126,7 +86,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="flex min-h-screen overflow-x-hidden bg-background-warm">
+    <div className="flex min-h-screen overflow-x-hidden bg-background-warm font-poppins">
       <ProfileSidebar
         activeSection={activeSection}
         menuItems={menuItems}
@@ -134,34 +94,34 @@ export default function Profile() {
         onSelectSection={setActiveSection}
         setSidebarOpen={setSidebarOpen}
         sidebarOpen={sidebarOpen}
-        user={user}
+        user={userObj}
       />
 
       <main className="flex-1 lg:ml-64 xl:ml-72">
         <ProfileHeader
           activeSection={activeSection}
           setSidebarOpen={setSidebarOpen}
-          user={user}
+          user={userObj}
         />
 
         <div className="mx-auto max-w-400 p-4 sm:p-6">
           {activeSection === "overview" && (
             <ProfileOverview
-              addresses={addresses}
+              addresses={userInfoAddresses || []}
               onSectionChange={setActiveSection}
-              orders={orders}
+              orders={commandes || []}
               stats={stats}
               favoriteDishes={favoriteDishes}
             />
           )}
 
-          {activeSection === "profile" && <ProfileForm user={user} />}
+          {activeSection === "profile" && <ProfileForm user={userObj} />}
           {activeSection === "orders" && <OrderHistory />}
           {activeSection === "favorites" && (
             <FavoriteDishes />
           )}
           {activeSection === "addresses" && (
-            <AddressBook addresses={addresses} />
+            <AddressBook />
           )}
           {activeSection === "settings" && <ProfileSettings />}
         </div>

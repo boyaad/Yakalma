@@ -8,6 +8,7 @@ import Register from "../pages/Register";
 import Catalogue from "../pages/Catalogue";
 import PlatDetail from "../pages/PlatDetail";
 import Cart from "../pages/Cart";
+import Checkout from "../pages/Checkout";
 import Favorites from "../pages/Favorites";
 import Profile from "../pages/Profile";
 import Dashboard from "../pages/Dashboard";
@@ -68,6 +69,16 @@ function AppRoutes() {
               <ProtectedRoute>
                 <RoleRoute userRole={"acheteur"} allowedRoles={["acheteur"]}>
                   <Cart />
+                </RoleRoute>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <RoleRoute userRole={"acheteur"} allowedRoles={["acheteur"]}>
+                  <Checkout />
                 </RoleRoute>
               </ProtectedRoute>
             }
