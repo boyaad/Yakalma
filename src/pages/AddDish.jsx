@@ -11,6 +11,7 @@ import { addPlat, uploadImagePlat } from "../services/platService";
 import { toast } from "react-toastify";
 import { getCategories } from "../services/platService";
 import { FALLBACK_CATEGORIES } from "../data/plats";
+import { useSeller } from "../context/SellerInfoContext";
 
 const INITIAL_FORM = {
   name: "",
@@ -54,6 +55,7 @@ function dataURLtoFile(dataUrl, nomFichier) {
 
 export default function AddDish() {
   const navigate = useNavigate();
+  const { refreshPlats } = useSeller();
 
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
@@ -153,7 +155,7 @@ export default function AddDish() {
       }
 
       toast.success("Plat ajouté avec succès !");
-
+      await refreshPlats();
       navigate("/seller/dishes");
     } catch (error) {
       console.error(error);
