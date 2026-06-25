@@ -172,31 +172,54 @@ function Navbar() {
           </div>
 
           <div className="mt-4 flex flex-col gap-3">
-            <Link
-              to="/login"
-              onClick={() =>
-                setIsOpen(
-                  false,
-                )
-              }
-              className="h-12 inline-flex items-center justify-center rounded-xl font-poppins font-semibold text-foreground hover:text-primary hover:bg-background-warm transition-colors"
-            >
-              Connexion
-            </Link>
-            <Link
-              to="/register"
-              onClick={() =>
-                setIsOpen(
-                  false,
-                )
-              }
-              className="h-12 inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 font-poppins font-semibold text-white hover:bg-accent transition-colors"
-            >
-              <LuChefHat
-                size={20}
-              />
-              Devenir chef
-            </Link>
+            {user ? (
+              profile?.role === "acheteur" ? (
+                <>
+                  <Link
+                    to="/panier"
+                    onClick={() => setIsOpen(false)}
+                    className="h-12 inline-flex items-center gap-3 rounded-xl px-4 font-poppins font-semibold text-foreground hover:text-primary hover:bg-background-warm transition-colors"
+                  >
+                    <ShoppingCart size={20} />
+                    Panier
+                  </Link>
+                  <Link
+                    to="/profile"
+                    onClick={() => setIsOpen(false)}
+                    className="h-12 inline-flex items-center gap-3 rounded-xl px-4 font-poppins font-semibold text-foreground hover:text-primary hover:bg-background-warm transition-colors"
+                  >
+                    <User size={20} />
+                    Profil
+                  </Link>
+                </>
+              ) : (
+                <Link
+                  to="/seller/dashboard"
+                  onClick={() => setIsOpen(false)}
+                  className="h-12 inline-flex items-center gap-3 rounded-xl px-4 font-poppins font-semibold text-foreground hover:text-primary hover:bg-background-warm transition-colors"
+                >
+                  Dashboard
+                </Link>
+              )
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  onClick={() => setIsOpen(false)}
+                  className="h-12 inline-flex items-center gap-3 rounded-xl px-4 font-poppins font-semibold text-foreground hover:text-primary hover:bg-background-warm transition-colors"
+                >
+                  Connexion
+                </Link>
+                <Link
+                  to="/register"
+                  onClick={() => setIsOpen(false)}
+                  className="h-12 inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 font-poppins font-semibold text-white hover:bg-accent transition-colors"
+                >
+                  <LuChefHat size={20} />
+                  Devenir chef
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
