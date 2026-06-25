@@ -97,7 +97,7 @@ function OrderCard({ order, onCancel, onHide, onDelete, isHidden, onRestore }) {
             <Button
               variant="outline"
               onClick={() => onCancel(order.id)}
-              className="px-3 py-1.5 text-xs font-semibold text-error border-error/30 hover:bg-error/5 hover:border-error rounded-lg"
+              className="px-3 py-1.5 text-xs font-semibold text-error border-error/30 hover:border-error rounded-lg"
             >
               Annuler
             </Button>
@@ -163,7 +163,7 @@ function OrderCard({ order, onCancel, onHide, onDelete, isHidden, onRestore }) {
                     className="flex items-center justify-between gap-3 rounded-lg bg-background-warm/70 border border-border-warm/50 px-3 py-2"
                   >
                     <div className="flex items-center gap-2">
-                      <Package className="h-4 w-4 text-primary flex-shrink-0" />
+                      <Package className="h-4 w-4 text-primary shrink-0" />
                       <span className="text-sm font-medium text-foreground">
                         {line.plats?.titre || "Plat"}
                       </span>
