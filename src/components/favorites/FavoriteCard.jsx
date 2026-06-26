@@ -23,7 +23,7 @@ export function FavoriteCard({ dish, onRemove }) {
                 {dish.rating} ({dish.reviews})
               </span>
             </div>
-            <span className="text-primary font-semibold">{dish.price}€</span>
+            <span className="text-primary font-semibold">{dish.price} FCFA</span>
           </div>
           <div className="flex items-center gap-1 text-sm text-muted-foreground">
             <MapPin className="w-4 h-4" />

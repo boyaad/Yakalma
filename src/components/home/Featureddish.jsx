@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Star, TrendingUp } from "lucide-react";
+import { ArrowRight, Star, TrendingUp, Heart } from "lucide-react";
 import Button from "../ui/Button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getPlats } from "../../services/platService";
+import { useAuth } from "../../context/AuthContext";
+import { useUserInfo } from "../../context/UserInfoContext";
+import { supabase } from "../../services/supabase";
+import { toast } from "react-toastify";
 
 const featuredDishes = [
   {
@@ -53,7 +57,7 @@ const featuredDishes = [
   },
 ];
 
-function FeaturedDishCard({ dish }) {
+function FeaturedDishCard({ dish, isFavorite, onToggleFavorite }) {
   return (
     <Link
       to={`/plats/${dish.id}`}
@@ -70,6 +74,23 @@ function FeaturedDishCard({ dish }) {
           <span className="absolute left-5 top-5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm">
             {dish.badge}
           </span>
+        )}
+        {onToggleFavorite && (
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onToggleFavorite(dish.id);
+            }}
+            className={`absolute top-5 right-5 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 shadow-md border ${
+              isFavorite
+                ? "bg-primary text-white border-primary"
+                : "bg-white/85 backdrop-blur-sm text-foreground border-transparent hover:bg-white hover:scale-105"
+            }`}
+            aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+          >
+            <Heart className={`w-5 h-5 ${isFavorite ? "fill-current" : ""}`} />
+          </button>
         )}
       </div>
 
@@ -103,6 +124,53 @@ function FeaturedDishCard({ dish }) {
 
 export function FeaturedDishes() {
   const [dishes, setDishes] = useState([]);
+  const { user } = useAuth();
+  const { favorites, refreshFavorites } = useUserInfo();
+
+  const isDishFavorite = useCallback(
+    (dishId) => {
+      if (!favorites) return false;
+      return favorites.some((fav) => fav.id === dishId);
+    },
+    [favorites],
+  );
+
+  const handleToggleFavorite = useCallback(
+    async (dishId) => {
+      if (!user) {
+        toast.error("Vous devez être connecté pour ajouter un plat aux favoris.");
+        return;
+      }
+
+      const isFav = isDishFavorite(dishId);
+
+      try {
+        if (isFav) {
+          const { error } = await supabase
+            .from("favoris")
+            .delete()
+            .eq("utilisateur_id", user.id)
+            .eq("plat_id", dishId);
+          if (error) throw error;
+          toast.success("Retiré des favoris !");
+        } else {
+          const { error } = await supabase
+            .from("favoris")
+            .insert({
+              utilisateur_id: user.id,
+              plat_id: dishId,
+            });
+          if (error) throw error;
+          toast.success("Ajouté aux favoris !");
+        }
+        if (refreshFavorites) refreshFavorites();
+      } catch (err) {
+        console.error("Erreur toggle favori:", err);
+        toast.error("Impossible de modifier les favoris.");
+      }
+    },
+    [user, isDishFavorite, refreshFavorites],
+  );
 
   useEffect(() => {
     async function chargerPlats() {
@@ -112,17 +180,26 @@ export function FeaturedDishes() {
         return;
       }
 
-      const platsTransformes = data.map((plat) => ({
-        id: plat.id,
-        name: plat.titre,
-        chef: plat.profiles?.nom_complet || "Vendeur inconnu",
-        image: plat.image_url,
-        price: plat.prix,
-        rating: 0,
-        reviews: 0,
-        deliveryTime: "30-45 min",
-        badge: null,
-      }));
+      const platsTransformes = data.map((plat) => {
+        const totalReviews = plat.avis ? plat.avis.length : 0;
+        const averageRating = totalReviews > 0
+          ? parseFloat(
+              (plat.avis.reduce((sum, a) => sum + a.note, 0) / totalReviews).toFixed(1)
+            )
+          : 0;
+
+        return {
+          id: plat.id,
+          name: plat.titre,
+          chef: plat.profiles?.nom_complet || "Vendeur inconnu",
+          image: plat.image_url,
+          price: plat.prix,
+          rating: averageRating,
+          reviews: totalReviews,
+          deliveryTime: "30-45 min",
+          badge: null,
+        };
+      });
 
       setDishes(platsTransformes.slice(0, 4)); // on garde les 4 premiers
     }
@@ -154,7 +231,12 @@ export function FeaturedDishes() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
           {dishes.map((dish) => (
-            <FeaturedDishCard key={dish.id} dish={dish} />
+            <FeaturedDishCard
+              key={dish.id}
+              dish={dish}
+              isFavorite={isDishFavorite(dish.id)}
+              onToggleFavorite={handleToggleFavorite}
+            />
           ))}
         </div>
 

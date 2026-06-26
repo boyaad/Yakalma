@@ -1,88 +1,285 @@
-import { MapPin, Plus } from "lucide-react";
+import { useState } from "react";
+import { MapPin, Plus, X, Pencil, Trash2, Star } from "lucide-react";
 import Button from "../ui/Button";
 import { useUserInfo } from "../../context/UserInfoContext";
+import { toast } from "react-toastify";
 
-export function AddressBook() {
-  const { addresses, addressesLoading } = useUserInfo();
+/* ─── Modal Ajouter / Modifier ─────────────────────────────── */
+function AddressModal({ initial, onClose, onSave, isSaving }) {
+  const [label, setLabel] = useState(initial?.label ?? "");
+  const [localisation, setLocalisation] = useState(initial?.localisation ?? "");
+  const [isDefault, setIsDefault] = useState(initial?.isDefault ?? false);
+  const [errors, setErrors] = useState({});
 
-  if (addressesLoading) {
-    return <div className="text-center text-muted-foreground">Chargement des adresses...</div>;
-  }
+  const validate = () => {
+    const e = {};
+    if (!label.trim()) e.label = "Le nom de l'adresse est requis (ex : Maison)";
+    if (!localisation.trim()) e.localisation = "L'adresse complète est requise";
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
+  const handleSubmit = (ev) => {
+    ev.preventDefault();
+    if (!validate()) return;
+    onSave({ label: label.trim(), localisation: localisation.trim(), isDefault });
+  };
 
   return (
-    <section className="rounded-2xl border border-border-warm bg-white p-6 sm:p-8">
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-2xl font-semibold">Mes adresses</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Gérez les lieux utilisés pour vos livraisons.
-          </p>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div className="w-full max-w-lg rounded-2xl bg-white shadow-2xl animate-slide-up">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-border-warm px-6 py-4">
+          <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+            <MapPin className="h-5 w-5 text-primary" />
+            {initial ? "Modifier l'adresse" : "Nouvelle adresse"}
+          </h3>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-full p-1.5 text-muted-foreground hover:bg-muted/30 hover:text-foreground transition-colors"
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
-        <Button
-          type="button"
-          variant="primary"
-          className="h-11 px-5"
-          onClick={() => alert("Fonctionnalité d'ajout d'adresse à implémenter")}
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Ajouter
-        </Button>
-      </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {
-          addresses.length === 0 ? (
-            <div className="col-span-full text-center text-muted-foreground">
-              Aucune adresse enregistrée. Cliquez sur "Ajouter" pour en créer une.
-            </div>
-          ) :
-          addresses.map((item) => (
-            <article
-              key={item.id}
-              className="rounded-xl border border-border-warm bg-background-warm p-5"
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          {/* Label */}
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-1">
+              Nom de l&apos;adresse
+            </label>
+            <input
+              type="text"
+              placeholder="ex : Maison, Bureau, Chez maman…"
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              className={`w-full rounded-xl border px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary/40 transition ${
+                errors.label ? "border-error" : "border-border-warm"
+              }`}
+            />
+            {errors.label && (
+              <p className="mt-1 text-xs text-error">{errors.label}</p>
+            )}
+          </div>
+
+          {/* Localisation */}
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-1">
+              Adresse complète
+            </label>
+            <input
+              type="text"
+              placeholder="ex : 123 Rue Principale, Dakar"
+              value={localisation}
+              onChange={(e) => setLocalisation(e.target.value)}
+              className={`w-full rounded-xl border px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary/40 transition ${
+                errors.localisation ? "border-error" : "border-border-warm"
+              }`}
+            />
+            {errors.localisation && (
+              <p className="mt-1 text-xs text-error">{errors.localisation}</p>
+            )}
+          </div>
+
+          {/* isDefault toggle */}
+          <label className="flex items-center gap-3 cursor-pointer select-none">
+            <div
+              role="switch"
+              aria-checked={isDefault}
+              onClick={() => setIsDefault((v) => !v)}
+              className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer ${
+                isDefault ? "bg-primary" : "bg-muted-foreground/30"
+              }`}
             >
-              <div className="mb-4 flex items-start justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+              <span
+                className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
+                  isDefault ? "translate-x-5" : "translate-x-0"
+                }`}
+              />
+            </div>
+            <span className="text-sm text-foreground">Adresse par défaut</span>
+          </label>
+
+          {/* Actions */}
+          <div className="flex justify-end gap-3 pt-2">
+            <Button type="button" variant="ghost" onClick={onClose} className="px-5">
+              Annuler
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              className="px-5"
+              disabled={isSaving}
+            >
+              {isSaving ? "Enregistrement…" : initial ? "Modifier" : "Ajouter"}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Composant principal ───────────────────────────────────── */
+export function AddressBook() {
+  const { addresses, addressesLoading, addAddress, updateAddress, deleteAddress } =
+    useUserInfo();
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editing, setEditing] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+
+  if (addressesLoading) {
+    return (
+      <div className="text-center text-muted-foreground py-12">
+        Chargement des adresses…
+      </div>
+    );
+  }
+
+  /* ── Sauvegarder (ajout ou modif) ── */
+  const handleSave = async (data) => {
+    setIsSaving(true);
+    try {
+      if (editing) {
+        await updateAddress(editing.id, data);
+        toast.success("Adresse modifiée avec succès !");
+      } else {
+        await addAddress(data);
+        toast.success("Adresse ajoutée avec succès !");
+      }
+      setModalOpen(false);
+      setEditing(null);
+    } catch (err) {
+      toast.error("Erreur : " + (err?.message ?? "impossible de sauvegarder l'adresse"));
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  /* ── Supprimer ── */
+  const handleDelete = async (id) => {
+    if (!window.confirm("Supprimer cette adresse ?")) return;
+    setDeletingId(id);
+    try {
+      await deleteAddress(id);
+      toast.success("Adresse supprimée.");
+    } catch (err) {
+      toast.error("Erreur lors de la suppression : " + (err?.message ?? ""));
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const openEdit = (addr) => { setEditing(addr); setModalOpen(true); };
+  const openAdd  = ()     => { setEditing(null);  setModalOpen(true); };
+
+  return (
+    <>
+      <section className="rounded-2xl border border-border-warm bg-white p-6 sm:p-8">
+        {/* En-tête */}
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-2xl font-semibold">Mes adresses</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Gérez les lieux utilisés pour vos livraisons.
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="primary"
+            className="h-11 px-5"
+            onClick={openAdd}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Ajouter
+          </Button>
+        </div>
+
+        {/* Liste */}
+        <div className="grid gap-4 md:grid-cols-2">
+          {!addresses || addresses.length === 0 ? (
+            <div className="col-span-full flex flex-col items-center gap-3 py-12 text-center text-muted-foreground">
+              <MapPin className="h-10 w-10 opacity-30" />
+              <p>Aucune adresse enregistrée.</p>
+              <button
+                type="button"
+                onClick={openAdd}
+                className="text-primary font-semibold hover:underline text-sm"
+              >
+                + Ajouter une adresse
+              </button>
+            </div>
+          ) : (
+            addresses.map((item) => (
+              <article
+                key={item.id}
+                className="rounded-xl border border-border-warm bg-background-warm p-5 flex flex-col gap-3"
+              >
+                {/* Titre + badge */}
+                <div className="flex items-start gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                     <MapPin className="h-5 w-5 text-primary" />
                   </span>
-                  <div>
-                    <h3 className="font-semibold text-foreground">
-                      {item.label}
-                    </h3>
-                    {item.isDefault && (
-                      <p className="text-xs font-semibold text-primary">
-                        Adresse par défaut
-                      </p>
-                    )}
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="font-semibold text-foreground leading-tight">
+                        {item.label}
+                      </h3>
+                      {item.isDefault && (
+                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                          <Star className="h-3 w-3" />
+                          Par défaut
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-0.5 leading-5">
+                      {item.localisation}
+                    </p>
                   </div>
                 </div>
-              </div>
 
-              <p className="text-sm leading-6 text-muted-foreground">
-                {item.address}
-              </p>
+                {/* Boutons */}
+                <div className="flex gap-2 mt-auto">
+                  <button
+                    type="button"
+                    onClick={() => openEdit(item)}
+                    className="flex items-center gap-1.5 rounded-lg border border-border-warm bg-white px-3 py-1.5 text-sm font-medium text-foreground hover:bg-primary hover:text-white hover:border-primary transition-colors"
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                    Modifier
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(item.id)}
+                    disabled={deletingId === item.id}
+                    className="flex items-center gap-1.5 rounded-lg border border-border-warm bg-white px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-error hover:text-white hover:border-error transition-colors disabled:opacity-50"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                    {deletingId === item.id ? "Suppression…" : "Supprimer"}
+                  </button>
+                </div>
+              </article>
+            ))
+          )}
+        </div>
+      </section>
 
-              <div className="mt-5 flex gap-3">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className="bg-white hover:bg-primary hover:text-white px-4 py-2 text-sm"
-                >
-                  Modifier
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className="bg-white text-muted-foreground hover:text-primary px-4 py-2 text-sm"
-                >
-                  Supprimer
-                </Button>
-              </div>
-            </article>
-          ))
-        }
-      </div>
-    </section>
+      {/* Modal */}
+      {modalOpen && (
+        <AddressModal
+          initial={editing}
+          onClose={() => { setModalOpen(false); setEditing(null); }}
+          onSave={handleSave}
+          isSaving={isSaving}
+        />
+      )}
+    </>
   );
 }

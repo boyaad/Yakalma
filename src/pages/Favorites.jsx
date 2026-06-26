@@ -1,50 +1,41 @@
-import { useState } from "react";
+import { useUserInfo } from "../context/UserInfoContext";
+import { useAuth } from "../context/AuthContext";
+import { supabase } from "../services/supabase";
+import { toast } from "react-toastify";
 import { Heart } from "lucide-react";
 import { EmptyFavorites } from "../components/favorites/EmptyFavorites";
 import { FavoritesList } from "../components/favorites/FavoritesList";
 
-const initialFavorites = [
-  {
-    id: 1,
-    name: "Couscous Royal",
-    chef: "Fatima K.",
-    image:
-      "https://images.unsplash.com/photo-1574484284002-952d92456975?w=800&q=80",
-    price: 15,
-    rating: 4.8,
-    reviews: 127,
-    distance: "2.3 km",
-  },
-  {
-    id: 3,
-    name: "Pastilla au Poulet",
-    chef: "Samira B.",
-    image:
-      "https://images.unsplash.com/photo-1626804475297-41608ea09aeb?w=800&q=80",
-    price: 18,
-    rating: 5.0,
-    reviews: 64,
-    distance: "3.1 km",
-  },
-  {
-    id: 6,
-    name: "Baklava Maison",
-    chef: "Karim S.",
-    image:
-      "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=800&q=80",
-    price: 8,
-    rating: 4.9,
-    reviews: 78,
-    distance: "2.5 km",
-  },
-];
-
 export default function Favorites() {
-  const [favorites, setFavorites] = useState(initialFavorites);
+  const { user } = useAuth();
+  const { favorites, favoritesLoading, refreshFavorites } = useUserInfo();
 
-  const handleRemoveFavorite = (dishId) => {
-    setFavorites(favorites.filter((dish) => dish.id !== dishId));
+  const handleRemoveFavorite = async (dishId) => {
+    if (!user) return;
+    try {
+      const { error } = await supabase
+        .from("favoris")
+        .delete()
+        .eq("utilisateur_id", user.id)
+        .eq("plat_id", dishId);
+      if (error) throw error;
+      toast.success("Retiré des favoris !");
+      if (refreshFavorites) refreshFavorites();
+    } catch (err) {
+      console.error("Erreur suppression favori:", err);
+      toast.error("Impossible de supprimer le favori.");
+    }
   };
+
+  if (favoritesLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background-warm">
+        <p className="text-muted-foreground">Chargement de vos favoris...</p>
+      </div>
+    );
+  }
+
+  const realFavorites = favorites || [];
 
   return (
     <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 bg-background-warm">
@@ -52,15 +43,15 @@ export default function Favorites() {
         <div className="flex items-center gap-3 mb-8">
           <Heart className="w-8 h-8 text-primary fill-primary" />
           <h1 className="text-2xl font-bold">
-            Mes favoris ({favorites.length})
+            Mes favoris ({realFavorites.length})
           </h1>
         </div>
 
-        {favorites.length === 0 ? (
+        {realFavorites.length === 0 ? (
           <EmptyFavorites />
         ) : (
           <FavoritesList
-            favorites={favorites}
+            favorites={realFavorites}
             onRemove={handleRemoveFavorite}
           />
         )}

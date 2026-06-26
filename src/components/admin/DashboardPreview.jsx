@@ -22,7 +22,7 @@ export function UserPreviewRow({ user }) {
       <img
         src={user.avatar}
         alt={user.name}
-        className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+        className="w-10 h-10 rounded-full object-cover shrink-0"
       />
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
@@ -38,7 +38,7 @@ export function UserPreviewRow({ user }) {
           {user.email}
         </div>
       </div>
-      <div className="text-right flex-shrink-0">
+      <div className="text-right shrink-0">
         <div className="font-bold text-sm text-primary">{user.spent}</div>
         <div className="text-xs text-muted-foreground">{user.orders} cmd</div>
       </div>

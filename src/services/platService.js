@@ -9,6 +9,9 @@ export async function getPlats() {
       profiles (
         nom_complet,
         localisation
+      ),
+      avis (
+        note
       )
     `,
     )

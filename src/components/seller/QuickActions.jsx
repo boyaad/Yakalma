@@ -1,7 +1,19 @@
 import { Link } from "react-router-dom";
 import { Plus, Package, UtensilsCrossed } from "lucide-react";
+import { useSeller } from "../../context/SellerInfoContext";
 
 export function QuickActions() {
+  const { plats, commandes, platsLoading, commandesLoading } = useSeller();
+
+  const pendingOrdersCount = (commandes ?? []).filter((order) =>
+    ["en_attente", "pending", "waiting"].includes(order.order_status),
+  ).length;
+
+  const activePlatsCount = (plats ?? []).filter((plat) => plat.disponibilite).length;
+
+  const ordersLabel = commandesLoading ? "Chargement..." : `${pendingOrdersCount} en attente`;
+  const dishesLabel = platsLoading ? "Chargement..." : `${activePlatsCount} actifs`;
+
   return (
     <div className="bg-white rounded-xl border border-border-warm p-5">
       <h2 className="text-lg font-bold mb-4">Actions rapides</h2>
@@ -21,7 +33,7 @@ export function QuickActions() {
           <div>
             <div className="font-medium text-sm">Gérer les commandes</div>
             <div className="text-xs text-muted-foreground group-active:text-white/80">
-              42 en attente
+              {ordersLabel}
             </div>
           </div>
         </Link>
@@ -33,7 +45,7 @@ export function QuickActions() {
           <div>
             <div className="font-medium text-sm">Mes plats</div>
             <div className="text-xs text-muted-foreground group-active:text-white/80">
-              12 actifs
+              {dishesLabel}
             </div>
           </div>
         </Link>

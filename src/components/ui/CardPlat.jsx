@@ -1,5 +1,5 @@
 import React from "react";
-import { LuStar, LuArrowRight } from "react-icons/lu";
+import { LuStar, LuArrowRight, LuHeart } from "react-icons/lu";
 import Badge from "./Badge";
 
 /**
@@ -13,10 +13,12 @@ import Badge from "./Badge";
  * @param {number} props.rating - Average rating (e.g. 4.8)
  * @param {number} props.reviewsCount - Number of ratings
  * @param {number|string} props.price - Price of the dish
- * @param {string} props.currency - Currency symbol (e.g. '€' or 'FCFA')
+ * @param {string} props.currency - Currency symbol (e.g. 'FCFA')
  * @param {string} props.badgeText - optional badge text ('Nouveau', 'Populaire', etc.)
  * @param {string} props.badgeVariant - variant for badge ('nouveau', 'populaire', etc.)
  * @param {function} props.onOrder - callback function for ordering
+ * @param {boolean} props.isFavorite - whether the dish is currently favorited
+ * @param {function} props.onToggleFavorite - callback function to toggle favorite
  */
 function CardPlat({
   id,
@@ -30,6 +32,8 @@ function CardPlat({
   badgeText,
   badgeVariant = "nouveau",
   onOrder,
+  isFavorite = false,
+  onToggleFavorite,
 }) {
   const handleOrder = (e) => {
     e.stopPropagation();
@@ -61,6 +65,22 @@ function CardPlat({
           <div className="absolute top-4 left-4">
             <Badge variant={badgeVariant}>{badgeText}</Badge>
           </div>
+        )}
+        {onToggleFavorite && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFavorite(id);
+            }}
+            className={`absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm border ${
+              isFavorite
+                ? "bg-primary text-white border-primary"
+                : "bg-white/85 backdrop-blur-sm text-foreground border-transparent hover:bg-white hover:scale-105"
+            }`}
+            aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+          >
+            <LuHeart className={`w-4.5 h-4.5 ${isFavorite ? "fill-current" : ""}`} />
+          </button>
         )}
       </div>
 

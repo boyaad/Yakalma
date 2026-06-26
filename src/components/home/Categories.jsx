@@ -112,7 +112,7 @@ export function Categories() {
                 alt={category.nom}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
                 <h3 className="text-lg sm:text-xl font-semibold mb-1">
                   {category.nom}

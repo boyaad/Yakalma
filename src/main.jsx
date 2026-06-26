@@ -5,7 +5,9 @@ import "./styles/globals.css";
 
 import { AuthProvider } from "./context/AuthContext";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { UserInfoProvider } from "./context/UserInfoContext.jsx";
+import { CartProvider } from "./context/CartContext.jsx";
 import SellerInfoProvider from "./context/SellerInfoContext.jsx";
 
 ReactDOM.createRoot(
@@ -16,10 +18,12 @@ ReactDOM.createRoot(
   <React.StrictMode>
     <AuthProvider>
       <UserInfoProvider>
-        <SellerInfoProvider>
-          <App />
-          <ToastContainer position="bottom-right" />
-        </SellerInfoProvider>
+        <CartProvider>
+          <SellerInfoProvider>
+            <App />
+            <ToastContainer position="bottom-right" />
+          </SellerInfoProvider>
+        </CartProvider>
       </UserInfoProvider>
     </AuthProvider>
   </React.StrictMode>,

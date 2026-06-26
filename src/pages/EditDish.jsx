@@ -12,6 +12,7 @@ import {
   getCategories,
 } from "../services/platService";
 import { FALLBACK_CATEGORIES } from "../data/plats";
+import { useSeller } from "../context/SellerInfoContext";
 
 function dataURLtoFile(dataUrl, nomFichier) {
   const [entete, base64] = dataUrl.split(",");
@@ -27,6 +28,7 @@ function dataURLtoFile(dataUrl, nomFichier) {
 export default function EditDish() {
   const { id } = useParams(); // récupère l'id dans l'URL
   const navigate = useNavigate();
+  const { refreshPlats } = useSeller();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -121,6 +123,7 @@ export default function EditDish() {
       }
 
       toast.success("Plat modifié avec succès !");
+      await refreshPlats();
       navigate("/seller/dishes");
     } catch (error) {
       console.error(error);
