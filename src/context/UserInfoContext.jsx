@@ -146,6 +146,37 @@ export function UserInfoProvider({ children }) {
         }
     }, [user]);
 
+    const addAddress = useCallback(async ({ label, localisation, isDefault = false }) => {
+        if (!user) return;
+        const { error } = await supabase
+            .from("adresses")
+            .insert([{ utilisateur_id: user.id, label, localisation, isDefault }]);
+        if (error) throw error;
+        await fetchAddresses();
+    }, [user, fetchAddresses]);
+
+    const updateAddress = useCallback(async (id, { label, localisation, isDefault }) => {
+        if (!user) return;
+        const { error } = await supabase
+            .from("adresses")
+            .update({ label, localisation, isDefault })
+            .eq("id", id)
+            .eq("utilisateur_id", user.id);
+        if (error) throw error;
+        await fetchAddresses();
+    }, [user, fetchAddresses]);
+
+    const deleteAddress = useCallback(async (id) => {
+        if (!user) return;
+        const { error } = await supabase
+            .from("adresses")
+            .delete()
+            .eq("id", id)
+            .eq("utilisateur_id", user.id);
+        if (error) throw error;
+        await fetchAddresses();
+    }, [user, fetchAddresses]);
+
     useEffect(() => {
         if (user) {
             fetchCommandes();
@@ -223,7 +254,10 @@ export function UserInfoProvider({ children }) {
             addressesLoading,
             refreshCommandes: fetchCommandes,
             refreshFavorites: fetchFavorites,
-            refreshAddresses: fetchAddresses
+            refreshAddresses: fetchAddresses,
+            addAddress,
+            updateAddress,
+            deleteAddress,
         }}>
             {children}
         </UserInfoContext.Provider>
