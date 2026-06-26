@@ -67,7 +67,7 @@ export function FavoriteDishes() {
 
                 <div className="mt-4 flex items-center justify-between gap-4">
                   <span className="text-xl font-bold text-primary">
-                    {dish.price}€
+                    {dish.price} FCFA
                   </span>
                   <Link
                     to={`/plats/${dish.id}`}

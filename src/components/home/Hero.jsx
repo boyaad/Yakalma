@@ -41,7 +41,7 @@ export function Hero() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
             <Button
-              to="/catalog"
+              to="/plats"
               variant="white"
               className="group px-8 py-4 text-lg hover:scale-105 shadow-xl"
             >

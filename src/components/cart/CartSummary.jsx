@@ -1,4 +1,5 @@
 import Button from "../ui/Button";
+import { formatFcfa } from "../../utils/currency";
 
 export function CartSummary({ subtotal, deliveryFee, total, onCheckout }) {
   return (
@@ -8,18 +9,18 @@ export function CartSummary({ subtotal, deliveryFee, total, onCheckout }) {
       <div className="space-y-3 mb-4 pb-4">
         <div className="flex justify-between text-muted-foreground">
           <span>Sous-total</span>
-          <span>{subtotal.toFixed(2)}€</span>
+          <span>{formatFcfa(subtotal)}</span>
         </div>
         <div className="flex justify-between text-muted-foreground">
           <span>Frais de livraison</span>
-          <span>{deliveryFee.toFixed(2)}€</span>
+          <span>{formatFcfa(deliveryFee)}</span>
         </div>
       </div>
 
       <div className="flex justify-between mb-6">
         <span className="font-medium">Total</span>
         <span className="text-primary font-medium text-xl">
-          {total.toFixed(2)}€
+          {formatFcfa(total)}
         </span>
       </div>
 

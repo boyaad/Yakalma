@@ -10,6 +10,8 @@ import { useAuth } from "../context/AuthContext";
 import { addPlat, uploadImagePlat } from "../services/platService";
 import { toast } from "react-toastify";
 import { getCategories } from "../services/platService";
+import { FALLBACK_CATEGORIES } from "../data/plats";
+import { useSeller } from "../context/SellerInfoContext";
 
 const INITIAL_FORM = {
   name: "",
@@ -53,6 +55,7 @@ function dataURLtoFile(dataUrl, nomFichier) {
 
 export default function AddDish() {
   const navigate = useNavigate();
+  const { refreshPlats } = useSeller();
 
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
@@ -66,16 +69,18 @@ export default function AddDish() {
 
   useEffect(() => {
     async function chargerCategories() {
-      const { data, error } = await getCategories();
-
-      console.log("CATEGORIES =", data);
-
-      if (error) {
-        console.error(error);
-        return;
+      try {
+        const { data, error } = await getCategories();
+        console.log("CATEGORIES =", data);
+        if (error || !data || data.length === 0) {
+          setCategories(FALLBACK_CATEGORIES);
+        } else {
+          setCategories(data);
+        }
+      } catch (err) {
+        console.error("Erreur catégories, utilisation du fallback:", err);
+        setCategories(FALLBACK_CATEGORIES);
       }
-
-      setCategories(data);
     }
 
     chargerCategories();
@@ -150,7 +155,7 @@ export default function AddDish() {
       }
 
       toast.success("Plat ajouté avec succès !");
-
+      await refreshPlats();
       navigate("/seller/dishes");
     } catch (error) {
       console.error(error);

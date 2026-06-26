@@ -1,6 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getPlats } from "../services/platService";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { FALLBACK_PLATS } from "../data/plats";
+import { supabase } from "../services/supabase";
+import { useAuth } from "../context/AuthContext";
+import { useUserInfo } from "../context/UserInfoContext";
+import { toast } from "react-toastify";
 
 import { SearchBar } from "../components/categories/Searchbar";
 import { CategoryTabs } from "../components/categories/Categorytabs";
@@ -19,7 +24,7 @@ export default function Catalog() {
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
-  const [priceRange, setPriceRange] = useState([0, 50]);
+  const [priceRange, setPriceRange] = useState([0, 10000]);
   const [selectedRating, setSelectedRating] = useState(0);
   const [maxDistance, setMaxDistance] = useState(10);
   const [sortBy, setSortBy] = useState("popular");
@@ -28,35 +33,141 @@ export default function Catalog() {
   const [dishes, setDishes] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function chargerPlats() {
+  const { user } = useAuth();
+  const { favorites, refreshFavorites } = useUserInfo();
+
+  const isDishFavorite = useCallback(
+    (dishId) => {
+      if (!favorites) return false;
+      return favorites.some((fav) => fav.id === dishId);
+    },
+    [favorites],
+  );
+
+  const handleToggleFavorite = useCallback(
+    async (dishId) => {
+      if (!user) {
+        toast.error("Vous devez être connecté pour ajouter un plat aux favoris.");
+        return;
+      }
+
+      const isFav = isDishFavorite(dishId);
+
+      try {
+        if (isFav) {
+          const { error } = await supabase
+            .from("favoris")
+            .delete()
+            .eq("utilisateur_id", user.id)
+            .eq("plat_id", dishId);
+          if (error) throw error;
+          toast.success("Retiré des favoris !");
+        } else {
+          const { error } = await supabase
+            .from("favoris")
+            .insert({
+              utilisateur_id: user.id,
+              plat_id: dishId,
+            });
+          if (error) throw error;
+          toast.success("Ajouté aux favoris !");
+        }
+        if (refreshFavorites) refreshFavorites();
+      } catch (err) {
+        console.error("Erreur toggle favori:", err);
+        toast.error("Impossible de modifier les favoris.");
+      }
+    },
+    [user, isDishFavorite, refreshFavorites],
+  );
+
+  const chargerPlats = useCallback(async () => {
+    try {
       const { data, error } = await getPlats();
       console.log("DATA =", data);
       console.log("ERROR =", error);
-      const platsTransformes = data.map((plat) => ({
+
+      let rawPlats = data;
+      if (error || !data || data.length === 0) {
+        console.warn("Utilisation des plats de secours (offline)");
+        rawPlats = FALLBACK_PLATS;
+      }
+
+      const platsTransformes = rawPlats.map((plat) => {
+        const totalReviews = plat.avis ? plat.avis.length : 0;
+        const averageRating = totalReviews > 0
+          ? parseFloat(
+              (plat.avis.reduce((sum, a) => sum + a.note, 0) / totalReviews).toFixed(1)
+            )
+          : 0;
+
+        return {
+          id: plat.id,
+          name: plat.titre,
+          price: Number(plat.prix),
+          image: plat.image_url,
+          category: plat.categorie_id,
+          chef: plat.profiles?.nom_complet || "Vendeur inconnu",
+          quartier: plat.profiles?.localisation || "",
+          rating: averageRating,
+          reviews: totalReviews,
+          distance: 0,
+          badge: null,
+        };
+      });
+      setDishes(platsTransformes);
+    } catch (err) {
+      console.error("Erreur de chargement, utilisation des données offline:", err);
+      const platsTransformes = FALLBACK_PLATS.map((plat) => ({
         id: plat.id,
         name: plat.titre,
-        price: plat.prix,
+        price: Number(plat.prix),
         image: plat.image_url,
         category: plat.categorie_id,
         chef: plat.profiles?.nom_complet || "Vendeur inconnu",
         quartier: plat.profiles?.localisation || "",
-        rating: 0,
-        reviews: 0,
+        rating: plat.rating ?? 0,
+        reviews: plat.reviews ?? 0,
         distance: 0,
         badge: null,
       }));
       setDishes(platsTransformes);
+    } finally {
       setLoading(false);
     }
-    chargerPlats();
   }, []);
+
+  useEffect(() => {
+    chargerPlats();
+  }, [chargerPlats]);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("catalogue-avis-realtime")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "avis",
+        },
+        () => {
+          chargerPlats();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [chargerPlats]);
+
   const handleOrder = (dishId) => {
     navigate(`/plats/${dishId}`);
   };
 
   const resetFilters = () => {
-    setPriceRange([0, 50]);
+    setPriceRange([0, 10000]);
     setSelectedRating(0);
     setMaxDistance(10);
     setSelectedCategory("all");
@@ -176,6 +287,8 @@ export default function Catalog() {
                     : "nouveau"
                 }
                 onOrder={handleOrder}
+                isFavorite={isDishFavorite(dish.id)}
+                onToggleFavorite={handleToggleFavorite}
               />
             ))}
           </div>

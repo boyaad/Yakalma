@@ -54,7 +54,7 @@ export const stats = [
   },
   {
     label: "Revenus du mois",
-    value: "45,680€",
+    value: "45,680 FCFA",
     icon: DollarSign,
     change: "+18.7%",
     color: "bg-warning/10",
@@ -92,7 +92,7 @@ export const users = [
     avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80",
     status: "active",
     orders: 12,
-    spent: "180€",
+    spent: "180 FCFA",
   },
   {
     id: 2,
@@ -102,7 +102,7 @@ export const users = [
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80",
     status: "active",
     orders: 87,
-    spent: "1,240€",
+    spent: "1,240 FCFA",
   },
   {
     id: 3,
@@ -112,7 +112,7 @@ export const users = [
     avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80",
     status: "active",
     orders: 5,
-    spent: "75€",
+    spent: "75 FCFA",
   },
   {
     id: 4,
@@ -122,7 +122,7 @@ export const users = [
     avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80",
     status: "suspended",
     orders: 8,
-    spent: "120€",
+    spent: "120 FCFA",
   },
 ];
 
@@ -135,7 +135,7 @@ export const sellers = [
     dishes: 24,
     orders: 127,
     rating: 4.9,
-    revenue: "1,905€",
+    revenue: "1,905 FCFA",
     status: "verified",
   },
   {
@@ -146,7 +146,7 @@ export const sellers = [
     dishes: 18,
     orders: 89,
     rating: 4.8,
-    revenue: "1,068€",
+    revenue: "1,068 FCFA",
     status: "verified",
   },
   {
@@ -157,7 +157,7 @@ export const sellers = [
     dishes: 31,
     orders: 156,
     rating: 5.0,
-    revenue: "2,340€",
+    revenue: "2,340 FCFA",
     status: "verified",
   },
   {
@@ -168,7 +168,7 @@ export const sellers = [
     dishes: 12,
     orders: 34,
     rating: 4.6,
-    revenue: "476€",
+    revenue: "476 FCFA",
     status: "pending",
   },
 ];

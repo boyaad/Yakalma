@@ -1,9 +1,11 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "../components/ui/Navbar";
 import { Footer } from "../components/ui/Footer";
+import { useOrderNotifications } from "../hooks/useOrderNotifications";
   
 
 function MainLayout() {
+  useOrderNotifications();
   const { pathname } = useLocation();
   const hideFooter =
     pathname === "/login" ||
@@ -12,6 +14,7 @@ function MainLayout() {
     pathname === "/SellerDashboard" ||
     pathname === "/profile" ||
     pathname === "/panier" ||
+    pathname === "/checkout" ||
     pathname === "/favoris" ||
     pathname === "/create-profile" ||
     pathname === "/plats" ||

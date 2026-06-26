@@ -1,6 +1,7 @@
 import { Heart, ShoppingCart } from "lucide-react";
 import { QuantityPicker } from "./QuantityPicker";
 import Button from "../ui/Button";
+import { formatFcfa } from "../../utils/currency";
 
 export function PurchasePanel({
   isFavorite,
@@ -21,7 +22,7 @@ export function PurchasePanel({
         />
 
         <span className="font-poppins text-2xl font-semibold text-primary">
-          {(price * quantity).toFixed(2)}€
+          {formatFcfa(price * quantity)}
         </span>
       </div>
 

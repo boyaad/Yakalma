@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# skills 
+.agents
+feature-by-me.md
+

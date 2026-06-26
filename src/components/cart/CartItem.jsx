@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Minus, Plus, Trash2 } from "lucide-react";
+import { formatFcfa } from "../../utils/currency";
 
 export function CartItem({ item, onQuantityChange, onRemove }) {
   return (
@@ -40,7 +41,7 @@ export function CartItem({ item, onQuantityChange, onRemove }) {
           </div>
 
           <span className="text-primary font-medium whitespace-nowrap">
-            {(item.price * item.quantity).toFixed(2)}€
+            {formatFcfa(item.price * item.quantity)}
           </span>
         </div>
       </div>

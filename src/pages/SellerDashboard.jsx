@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -8,6 +8,7 @@ import {
   ShoppingBag,
   Star,
   TrendingUp,
+  Loader2
 } from "lucide-react";
 
 import { SellerSidebar } from "../components/seller/SellerSidebar";
@@ -23,118 +24,6 @@ import { signOut } from "../services/authService";
 import { useSeller } from "../context/SellerInfoContext";
 import { deletePlat } from "../services/platService";
 import { toast } from "react-toastify";
-
-const stats = [
-  {
-    label: "Revenus du mois",
-    value: "1 240€",
-    icon: DollarSign,
-    change: "+12%",
-    trend: "up",
-  },
-  {
-    label: "Commandes totales",
-    value: "87",
-    icon: ShoppingBag,
-    change: "+8%",
-    trend: "up",
-  },
-  {
-    label: "Note moyenne",
-    value: "4.8",
-    icon: Star,
-    change: "+0.2",
-    trend: "up",
-  },
-  {
-    label: "Plats actifs",
-    value: "12",
-    icon: TrendingUp,
-    change: "+2",
-    trend: "up",
-  },
-];
-
-const dishes = [
-  {
-    id: 1,
-    name: "Couscous Royal",
-    image:
-      "https://images.unsplash.com/photo-1574484284002-952d92456975?w=400&q=80",
-    price: 15,
-    status: "active",
-    orders: 45,
-    rating: 4.8,
-    reviews: 38,
-    revenue: "675€",
-  },
-  {
-    id: 2,
-    name: "Tajine Poulet Citron",
-    image:
-      "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400&q=80",
-    price: 12,
-    status: "active",
-    orders: 32,
-    rating: 4.9,
-    reviews: 29,
-    revenue: "384€",
-  },
-  {
-    id: 3,
-    name: "Pastilla au Poulet",
-    image:
-      "https://images.unsplash.com/photo-1626804475297-41608ea09aeb?w=400&q=80",
-    price: 18,
-    status: "inactive",
-    orders: 10,
-    rating: 5.0,
-    reviews: 8,
-    revenue: "180€",
-  },
-  {
-    id: 4,
-    name: "Baklava Maison",
-    image:
-      "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=400&q=80",
-    price: 8,
-    status: "active",
-    orders: 28,
-    rating: 4.7,
-    reviews: 22,
-    revenue: "224€",
-  },
-];
-
-const recentOrders = [
-  {
-    id: "CMD-045",
-    customer: "Marie L.",
-    dish: "Couscous Royal",
-    quantity: 2,
-    total: 30,
-    status: "pending",
-    time: "Il y a 5 min",
-  },
-  {
-    id: "CMD-044",
-    customer: "Ahmed B.",
-    dish: "Tajine Poulet Citron",
-    quantity: 1,
-    total: 12,
-    status: "preparing",
-    time: "Il y a 12 min",
-  },
-  {
-    id: "CMD-043",
-    customer: "Sophie M.",
-    dish: "Baklava Maison",
-    quantity: 3,
-    total: 24,
-    status: "ready",
-    time: "Il y a 18 min",
-  },
-];
 
 const menuItems = [
   {
@@ -153,7 +42,19 @@ const menuItems = [
 ];
 
 export default function SellerDashboard() {
-  const { plats, platsLoading } = useSeller();
+  const { 
+    plats, 
+    platsLoading, 
+    commandes, 
+    commandesLoading, 
+    refreshPlats, 
+    refreshCommandes 
+  } = useSeller();
+
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const handleDelete = async (id) => {
     const { error } = await deletePlat(id);
     if (error) {
@@ -161,16 +62,13 @@ export default function SellerDashboard() {
       toast.error("Erreur lors de la suppression");
       return;
     }
-    // Rafraîchir la page pour voir les changements
-    window.location.reload();
+    toast.success("Plat supprimé avec succès.");
+    await refreshPlats();
   };
+
   const handleEdit = (id) => {
     navigate(`/seller/edit-dish/${id}`);
   };
-
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
 
   const getActiveSection = () => {
     if (location.pathname.includes("/seller/dishes")) return "dishes";
@@ -182,27 +80,13 @@ export default function SellerDashboard() {
 
   const getStatusInfo = (status) => {
     const statusMap = {
-      active: {
-        text: "Actif",
-        color: "text-primary",
-        bgColor: "bg-primary/10",
-      },
-      inactive: {
-        text: "Inactif",
-        color: "text-gray-700",
-        bgColor: "bg-gray-100",
-      },
-      pending: {
-        text: "En attente",
-        color: "text-amber-700",
-        bgColor: "bg-warning/10",
-      },
-      preparing: {
-        text: "En préparation",
-        color: "text-orange-600",
-        bgColor: "bg-orange-100",
-      },
-      ready: { text: "Prête", color: "text-primary", bgColor: "bg-primary/10" },
+      active: { text: "Actif", color: "text-primary", bgColor: "bg-primary/10", variant: "active" },
+      inactive: { text: "Inactif", color: "text-gray-700", bgColor: "bg-gray-100", variant: "inactive" },
+      en_attente: { text: "En attente", color: "text-warning", bgColor: "bg-warning/10", variant: "pending" },
+      en_cours: { text: "En préparation", color: "text-info", bgColor: "bg-info/10", variant: "preparing" },
+      pret: { text: "Prêt", color: "text-success", bgColor: "bg-success/10", variant: "ready" },
+      livre: { text: "Livré", color: "text-success", bgColor: "bg-success/10", variant: "success" },
+      annulee: { text: "Annulé", color: "text-error", bgColor: "bg-error/10", variant: "danger" },
     };
     return statusMap[status] || statusMap.active;
   };
@@ -216,8 +100,109 @@ export default function SellerDashboard() {
     }
   };
 
+  // Calculer les statistiques du tableau de bord
+  const activePlatsCount = plats ? plats.filter((p) => p.disponibilite).length : 0;
+  const totalOrdersCount = commandes ? commandes.length : 0;
+  const totalRevenue = commandes
+    ? commandes
+        .filter((c) => c.order_status === "livre" || c.order_status === "ready")
+        .reduce((sum, c) => sum + Number(c.total), 0)
+    : 0;
+
+  const dynamicStats = [
+    {
+      label: "Revenus totaux",
+      value: `${totalRevenue.toFixed(0)} FCFA`,
+      icon: DollarSign,
+      change: "",
+      trend: "up",
+    },
+    {
+      label: "Commandes reçues",
+      value: totalOrdersCount.toString(),
+      icon: ShoppingBag,
+      change: "",
+      trend: "up",
+    },
+    {
+      label: "Note moyenne",
+      value: "4.8",
+      icon: Star,
+      change: "",
+      trend: "up",
+    },
+    {
+      label: "Plats actifs",
+      value: activePlatsCount.toString(),
+      icon: TrendingUp,
+      change: "",
+      trend: "up",
+    },
+  ];
+
+  // Enrichir les plats avec les ventes, revenus et avis calculés
+  const enrichedDishes = plats
+    ? plats.map((p) => {
+        let dishOrders = 0;
+        let dishRevenue = 0;
+        
+        if (commandes) {
+          commandes.forEach((order) => {
+            const isValidSale = order.order_status === "livre" || order.order_status === "ready";
+            if (isValidSale && order.ligne_commandes) {
+              order.ligne_commandes.forEach((line) => {
+                if (line.plat_id === p.id) {
+                  dishOrders += line.quantite || 0;
+                  dishRevenue += line.sous_total || (line.quantite * (line.plats?.prix || p.prix)) || 0;
+                }
+              });
+            }
+          });
+        }
+
+        const totalReviews = p.avis ? p.avis.length : 0;
+        const rating = totalReviews > 0
+          ? parseFloat((p.avis.reduce((sum, a) => sum + a.note, 0) / totalReviews).toFixed(1))
+          : 5.0;
+
+        return {
+          ...p,
+          orders: dishOrders,
+          rating: rating,
+          reviews: totalReviews,
+          revenue: `${dishRevenue} FCFA`,
+        };
+      })
+    : [];
+
+  // Adapter la liste de plats pour le tableau de bord
+  const formattedDishes = enrichedDishes.slice(0, 4).map((d) => ({
+    id: d.id,
+    name: d.titre,
+    image: d.image_url,
+    price: d.prix,
+    status: d.disponibilite ? "active" : "inactive",
+    orders: d.orders,
+    rating: d.rating,
+    reviews: d.reviews,
+    revenue: d.revenue,
+  }));
+
+  // Adapter les commandes pour l'UI des commandes récentes
+  const recentOrdersList = commandes
+    ? commandes.slice(0, 5).map((o) => ({
+        id: `CMD-${o.id.slice(0, 4).toUpperCase()}`,
+        customer: o.customer,
+        dish: o.dish,
+        quantity: o.quantity,
+        total: o.total,
+        status: o.order_status,
+        time: o.time,
+      }))
+    : [];
+
   return (
-    <div className="flex min-h-screen bg-background-warm overflow-x-hidden">
+    <div className="flex min-h-screen bg-background-warm overflow-x-hidden font-poppins">
       {/* Sidebar */}
       <SellerSidebar
         sidebarOpen={sidebarOpen}
@@ -238,12 +223,13 @@ export default function SellerDashboard() {
 
         {/* Content Area */}
         <div className="p-4 sm:p-6 max-w-400 mx-auto">
+          
           {/* Dashboard Section */}
           {activeSection === "dashboard" && (
             <div className="space-y-6">
               {/* Stats Grid */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                {stats.map((stat, index) => (
+                {dynamicStats.map((stat, index) => (
                   <CardStat
                     key={index}
                     label={stat.label}
@@ -259,11 +245,18 @@ export default function SellerDashboard() {
               <div className="grid lg:grid-cols-3 gap-6">
                 {/* Left Column */}
                 <div className="lg:col-span-2 space-y-6">
-                  <RecentOrders
-                    orders={recentOrders}
-                    getStatusInfo={getStatusInfo}
-                  />
-                  <TopDishes dishes={dishes} />
+                  {commandesLoading ? (
+                    <div className="bg-white rounded-xl p-6 text-center border">
+                      <Loader2 className="w-6 h-6 animate-spin mx-auto text-primary" />
+                      <p className="text-sm text-muted-foreground mt-2">Chargement des commandes...</p>
+                    </div>
+                  ) : (
+                    <RecentOrders
+                      orders={recentOrdersList}
+                      getStatusInfo={getStatusInfo}
+                    />
+                  )}
+                  <TopDishes dishes={formattedDishes} />
                 </div>
 
                 {/* Right Column */}
@@ -279,27 +272,27 @@ export default function SellerDashboard() {
           {activeSection === "dishes" && (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {platsLoading ? (
-                <div className="flex justify-center items-center border">
-                  <p className="text-center">Chargement des plats...</p>
+                <div className="col-span-full py-12 text-center">
+                  <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary" />
                 </div>
-              ) : plats.length !== 0 ? (
-                plats.map((dish) => (
+              ) : enrichedDishes && enrichedDishes.length !== 0 ? (
+                enrichedDishes.map((dish) => (
                   <DishCard
                     key={dish.id}
                     dish={dish}
-                    statusInfo={getStatusInfo(dish.status)}
+                    statusInfo={getStatusInfo(dish.disponibilite ? "active" : "inactive")}
                     onDelete={handleDelete}
                     onEdit={handleEdit}
                   />
                 ))
               ) : (
-                <div className="w-full mx-auto flex flex-col justify-center items-center gap-2 text-center">
-                  <p>Vous n'avez ajouté aucun plat !</p>
+                <div className="col-span-full py-12 flex flex-col justify-center items-center gap-4 text-center bg-white rounded-2xl border border-dashed p-6">
+                  <p className="text-muted-foreground">Vous n'avez ajouté aucun plat !</p>
                   <Link
                     to="/seller/add-dish"
-                    className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent"
+                    className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-accent"
                   >
-                    Ajouter un plat
+                    Ajouter mon premier plat
                   </Link>
                 </div>
               )}
@@ -309,15 +302,26 @@ export default function SellerDashboard() {
           {/* Orders Section */}
           {activeSection === "orders" && (
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-              {recentOrders.map((order) => (
-                <OrderCard
-                  key={order.id}
-                  order={order}
-                  statusInfo={getStatusInfo(order.status)}
-                />
-              ))}
+              {commandesLoading ? (
+                <div className="col-span-full py-12 text-center">
+                  <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary" />
+                </div>
+              ) : commandes && commandes.length > 0 ? (
+                commandes.map((order) => (
+                  <OrderCard
+                    key={order.id}
+                    order={order}
+                    onStatusUpdated={refreshCommandes}
+                  />
+                ))
+              ) : (
+                <div className="col-span-full py-12 text-center bg-white rounded-2xl border border-dashed p-6 text-muted-foreground">
+                  Aucune commande reçue pour le moment.
+                </div>
+              )}
             </div>
           )}
+
         </div>
       </main>
     </div>
