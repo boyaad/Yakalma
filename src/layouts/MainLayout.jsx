@@ -10,6 +10,8 @@ function MainLayout() {
   const hideFooter =
     pathname === "/login" ||
     pathname === "/register" ||
+    pathname === "/forgot-password" ||
+    pathname === "/reset-password" ||
     pathname === "/dashboard" ||
     pathname === "/SellerDashboard" ||
     pathname === "/profile" ||
@@ -22,6 +24,8 @@ function MainLayout() {
     pathname.startsWith("/seller/");
     const hideNavbar =
     pathname === "/login" ||
+    pathname === "/forgot-password" ||
+    pathname === "/reset-password" ||
     pathname === "/create-profile" ||
     pathname === "/register" ||
     pathname === "/dashboard" ||

@@ -1,6 +1,7 @@
 import React from "react";
 import { ArrowUp } from "lucide-react";
 import Badge from "./Badge";
+import { useCountUp } from "../../hooks/useCountUp";
 
 /**
  * Reusable CardStat component matching Yakalma Design System
@@ -29,6 +30,8 @@ function CardStat({
   layout = "vertical",
   className = "",
 }) {
+  const animatedValue = useCountUp(value);
+
   // Disposition horizontale (utilisée pour QuickStatCard par exemple)
   if (layout === "horizontal") {
     return (
@@ -38,7 +41,7 @@ function CardStat({
             {Icon && <Icon className="w-5 h-5" />}
           </div>
           <div>
-            <div className="text-2xl font-bold font-poppins">{value}</div>
+            <div className="text-2xl font-bold font-poppins">{animatedValue}</div>
             <div className="text-xs opacity-80 font-poppins">{label}</div>
           </div>
         </div>
@@ -68,7 +71,7 @@ function CardStat({
           </Badge>
         )}
       </div>
-      <div className="text-2xl font-bold mb-1 font-poppins">{value}</div>
+      <div className="text-2xl font-bold mb-1 font-poppins">{animatedValue}</div>
       <div className="text-xs font-medium text-muted-foreground font-poppins">
         {label}
       </div>

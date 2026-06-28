@@ -36,21 +36,16 @@ export function PurchasePanel({
           <ShoppingCart className="h-5 w-5" />
           Ajouter au panier
         </Button>
-
         <Button
           type="button"
-          variant="ghost"
+          variant="outline"
           onClick={onToggleFavorite}
-          className={`w-12 p-0 h-12 shrink-0 border ${
-            isFavorite
-              ? "border-primary bg-primary text-white hover:bg-accent"
-              : "border-border-warm bg-white text-foreground hover:bg-background-warm hover:text-foreground"
-          }`}
-          aria-label={
-            isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"
-          }
+          className={`group h-12 px-4 ${isFavorite
+              ? "bg-primary text-primary-foreground border-primary"
+              : "bg-white border-border hover:bg-muted"
+            }`}
         >
-          <Heart className={`h-5 w-5 ${isFavorite ? "fill-current" : ""}`} />
+          <Heart className={`w-5 h-5 ${isFavorite ? "fill-current" : "text-primary group-hover:text-white"}`} />
         </Button>
       </div>
     </section>

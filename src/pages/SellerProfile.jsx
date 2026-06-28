@@ -16,10 +16,10 @@ import { SellerSidebar } from "../components/seller/SellerSidebar";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import { useAuth } from "../context/AuthContext";
+import { useSeller } from "../context/SellerInfoContext";
 import { signOut } from "../services/authService";
 import { toast } from "react-toastify";
 import { supabase } from "../services/supabase";
-import { dishes } from "../data/adminDashboardData";
 
 const seller = {
   name: "Fatima K.",
@@ -41,7 +41,7 @@ const menuItems = [
     id: "dashboard",
     label: "Tableau de bord",
     icon: LayoutDashboard,
-    path: "/SellerDashboard",
+    path: "/seller/dashboard",
   },
   {
     id: "dishes",
@@ -67,6 +67,15 @@ function SellerStat({ icon: Icon, label, value }) {
 
 export default function SellerProfile() {
   const { user, profile } = useAuth();
+  const { plats, commandes } = useSeller();
+
+  const activePlatsCount = plats ? plats.filter((p) => p.disponibilite).length : 0;
+  const totalOrdersCount = commandes ? commandes.length : 0;
+  const allReviews = plats ? plats.flatMap((plat) => plat.avis || []) : [];
+  const averageRating = allReviews.length
+    ? (allReviews.reduce((sum, review) => sum + Number(review.note || 0), 0) / allReviews.length).toFixed(1)
+    : "5.0";
+
   const [formData, setFormData] = useState({
     nom_complet: profile?.nom_complet || "",
     email: user?.email || "",
@@ -187,16 +196,16 @@ export default function SellerProfile() {
 
             <div className="space-y-6">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <SellerStat icon={Star} label="Note moyenne" value={seller.rating} />
+                <SellerStat icon={Star} label="Note moyenne" value={averageRating} />
                 <SellerStat
                   icon={UtensilsCrossed}
                   label="Plats actifs"
-                  value={dishes.length}
+                  value={activePlatsCount}
                 />
                 <SellerStat
                   icon={Package}
                   label="Commandes"
-                  value={0}
+                  value={totalOrdersCount}
                 />
               </div>
 

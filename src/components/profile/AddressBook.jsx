@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { MapPin, Plus, X, Pencil, Trash2, Star } from "lucide-react";
 import Button from "../ui/Button";
+import Modal from "../ui/Modal";
 import { useUserInfo } from "../../context/UserInfoContext";
 import { toast } from "react-toastify";
 
@@ -26,102 +27,87 @@ function AddressModal({ initial, onClose, onSave, isSaving }) {
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    <Modal
+      isOpen={true}
+      onClose={onClose}
+      title={initial ? "Modifier l'adresse" : "Nouvelle adresse"}
+      size="md"
     >
-      <div className="w-full max-w-lg rounded-2xl bg-white shadow-2xl animate-slide-up">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-border-warm px-6 py-4">
-          <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
-            <MapPin className="h-5 w-5 text-primary" />
-            {initial ? "Modifier l'adresse" : "Nouvelle adresse"}
-          </h3>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-full p-1.5 text-muted-foreground hover:bg-muted/30 hover:text-foreground transition-colors"
-          >
-            <X className="h-5 w-5" />
-          </button>
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Label */}
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-1">
+            Nom de l&apos;adresse
+          </label>
+          <input
+            type="text"
+            placeholder="ex : Maison, Bureau, Chez maman…"
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
+            className={`w-full rounded-xl border px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary/40 transition ${
+              errors.label ? "border-error" : "border-border-warm"
+            }`}
+          />
+          {errors.label && (
+            <p className="mt-1 text-xs text-error">{errors.label}</p>
+          )}
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {/* Label */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              Nom de l&apos;adresse
-            </label>
-            <input
-              type="text"
-              placeholder="ex : Maison, Bureau, Chez maman…"
-              value={label}
-              onChange={(e) => setLabel(e.target.value)}
-              className={`w-full rounded-xl border px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary/40 transition ${
-                errors.label ? "border-error" : "border-border-warm"
-              }`}
-            />
-            {errors.label && (
-              <p className="mt-1 text-xs text-error">{errors.label}</p>
-            )}
-          </div>
-
-          {/* Localisation */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              Adresse complète
-            </label>
-            <input
-              type="text"
-              placeholder="ex : 123 Rue Principale, Dakar"
-              value={localisation}
-              onChange={(e) => setLocalisation(e.target.value)}
-              className={`w-full rounded-xl border px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary/40 transition ${
-                errors.localisation ? "border-error" : "border-border-warm"
-              }`}
-            />
-            {errors.localisation && (
-              <p className="mt-1 text-xs text-error">{errors.localisation}</p>
-            )}
-          </div>
-
-          {/* isDefault toggle */}
-          <label className="flex items-center gap-3 cursor-pointer select-none">
-            <div
-              role="switch"
-              aria-checked={isDefault}
-              onClick={() => setIsDefault((v) => !v)}
-              className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer ${
-                isDefault ? "bg-primary" : "bg-muted-foreground/30"
-              }`}
-            >
-              <span
-                className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                  isDefault ? "translate-x-5" : "translate-x-0"
-                }`}
-              />
-            </div>
-            <span className="text-sm text-foreground">Adresse par défaut</span>
+        {/* Localisation */}
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-1">
+            Adresse complète
           </label>
+          <input
+            type="text"
+            placeholder="ex : 123 Rue Principale, Dakar"
+            value={localisation}
+            onChange={(e) => setLocalisation(e.target.value)}
+            className={`w-full rounded-xl border px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary/40 transition ${
+              errors.localisation ? "border-error" : "border-border-warm"
+            }`}
+          />
+          {errors.localisation && (
+            <p className="mt-1 text-xs text-error">{errors.localisation}</p>
+          )}
+        </div>
 
-          {/* Actions */}
-          <div className="flex justify-end gap-3 pt-2">
-            <Button type="button" variant="ghost" onClick={onClose} className="px-5">
-              Annuler
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              className="px-5"
-              disabled={isSaving}
-            >
-              {isSaving ? "Enregistrement…" : initial ? "Modifier" : "Ajouter"}
-            </Button>
+        {/* isDefault toggle */}
+        <label className="flex items-center gap-3 cursor-pointer select-none">
+          <div
+            role="switch"
+            aria-checked={isDefault}
+            onClick={() => setIsDefault((v) => !v)}
+            className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer ${
+              isDefault ? "bg-primary" : "bg-muted-foreground/30"
+            }`}
+          >
+            <span
+              className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
+                isDefault ? "translate-x-5" : "translate-x-0"
+              }`}
+            />
           </div>
-        </form>
-      </div>
-    </div>
+          <span className="text-sm text-foreground">Adresse par défaut</span>
+        </label>
+
+        {/* Actions */}
+        <div className="flex justify-end gap-3 pt-2">
+          <Button type="button" variant="ghost" onClick={onClose} className="px-5">
+            Annuler
+          </Button>
+          <Button
+            type="submit"
+            variant="primary"
+            className="px-5"
+            disabled={isSaving}
+          >
+            {isSaving ? "Enregistrement…" : initial ? "Modifier" : "Ajouter"}
+          </Button>
+        </div>
+      </form>
+    </Modal>
   );
 }
 
@@ -134,6 +120,7 @@ export function AddressBook() {
   const [editing, setEditing] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
 
   if (addressesLoading) {
     return (
@@ -165,7 +152,6 @@ export function AddressBook() {
 
   /* ── Supprimer ── */
   const handleDelete = async (id) => {
-    if (!window.confirm("Supprimer cette adresse ?")) return;
     setDeletingId(id);
     try {
       await deleteAddress(id);
@@ -211,7 +197,7 @@ export function AddressBook() {
               <button
                 type="button"
                 onClick={openAdd}
-                className="text-primary font-semibold hover:underline text-sm"
+                className="text-primary font-semibold hover:underline text-sm font-poppins"
               >
                 + Ajouter une adresse
               </button>
@@ -229,17 +215,17 @@ export function AddressBook() {
                   </span>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-semibold text-foreground leading-tight">
+                      <h3 className="font-semibold text-foreground leading-tight font-poppins">
                         {item.label}
                       </h3>
                       {item.isDefault && (
-                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full font-poppins">
                           <Star className="h-3 w-3" />
                           Par défaut
                         </span>
                       )}
                     </div>
-                    <p className="text-sm text-muted-foreground mt-0.5 leading-5">
+                    <p className="text-sm text-muted-foreground mt-0.5 leading-5 font-poppins">
                       {item.localisation}
                     </p>
                   </div>
@@ -250,16 +236,16 @@ export function AddressBook() {
                   <button
                     type="button"
                     onClick={() => openEdit(item)}
-                    className="flex items-center gap-1.5 rounded-lg border border-border-warm bg-white px-3 py-1.5 text-sm font-medium text-foreground hover:bg-primary hover:text-white hover:border-primary transition-colors"
+                    className="flex items-center gap-1.5 rounded-lg border border-border-warm bg-white px-3 py-1.5 text-sm font-medium text-foreground hover:bg-primary hover:text-white hover:border-primary transition-colors cursor-pointer font-poppins"
                   >
                     <Pencil className="h-3.5 w-3.5" />
                     Modifier
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleDelete(item.id)}
+                    onClick={() => setDeleteConfirmId(item.id)}
                     disabled={deletingId === item.id}
-                    className="flex items-center gap-1.5 rounded-lg border border-border-warm bg-white px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-error hover:text-white hover:border-error transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1.5 rounded-lg border border-border-warm bg-white px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-error hover:text-white hover:border-error transition-colors disabled:opacity-50 cursor-pointer font-poppins"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                     {deletingId === item.id ? "Suppression…" : "Supprimer"}
@@ -280,6 +266,38 @@ export function AddressBook() {
           isSaving={isSaving}
         />
       )}
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={deleteConfirmId !== null}
+        onClose={() => setDeleteConfirmId(null)}
+        title="Supprimer l'adresse"
+        size="sm"
+      >
+        <p className="mb-6 text-foreground/70 font-poppins">
+          Êtes-vous sûr de vouloir supprimer cette adresse de votre carnet d'adresses ?
+        </p>
+        <div className="flex gap-3 justify-end">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setDeleteConfirmId(null)}
+          >
+            Annuler
+          </Button>
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={() => {
+              const id = deleteConfirmId;
+              setDeleteConfirmId(null);
+              handleDelete(id);
+            }}
+          >
+            Supprimer
+          </Button>
+        </div>
+      </Modal>
     </>
   );
 }

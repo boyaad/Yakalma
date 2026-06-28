@@ -82,12 +82,14 @@ function Navbar() {
                       <Link
                         to="/panier"
                         className="font-poppins font-semibold text-xl text-foreground hover:text-primary transition-colors"
+                        aria-label="Panier"
                       >
                         <ShoppingCart color="black" size={24} />
                       </Link>
                       <Link
                         to="/profile"
                         className="font-poppins font-semibold text-xl text-foreground hover:text-primary transition-colors"
+                        aria-label="Mon profil"
                       >
                         <User color="black" size={24} />
                       </Link>
@@ -246,7 +248,7 @@ function NavbarLink({
       } ${
         isActive
           ? "bg-primary text-white shadow-[0_6px_14px_rgba(160,67,10,0.22)]"
-          : "text-foreground hover:bg-[#f3e6dc] hover:text-primary"
+          : "text-foreground hover:bg-background-warm hover:text-primary"
       }`}
     >
       <Icon className="w-5 h-5" />

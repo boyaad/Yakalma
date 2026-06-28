@@ -2,9 +2,10 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { DishSummary, ReviewsList } from "../components/platDetail";
-import { getPlatById } from "../services/platService";
+import { getChefStats, getPlatById } from "../services/platService";
 import { getReviews, addReview } from "../services/reviewService";
 import Button from "../components/ui/Button";
+import Loader from "../components/ui/Loader";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../services/supabase";
@@ -74,8 +75,16 @@ function PlatDetail() {
         return;
       }
 
+      let chefStats = { rating: 0, reviewsCount: 0, dishesCount: 0 };
+      try {
+        chefStats = await getChefStats(data.vendeur_id);
+      } catch (err) {
+        console.error("Erreur chargement stats chef:", err);
+      }
+
       const dishTransforme = {
         id: data.id,
+        sellerId: data.vendeur_id,
         name: data.titre,
         image: data.image_url,
         price: data.prix,
@@ -94,8 +103,9 @@ function PlatDetail() {
         chef: {
           name: data.profiles?.nom_complet || "Vendeur inconnu",
           avatar: data.profiles?.avatar || "",
-          rating: 0,
-          dishesCount: 0,
+          rating: chefStats.rating,
+          reviewsCount: chefStats.reviewsCount,
+          dishesCount: chefStats.dishesCount,
         },
       };
 
@@ -249,8 +259,8 @@ function PlatDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Chargement du plat...</p>
+      <div className="min-h-screen flex items-center justify-center bg-background-warm">
+        <Loader text="Chargement du plat..." />
       </div>
     );
   }
@@ -302,6 +312,10 @@ function PlatDetail() {
           averageRating={averageRating}
           reviewsLoading={reviewsLoading}
           isLoggedIn={!!user}
+          userId={user?.id}
+          dishId={id}
+          sellerId={dishWithRatings.sellerId}
+          dishName={dishWithRatings.name}
           onSubmitReview={handleSubmitReview}
           submittingReview={submittingReview}
         />

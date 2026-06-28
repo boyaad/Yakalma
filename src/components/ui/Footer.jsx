@@ -16,19 +16,28 @@ export function Footer() {
             </p>
             <div className="flex items-center gap-3">
               <a
-                href="#"
+                href="https://www.facebook.com/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Facebook"
                 className="w-10 h-10 rounded-full bg-white/10 hover:bg-primary transition-colors flex items-center justify-center"
               >
                 <Facebook className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Instagram"
                 className="w-10 h-10 rounded-full bg-white/10 hover:bg-primary transition-colors flex items-center justify-center"
               >
                 <Instagram className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="https://x.com/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="X"
                 className="w-10 h-10 rounded-full bg-white/10 hover:bg-primary transition-colors flex items-center justify-center"
               >
                 <Twitter className="w-5 h-5" />
@@ -41,7 +50,7 @@ export function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  to="/catalog"
+                  to="/plats"
                   className="text-white/70 hover:text-white transition-colors"
                 >
                   Catalogue
@@ -49,23 +58,15 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  to="/catalog"
+                  to="/#nos_talent"
                   className="text-white/70 hover:text-white transition-colors"
                 >
-                  Catégories
+                  Nos talents
                 </Link>
               </li>
               <li>
                 <Link
-                  to="/catalog"
-                  className="text-white/70 hover:text-white transition-colors"
-                >
-                  Chefs
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/signup"
+                  to="/register"
                   className="text-white/70 hover:text-white transition-colors"
                 >
                   Devenir chef
@@ -78,36 +79,28 @@ export function Footer() {
             <h4 className="font-semibold mb-4">À propos</h4>
             <ul className="space-y-2">
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/qui-sommes-nous"
                   className="text-white/70 hover:text-white transition-colors"
                 >
-                  Notre histoire
-                </a>
+                  Qui sommes-nous
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/comment-ca-marche"
                   className="text-white/70 hover:text-white transition-colors"
                 >
                   Comment ça marche
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="text-white/70 hover:text-white transition-colors"
-                >
-                  Blog
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
+                <Link
+                  to="/carrieres"
                   className="text-white/70 hover:text-white transition-colors"
                 >
                   Carrières
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -116,36 +109,36 @@ export function Footer() {
             <h4 className="font-semibold mb-4">Support</h4>
             <ul className="space-y-2">
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/centre-aide"
                   className="text-white/70 hover:text-white transition-colors"
                 >
                   Centre d'aide
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/contact"
                   className="text-white/70 hover:text-white transition-colors"
                 >
                   Nous contacter
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/cgu"
                   className="text-white/70 hover:text-white transition-colors"
                 >
                   CGU
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  to="/politique-confidentialite"
                   className="text-white/70 hover:text-white transition-colors"
                 >
-                  Confidentialité
-                </a>
+                  Politique de confidentialité
+                </Link>
               </li>
             </ul>
           </div>
@@ -157,7 +150,7 @@ export function Footer() {
           </p>
           <div className="flex items-center gap-2 text-white/60 text-sm">
             <MapPin className="w-4 h-4" />
-            <span>Disponible à Paris et en Île-de-France</span>
+            <span>Disponible à Dakar et ses environs</span>
           </div>
         </div>
       </div>

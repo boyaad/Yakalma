@@ -71,7 +71,6 @@ export default function AddDish() {
     async function chargerCategories() {
       try {
         const { data, error } = await getCategories();
-        console.log("CATEGORIES =", data);
         if (error || !data || data.length === 0) {
           setCategories(FALLBACK_CATEGORIES);
         } else {
@@ -305,20 +304,12 @@ export default function AddDish() {
             <Button
               type="submit"
               variant="primary"
+              isLoading={isSubmitting}
               disabled={isSubmitting}
               className="flex-1 py-4"
             >
-              {isSubmitting ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Publication en cours...</span>
-                </>
-              ) : (
-                <>
-                  <CheckCircle className="w-5 h-5" />
-                  <span>Publier le plat</span>
-                </>
-              )}
+              <CheckCircle className="w-5 h-5" />
+              <span>Publier le plat</span>
             </Button>
           </div>
         </form>

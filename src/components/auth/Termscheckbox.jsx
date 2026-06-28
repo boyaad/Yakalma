@@ -1,4 +1,5 @@
 import { XCircle } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function TermsCheckbox({ checked, onChange, error }) {
   return (
@@ -12,13 +13,13 @@ export function TermsCheckbox({ checked, onChange, error }) {
         />
         <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
           J'accepte les{" "}
-          <a href="#" className="text-primary hover:underline">
+          <Link to="/cgu" className="text-primary hover:underline">
             conditions d'utilisation
-          </a>{" "}
+          </Link>{" "}
           et la{" "}
-          <a href="#" className="text-primary hover:underline">
+          <Link to="/politique-confidentialite" className="text-primary hover:underline">
             politique de confidentialité
-          </a>
+          </Link>
         </span>
       </label>
       {error && (

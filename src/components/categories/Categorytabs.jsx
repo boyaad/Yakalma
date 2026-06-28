@@ -43,16 +43,18 @@ export function CategoryTabs({
   ];
 
   return (
-    <div className="mb-6 overflow-x-auto pb-2">
+    <div className="mb-6 overflow-x-auto pb-2" role="tablist" aria-label="Catégories de plats">
       <div className="flex gap-3 min-w-max sm:min-w-0">
         {categoriesAvecTous.map((category) => (
           <button
             key={category.id}
+            role="tab"
+            aria-selected={selectedCategory === category.id}
             onClick={() => {
               setSelectedCategory(category.id);
               setCurrentPage(1);
             }}
-            className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl transition-all font-medium whitespace-nowrap ${
+            className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl transition-all font-medium whitespace-nowrap cursor-pointer ${
               selectedCategory === category.id
                 ? "bg-primary text-white shadow-md scale-105"
                 : "bg-white hover:bg-white hover:border-primary/30"

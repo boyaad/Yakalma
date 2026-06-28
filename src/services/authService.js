@@ -36,3 +36,32 @@ export async function resetPassword(email) {
   return await supabase.auth.resetPasswordForEmail(email);
 }
 
+export async function requestPasswordReset(email, redirectTo) {
+  return await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo,
+  });
+}
+
+export async function updatePassword(password) {
+  return await supabase.auth.updateUser({
+    password,
+  });
+}
+
+export async function changePassword(email, currentPassword, newPassword) {
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email,
+    password: currentPassword,
+  });
+
+  if (signInError) {
+    return {
+      data: null,
+      error: new Error("Le mot de passe actuel est incorrect."),
+    };
+  }
+
+  return await supabase.auth.updateUser({
+    password: newPassword,
+  });
+}

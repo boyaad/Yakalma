@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useSeller } from "../../context/SellerInfoContext";
 
 function parsePrepTimeToMinutes(prepTime) {
@@ -6,8 +7,25 @@ function parsePrepTimeToMinutes(prepTime) {
   return match ? Number(match[0]) : 0;
 }
 
+function getPrepTime(plat) {
+  return (
+    plat.prepTime ||
+    plat.temps_preparation ||
+    plat.tempsPreparation ||
+    plat.prep_time ||
+    plat.preparation_time
+  );
+}
+
 export function PerformanceCard() {
   const { plats, commandes } = useSeller();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // Delay setMounted slightly to let DOM render and trigger transition
+    const timer = setTimeout(() => setMounted(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   const deliveredOrders = (commandes ?? []).filter((order) =>
     ["livre", "ready", "delivered", "completed"].includes(order.order_status),
@@ -25,7 +43,7 @@ export function PerformanceCard() {
     : 0;
 
   const prepTimes = (plats ?? [])
-    .map((plat) => parsePrepTimeToMinutes(plat.prepTime))
+    .map((plat) => parsePrepTimeToMinutes(getPrepTime(plat)))
     .filter((minutes) => minutes > 0);
   const averagePrepTime = prepTimes.length
     ? Math.round(prepTimes.reduce((sum, minutes) => sum + minutes, 0) / prepTimes.length)
@@ -49,8 +67,8 @@ export function PerformanceCard() {
           </div>
           <div className="h-2 bg-white/50 rounded-full overflow-hidden">
             <div
-              className="h-full bg-green-500 rounded-full"
-              style={{ width: `${satisfactionPercent}%` }}
+              className="h-full bg-green-500 rounded-full transition-all duration-1000 ease-out"
+              style={{ width: `${mounted ? satisfactionPercent : 0}%` }}
             ></div>
           </div>
         </div>
@@ -63,15 +81,21 @@ export function PerformanceCard() {
           </div>
           <div className="h-2 bg-white/50 rounded-full overflow-hidden">
             <div
-              className="h-full bg-primary rounded-full"
-              style={{ width: `${prepTimePercent}%` }}
+              className="h-full bg-primary rounded-full transition-all duration-1000 ease-out"
+              style={{ width: `${mounted ? prepTimePercent : 0}%` }}
             ></div>
           </div>
         </div>
         <div className="pt-2 border-t border-primary/20">
-          <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center justify-between mb-2 text-sm">
             <span className="font-medium">Objectif mensuel</span>
-            <span className="font-bold text-primary">{revenueProgress} / 100</span>
+            <span className="font-bold text-primary">{revenueProgress}%</span>
+          </div>
+          <div className="h-2 bg-white/50 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-primary rounded-full transition-all duration-1000 ease-out"
+              style={{ width: `${mounted ? revenueProgress : 0}%` }}
+            ></div>
           </div>
         </div>
       </div>
