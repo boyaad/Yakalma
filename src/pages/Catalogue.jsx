@@ -13,6 +13,7 @@ import { FiltersBar } from "../components/categories/Filtersbar";
 import { EmptyState } from "../components/categories/Emptystate";
 import { Pagination } from "../components/categories/Pagination";
 import CardPlat from "../components/ui/CardPlat";
+import Loader from "../components/ui/Loader";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -84,12 +85,9 @@ export default function Catalog() {
   const chargerPlats = useCallback(async () => {
     try {
       const { data, error } = await getPlats();
-      console.log("DATA =", data);
-      console.log("ERROR =", error);
 
       let rawPlats = data;
       if (error || !data || data.length === 0) {
-        console.warn("Utilisation des plats de secours (offline)");
         rawPlats = FALLBACK_PLATS;
       }
 
@@ -219,8 +217,8 @@ export default function Catalog() {
   );
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Chargement des plats...</p>
+      <div className="min-h-screen flex items-center justify-center bg-background-warm">
+        <Loader text="Chargement des plats..." />
       </div>
     );
   }

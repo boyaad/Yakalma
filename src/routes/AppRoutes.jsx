@@ -5,6 +5,8 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+import ForgotPassword from "../pages/ForgotPassword";
+import ResetPassword from "../pages/ResetPassword";
 import Catalogue from "../pages/Catalogue";
 import PlatDetail from "../pages/PlatDetail";
 import Cart from "../pages/Cart";
@@ -19,10 +21,19 @@ import NotFound from "../pages/NotFound";
 import RoleRoute from "../components/RoleRoute";
 import CreateProfile from "../pages/CreateProfile";
 import EditDish from "../pages/EditDish";
+import About from "../pages/About";
+import HowItWorks from "../pages/HowItWorks";
+import Careers from "../pages/Careers";
+import HelpCenter from "../pages/HelpCenter";
+import Contact from "../pages/Contact";
+import Terms from "../pages/Terms";
+import PrivacyPolicy from "../pages/PrivacyPolicy";
+import ScrollToTop from "../components/routing/ScrollToTop";
 
 function AppRoutes() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route element={<MainLayout />}>
           {/* Public Routes */}
@@ -53,6 +64,15 @@ function AppRoutes() {
 
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/qui-sommes-nous" element={<About />} />
+          <Route path="/comment-ca-marche" element={<HowItWorks />} />
+          <Route path="/carrieres" element={<Careers />} />
+          <Route path="/centre-aide" element={<HelpCenter />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/cgu" element={<Terms />} />
+          <Route path="/politique-confidentialite" element={<PrivacyPolicy />} />
           <Route
             path="/create-profile"
             element={

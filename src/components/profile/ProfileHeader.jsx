@@ -44,7 +44,7 @@ export function ProfileHeader({ activeSection, setSidebarOpen, user }) {
               Commander
             </Link>
 
-            <Link to={"/"} className="size-12 flex justify-center items-center rounded-full hover:bg-slate-100" title="Retourner à la page acceuil">
+            <Link to={"/"} className="size-12 flex justify-center items-center rounded-full hover:bg-background-warm transition-colors" aria-label="Retourner à la page d'accueil">
               <Home color="black" size={24} />
             </Link>
           </div>

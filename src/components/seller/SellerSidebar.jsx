@@ -64,6 +64,7 @@ export function SellerSidebar({
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setSidebarOpen(false)}
+            aria-hidden="true"
           ></div>
           <aside className="absolute left-0 top-0 bottom-0 w-64 sm:w-72 bg-white flex flex-col shadow-2xl">
             {/* Logo */}
@@ -75,7 +76,8 @@ export function SellerSidebar({
               />
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="p-1.5 sm:p-2 hover:bg-muted rounded-lg transition-colors"
+                className="p-1.5 sm:p-2 hover:bg-muted rounded-lg transition-colors cursor-pointer"
+                aria-label="Fermer le menu"
               >
                 <X className="w-5 h-5" />
               </button>

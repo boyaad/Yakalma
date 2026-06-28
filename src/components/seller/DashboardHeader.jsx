@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Menu, Plus } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import Button from "../ui/Button";
 
 export function DashboardHeader({
   activeSection,
@@ -25,6 +26,7 @@ export function DashboardHeader({
             <button
               onClick={() => setSidebarOpen(true)}
               className="lg:hidden p-1.5 sm:p-2 text-foreground hover:bg-muted active:bg-primary active:text-white rounded-lg transition-colors flex-shrink-0"
+              aria-label="Ouvrir le menu de navigation"
             >
               <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
@@ -44,14 +46,15 @@ export function DashboardHeader({
           <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
             {/* Action Button */}
             {activeSection === "dishes" && (
-              <Link
+              <Button
                 to="/seller/add-dish"
-                className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-5 lg:px-6 py-1.5 sm:py-2.5 lg:py-3 bg-muted/70 text-foreground rounded-lg sm:rounded-xl font-semibold hover:bg-muted active:bg-primary active:text-white transition-all shadow-lg hover:shadow-xl text-xs sm:text-sm lg:text-base"
+                variant="primary"
+                className="!px-2.5 sm:!px-5 lg:!px-6 !py-1.5 sm:!py-2.5 lg:!py-3 !text-xs sm:!text-sm lg:!text-base !rounded-lg sm:!rounded-xl"
               >
                 <Plus className="w-4 h-4 lg:w-5 lg:h-5" />
                 <span className="hidden sm:inline">Ajouter un plat</span>
                 <span className="sm:hidden">Ajouter</span>
-              </Link>
+              </Button>
             )}
 
             {/* User Profile */}

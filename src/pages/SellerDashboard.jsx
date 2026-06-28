@@ -109,6 +109,11 @@ export default function SellerDashboard() {
         .reduce((sum, c) => sum + Number(c.total), 0)
     : 0;
 
+  const allReviews = plats ? plats.flatMap((plat) => plat.avis || []) : [];
+  const averageRating = allReviews.length
+    ? (allReviews.reduce((sum, review) => sum + Number(review.note || 0), 0) / allReviews.length).toFixed(1)
+    : "5.0";
+
   const dynamicStats = [
     {
       label: "Revenus totaux",
@@ -126,9 +131,10 @@ export default function SellerDashboard() {
     },
     {
       label: "Note moyenne",
-      value: "4.8",
+      value: averageRating,
       icon: Star,
       change: "",
+      badgeText: allReviews.length > 0 ? `${allReviews.length} avis` : "0 avis",
       trend: "up",
     },
     {
@@ -236,6 +242,7 @@ export default function SellerDashboard() {
                     value={stat.value}
                     icon={stat.icon}
                     change={stat.change}
+                    badgeText={stat.badgeText}
                     trend={stat.trend}
                   />
                 ))}

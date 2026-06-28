@@ -35,6 +35,44 @@ export async function getPlatById(id) {
     .single();
 }
 
+export async function getChefStats(vendeurId) {
+  if (!vendeurId) {
+    return { rating: 0, reviewsCount: 0, dishesCount: 0 };
+  }
+
+  const { data: plats, error } = await supabase
+    .from("plats")
+    .select(
+      `
+      id,
+      disponibilite,
+      avis (
+        note
+      )
+    `,
+    )
+    .eq("vendeur_id", vendeurId);
+
+  if (error) throw error;
+
+  const chefPlats = plats || [];
+  const activeDishesCount = chefPlats.filter((plat) => plat.disponibilite).length;
+  const notes = chefPlats.flatMap((plat) =>
+    (plat.avis || []).map((avis) => avis.note).filter((note) => note != null),
+  );
+
+  return {
+    rating:
+      notes.length > 0
+        ? Math.round(
+            (notes.reduce((sum, note) => sum + note, 0) / notes.length) * 10,
+          ) / 10
+        : 0,
+    reviewsCount: notes.length,
+    dishesCount: activeDishesCount,
+  };
+}
+
 export async function addPlat(platData) {
   return await supabase.from("plats").insert([platData]).select().single();
 }

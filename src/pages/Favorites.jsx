@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { Heart } from "lucide-react";
 import { EmptyFavorites } from "../components/favorites/EmptyFavorites";
 import { FavoritesList } from "../components/favorites/FavoritesList";
+import Loader from "../components/ui/Loader";
 
 export default function Favorites() {
   const { user } = useAuth();
@@ -30,7 +31,7 @@ export default function Favorites() {
   if (favoritesLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background-warm">
-        <p className="text-muted-foreground">Chargement de vos favoris...</p>
+        <Loader text="Chargement de vos favoris..." />
       </div>
     );
   }

@@ -413,7 +413,6 @@ export default function CreateProfile() {
       });
 
       setAvatar(null);
-      console.log(data);
 
       navigate("/");
     } catch (error) {

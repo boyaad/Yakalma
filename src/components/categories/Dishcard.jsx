@@ -25,7 +25,8 @@ export function DishCard({ dish, isFavorite, onToggleFavorite }) {
         {/* Favorite Button */}
         <button
           onClick={() => onToggleFavorite(dish.id)}
-          className="absolute top-3 right-3 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors shadow-lg"
+          className="absolute top-3 right-3 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors shadow-lg cursor-pointer"
+          aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
         >
           <Heart
             className={`w-5 h-5 transition-colors ${

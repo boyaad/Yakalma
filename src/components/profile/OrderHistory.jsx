@@ -1,12 +1,14 @@
 import { useState, useCallback } from "react";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
+import Modal from "../ui/Modal";
 import { Link } from "react-router-dom";
 import { useUserInfo } from "../../context/UserInfoContext";
 import { ChevronDown, ChevronUp, Package, EyeOff, Eye, Trash2 } from "lucide-react";
 
 import { cancelOrder, deleteOrder, hideOrder } from "../../services/orderService";
 import { toast } from "react-toastify";
+import Loader from "../ui/Loader";
 
 const statusLabels = {
   // Français (Base de données)
@@ -30,6 +32,8 @@ function OrderCard({ order, onCancel, onHide, onDelete, isHidden, onRestore }) {
   const [expanded, setExpanded] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isHiding, setIsHiding] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const statusInfo = statusLabels[order.order_status] || statusLabels.en_attente;
   
   const getBadgeVariant = (status) => {
@@ -64,126 +68,194 @@ function OrderCard({ order, onCancel, onHide, onDelete, isHidden, onRestore }) {
   };
 
   return (
-    <article
-      className={`rounded-xl p-5 transition-all hover:shadow-sm border bg-white ${
-        isHidden ? "border-border-warm/40 opacity-60" : "border-border-warm"
-      }`}
-    >
-      <div className="mb-4 flex items-start justify-between gap-4">
-        <div>
-          <p className="font-semibold text-foreground text-sm sm:text-base">Commande #{order.id.slice(0, 8)}...</p>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
-            {order.date} • {order.items} articles
-          </p>
-          <p className="mt-2 text-xs sm:text-sm text-foreground/80 leading-relaxed font-medium">
-            {order.summary || "Détails non disponibles"}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Badge
-            variant={getBadgeVariant(order.order_status)}
-            className="normal-case tracking-normal text-xs sm:text-sm font-semibold px-2.5 py-1 rounded-lg"
-          >
-            {statusInfo.text}
-          </Badge>
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between gap-4 pt-3 border-t border-border-warm/50 mt-3">
-        <span className="font-bold text-primary text-base sm:text-lg">{order.total} FCFA</span>
-        <div className="flex items-center gap-2.5 flex-wrap justify-end">
-          {/* Bouton Annuler (seulement pour les commandes en attente) */}
-          {isCancelable && !isHidden && (
-            <Button
-              variant="outline"
-              onClick={() => onCancel(order.id)}
-              className="px-3 py-1.5 text-xs font-semibold text-error border-error/30 hover:border-error rounded-lg"
+    <>
+      <article
+        className={`rounded-xl p-5 transition-all hover:shadow-sm border bg-white ${
+          isHidden ? "border-border-warm/40 opacity-60" : "border-border-warm"
+        }`}
+      >
+        <div className="mb-4 flex items-start justify-between gap-4">
+          <div>
+            <p className="font-semibold text-foreground text-sm sm:text-base">Commande #{order.id.slice(0, 8)}...</p>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+              {order.date} • {order.items} articles
+            </p>
+            <p className="mt-2 text-xs sm:text-sm text-foreground/80 leading-relaxed font-medium">
+              {order.summary || "Détails non disponibles"}
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Badge
+              variant={getBadgeVariant(order.order_status)}
+              className="normal-case tracking-normal text-xs sm:text-sm font-semibold px-2.5 py-1 rounded-lg"
             >
-              Annuler
-            </Button>
-          )}
+              {statusInfo.text}
+            </Badge>
+          </div>
+        </div>
 
-          {/* Bouton Masquer / Restaurer (Icône uniquement) */}
-          <button
-            onClick={handleHideToggle}
-            disabled={isHiding}
-            title={isHidden ? "Restaurer dans l'historique" : "Masquer de l'historique"}
-            className={`p-2 rounded-lg border transition-all ${
-              isHidden
-                ? "text-info border-info/20 bg-info/5 hover:bg-info/10 hover:border-info"
-                : "text-muted-foreground border-border-warm hover:bg-background-warm hover:text-foreground"
-            } disabled:opacity-50`}
-          >
-            {isHidden ? <Eye className="h-4 w-4 cursor-pointer" /> : <EyeOff className="h-4 w-4 cursor-pointer" />}
-          </button>
+        <div className="flex items-center justify-between gap-4 pt-3 border-t border-border-warm/50 mt-3">
+          <span className="font-bold text-primary text-base sm:text-lg">{order.total} FCFA</span>
+          <div className="flex items-center gap-2.5 flex-wrap justify-end">
+            {/* Bouton Annuler (seulement pour les commandes en attente) */}
+            {isCancelable && !isHidden && (
+              <Button
+                variant="outline"
+                onClick={() => setShowCancelModal(true)}
+                className="px-3 py-1.5 text-xs font-semibold text-error border-error/30 hover:border-error rounded-lg"
+              >
+                Annuler
+              </Button>
+            )}
 
-          {/* Bouton Supprimer (Icône uniquement, seulement pour les commandes terminées/annulées) */}
-          {isDeletable && (
+            {/* Bouton Masquer / Restaurer (Icône uniquement) */}
             <button
-              onClick={handleDelete}
-              disabled={isDeleting}
-              title="Supprimer définitivement"
-              className="p-2 text-error cursor-pointer border border-error/20 bg-error/5 hover:bg-error/10 hover:border-error rounded-lg transition-all disabled:opacity-50"
+              type="button"
+              onClick={handleHideToggle}
+              disabled={isHiding}
+              aria-label={isHidden ? "Restaurer dans l'historique" : "Masquer de l'historique"}
+              className={`p-2 rounded-lg border transition-all ${
+                isHidden
+                  ? "text-info border-info/20 bg-info/5 hover:bg-info/10 hover:border-info"
+                  : "text-muted-foreground border-border-warm hover:bg-background-warm hover:text-foreground"
+              } disabled:opacity-50`}
             >
-              <Trash2 className="h-4 w-4" />
+              {isHidden ? <Eye className="h-4 w-4 cursor-pointer" /> : <EyeOff className="h-4 w-4 cursor-pointer" />}
             </button>
-          )}
 
-          <Button
-            variant="link"
-            onClick={() => setExpanded(!expanded)}
-            className="p-0 h-auto font-semibold text-xs sm:text-sm inline-flex items-center gap-1 ml-2"
-          >
-            {expanded ? "Masquer" : "Voir les détails"}
-            {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-          </Button>
+            {/* Bouton Supprimer (Icône uniquement, seulement pour les commandes terminées/annulées) */}
+            {isDeletable && (
+              <button
+                type="button"
+                onClick={() => setShowDeleteModal(true)}
+                disabled={isDeleting}
+                aria-label="Supprimer définitivement"
+                className="p-2 text-error cursor-pointer border border-error/20 bg-error/5 hover:bg-error/10 hover:border-error rounded-lg transition-all disabled:opacity-50"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            )}
+
+            <Button
+              variant="link"
+              onClick={() => setExpanded(!expanded)}
+              className="p-0 h-auto font-semibold text-xs sm:text-sm inline-flex items-center gap-1 ml-2"
+            >
+              {expanded ? "Masquer" : "Voir les détails"}
+              {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </Button>
+          </div>
         </div>
-      </div>
 
-      {/* Panneau de détails extensible */}
-      {expanded && (
-        <div className="mt-4 pt-4 border-t border-border-warm/50 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
-          <div className="text-xs text-muted-foreground">
-            <span className="font-semibold text-foreground">N° de commande :</span> {order.id}
-          </div>
-          <div className="text-xs text-muted-foreground">
-            <span className="font-semibold text-foreground">Date :</span> {order.date}
-          </div>
-          <div className="text-xs text-muted-foreground">
-            <span className="font-semibold text-foreground">Statut :</span> {statusInfo.text}
-          </div>
+        {/* Panneau de détails extensible */}
+        {expanded && (
+          <div className="mt-4 pt-4 border-t border-border-warm/50 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="text-xs text-muted-foreground">
+              <span className="font-semibold text-foreground">N° de commande :</span> {order.id}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              <span className="font-semibold text-foreground">Date :</span> {order.date}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              <span className="font-semibold text-foreground">Statut :</span> {statusInfo.text}
+            </div>
 
-          {order.ligne_commandes && order.ligne_commandes.length > 0 && (
-            <div className="mt-2">
-              <p className="text-xs font-semibold text-foreground mb-2">Articles commandés :</p>
-              <div className="space-y-2">
-                {order.ligne_commandes.map((line) => (
-                  <div
-                    key={line.id}
-                    className="flex items-center justify-between gap-3 rounded-lg bg-background-warm/70 border border-border-warm/50 px-3 py-2"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Package className="h-4 w-4 text-primary shrink-0" />
-                      <span className="text-sm font-medium text-foreground">
-                        {line.plats?.titre || "Plat"}
+            {order.ligne_commandes && order.ligne_commandes.length > 0 && (
+              <div className="mt-2">
+                <p className="text-xs font-semibold text-foreground mb-2">Articles commandés :</p>
+                <div className="space-y-2">
+                  {order.ligne_commandes.map((line) => (
+                    <div
+                      key={line.id}
+                      className="flex items-center justify-between gap-3 rounded-lg bg-background-warm/70 border border-border-warm/50 px-3 py-2"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Package className="h-4 w-4 text-primary shrink-0" />
+                        <span className="text-sm font-medium text-foreground">
+                          {line.plats?.titre || "Plat"}
+                        </span>
+                      </div>
+                      <span className="text-sm text-muted-foreground font-medium">
+                        x{line.quantite}
                       </span>
                     </div>
-                    <span className="text-sm text-muted-foreground font-medium">
-                      x{line.quantite}
-                    </span>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          <div className="flex items-center justify-between pt-2 border-t border-dashed border-border-warm/50 mt-2">
-            <span className="text-sm font-semibold text-foreground">Total</span>
-            <span className="text-lg font-bold text-primary">{order.total} FCFA</span>
+            <div className="flex items-center justify-between pt-2 border-t border-dashed border-border-warm/50 mt-2">
+              <span className="text-sm font-semibold text-foreground">Total</span>
+              <span className="text-lg font-bold text-primary">{order.total} FCFA</span>
+            </div>
           </div>
+        )}
+      </article>
+
+      {/* Cancel Confirmation Modal */}
+      <Modal
+        isOpen={showCancelModal}
+        onClose={() => setShowCancelModal(false)}
+        title="Annuler la commande"
+        size="sm"
+      >
+        <p className="mb-6 text-foreground/70">
+          Êtes-vous sûr de vouloir annuler la commande <strong className="text-foreground">#{order.id.slice(0, 8)}...</strong> ?
+          Cette action ne peut pas être annulée.
+        </p>
+        <div className="flex gap-3 justify-end">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setShowCancelModal(false)}
+          >
+            Retour
+          </Button>
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={() => {
+              onCancel(order.id);
+              setShowCancelModal(false);
+            }}
+          >
+            Annuler la commande
+          </Button>
         </div>
-      )}
-    </article>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        title="Supprimer définitivement"
+        size="sm"
+      >
+        <p className="mb-6 text-foreground/70">
+          Êtes-vous sûr de vouloir supprimer définitivement la commande <strong className="text-foreground">#{order.id.slice(0, 8)}...</strong> de votre historique ?
+          Cette action est irréversible.
+        </p>
+        <div className="flex gap-3 justify-end">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setShowDeleteModal(false)}
+          >
+            Annuler
+          </Button>
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={() => {
+              handleDelete();
+              setShowDeleteModal(false);
+            }}
+          >
+            Supprimer
+          </Button>
+        </div>
+      </Modal>
+    </>
   );
 }
 
@@ -192,10 +264,6 @@ export function OrderHistory() {
   const [showHidden, setShowHidden] = useState(false);
 
   const handleCancelOrder = async (orderId) => {
-    if (!window.confirm("Êtes-vous sûr de vouloir annuler cette commande ?")) {
-      return;
-    }
-
     try {
       await cancelOrder(orderId);
       toast.success("Commande annulée avec succès.");
@@ -229,10 +297,6 @@ export function OrderHistory() {
   }, [refreshCommandes]);
 
   const handleDeleteOrder = useCallback(async (orderId) => {
-    if (!window.confirm("Êtes-vous sûr de vouloir supprimer définitivement cette commande ? Cette action est irréversible.")) {
-      return;
-    }
-
     try {
       await deleteOrder(orderId);
       toast.success("Commande supprimée définitivement.");
@@ -273,7 +337,7 @@ export function OrderHistory() {
       <div className="space-y-4">
         {
           loading ? (
-            <p className="text-muted-foreground text-center">Chargement des commandes...</p>
+            <Loader text="Chargement des commandes..." />
           ) :
           visibleOrders.length > 0 || (showHidden && hiddenOrders.length > 0) ? (
             <>
