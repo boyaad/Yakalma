@@ -40,7 +40,7 @@ function AppRoutes() {
           <Route
             path="/"
             element={
-              <RoleRoute userRole={"acheteur"} allowedRoles={["acheteur"]}>
+              <RoleRoute allowedRoles={["acheteur"]}>
                 <Home />
               </RoleRoute>
             }
@@ -48,7 +48,7 @@ function AppRoutes() {
           <Route
             path="/plats"
             element={
-              <RoleRoute userRole={"acheteur"} allowedRoles={["acheteur"]}>
+              <RoleRoute allowedRoles={["acheteur"]}>
                 <Catalogue />
               </RoleRoute>
             }
@@ -56,7 +56,7 @@ function AppRoutes() {
           <Route
             path="/plats/:id"
             element={
-              <RoleRoute userRole={"acheteur"} allowedRoles={["acheteur"]}>
+              <RoleRoute allowedRoles={["acheteur", "admin"]}>
                 <PlatDetail />
               </RoleRoute>
             }
@@ -87,7 +87,7 @@ function AppRoutes() {
             path="/panier"
             element={
               <ProtectedRoute>
-                <RoleRoute userRole={"acheteur"} allowedRoles={["acheteur"]}>
+                <RoleRoute allowedRoles={["acheteur"]}>
                   <Cart />
                 </RoleRoute>
               </ProtectedRoute>
@@ -97,7 +97,7 @@ function AppRoutes() {
             path="/checkout"
             element={
               <ProtectedRoute>
-                <RoleRoute userRole={"acheteur"} allowedRoles={["acheteur"]}>
+                <RoleRoute allowedRoles={["acheteur"]}>
                   <Checkout />
                 </RoleRoute>
               </ProtectedRoute>
@@ -107,7 +107,7 @@ function AppRoutes() {
             path="/favoris"
             element={
               <ProtectedRoute>
-                <RoleRoute userRole={"acheteur"} allowedRoles={["acheteur"]}>
+                <RoleRoute allowedRoles={["acheteur"]}>
                   <Favorites />
                 </RoleRoute>
               </ProtectedRoute>
@@ -117,7 +117,7 @@ function AppRoutes() {
             path="/profile"
             element={
               <ProtectedRoute>
-                <RoleRoute userRole={"acheteur"} allowedRoles={["acheteur"]}>
+                <RoleRoute allowedRoles={["acheteur"]}>
                   <Profile />
                 </RoleRoute>
               </ProtectedRoute>
@@ -128,7 +128,7 @@ function AppRoutes() {
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <RoleRoute userRole={"admin"} allowedRoles={["admin"]}>
+                <RoleRoute allowedRoles={["admin"]}>
                   <Dashboard />
                 </RoleRoute>
               </ProtectedRoute>
@@ -140,7 +140,7 @@ function AppRoutes() {
             path="/seller/dashboard"
             element={
               <ProtectedRoute>
-                <RoleRoute userRole="vendeur" allowedRoles={["vendeur"]}>
+                <RoleRoute allowedRoles={["vendeur"]}>
                   <SellerDashboard />
                 </RoleRoute>
               </ProtectedRoute>
@@ -151,7 +151,7 @@ function AppRoutes() {
             path="/seller/dishes"
             element={
               <ProtectedRoute>
-                <RoleRoute userRole="vendeur" allowedRoles={["vendeur"]}>
+                <RoleRoute allowedRoles={["vendeur"]}>
                   <SellerDashboard />
                 </RoleRoute>
               </ProtectedRoute>
@@ -162,7 +162,7 @@ function AppRoutes() {
             path="/seller/add-dish"
             element={
               <ProtectedRoute>
-                <RoleRoute userRole="vendeur" allowedRoles={["vendeur"]}>
+                <RoleRoute allowedRoles={["vendeur"]}>
                   <AddDish />
                 </RoleRoute>
               </ProtectedRoute>
@@ -173,7 +173,7 @@ function AppRoutes() {
             path="/seller/profile"
             element={
               <ProtectedRoute>
-                <RoleRoute userRole="vendeur" allowedRoles={["vendeur"]}>
+                <RoleRoute allowedRoles={["vendeur"]}>
                   <SellerProfile />
                 </RoleRoute>
               </ProtectedRoute>
@@ -184,7 +184,7 @@ function AppRoutes() {
             path="/seller/orders"
             element={
               <ProtectedRoute>
-                <RoleRoute userRole="vendeur" allowedRoles={["vendeur"]}>
+                <RoleRoute allowedRoles={["vendeur"]}>
                   <SellerDashboard />
                 </RoleRoute>
               </ProtectedRoute>
