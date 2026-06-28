@@ -1,6 +1,11 @@
-import { useState } from "react";
-import { Star, MessageSquarePlus, Send, Loader2 } from "lucide-react";
+import { useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { Star, MessageSquarePlus, Send, Loader2, Flag } from "lucide-react";
 import { RatingStars } from "./RatingStars";
+import Button from "../ui/Button";
+import Modal from "../ui/Modal";
+import { createDishReport } from "../../services/reportService";
 
 function ReviewForm({ onSubmit, submitting }) {
   const [note, setNote] = useState(0);
@@ -122,10 +127,77 @@ export function ReviewsList({
   averageRating = 0,
   reviewsLoading = false,
   isLoggedIn = false,
+  userId,
+  dishId,
+  sellerId,
+  dishName,
   onSubmitReview,
   submittingReview = false,
 }) {
   const [showForm, setShowForm] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [reportDescription, setReportDescription] = useState("");
+  const [reportError, setReportError] = useState("");
+  const [submittingReport, setSubmittingReport] = useState(false);
+  const navigate = useNavigate();
+
+
+  // signaler un plat
+  const handleReportReview = () => {
+    if (isLoggedIn) {
+      setIsReportModalOpen(true);
+    } else {
+      navigate("/login");
+    }
+  };
+
+  const handleCloseReportModal = useCallback(() => {
+    if (submittingReport) return;
+
+    setIsReportModalOpen(false);
+    setReportDescription("");
+    setReportError("");
+  }, [submittingReport]);
+
+  const handleSubmitReport = async (event) => {
+    event.preventDefault();
+
+    const trimmedDescription = reportDescription.trim();
+
+    if (!trimmedDescription) {
+      setReportError("Veuillez décrire le problème rencontré.");
+      return;
+    }
+
+    if (!userId || !dishId) {
+      setReportError("Impossible d'identifier le plat à signaler.");
+      return;
+    }
+
+    try {
+      setSubmittingReport(true);
+      setReportError("");
+
+      await createDishReport({
+        userId,
+        dishId,
+        sellerId,
+        dishName,
+        description: trimmedDescription,
+      });
+
+      toast.success("Signalement envoyé. Merci pour votre vigilance.");
+      setIsReportModalOpen(false);
+      setReportDescription("");
+      setReportError("");
+    } catch (error) {
+      setReportError(
+        error.message || "Impossible d'envoyer le signalement pour le moment.",
+      );
+    } finally {
+      setSubmittingReport(false);
+    }
+  };
 
   // Wrapper async : attend le résultat, ferme le formulaire uniquement si succès
   const handleFormSubmit = async (note, commentaire) => {
@@ -155,16 +227,28 @@ export function ReviewsList({
           )}
         </div>
 
-        {isLoggedIn && (
+        <div className="flex flex-wrap items-center gap-3">
+          {isLoggedIn && (
+            <button
+              type="button"
+              onClick={() => setShowForm((prev) => !prev)}
+              disabled={submittingReview}
+              className="inline-flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2 font-poppins text-sm font-medium text-primary transition-all hover:bg-primary/10 hover:border-primary/40 disabled:opacity-50 disabled:pointer-events-none"
+            >
+              <MessageSquarePlus className="h-4 w-4" />
+              {showForm ? "Annuler" : "Laisser un avis"}
+            </button>
+          )}
           <button
-            onClick={() => setShowForm((prev) => !prev)}
-            disabled={submittingReview}
-            className="inline-flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2 font-poppins text-sm font-medium text-primary transition-all hover:bg-primary/10 hover:border-primary/40 disabled:opacity-50 disabled:pointer-events-none"
+            type="button"
+            onClick={handleReportReview}
+            disabled={submittingReport}
+            className="inline-flex items-center gap-2 rounded-xl border border-error/20 bg-error/5 px-4 py-2 font-poppins text-sm font-medium text-error transition-all hover:border-error/40 hover:bg-error/10 disabled:pointer-events-none disabled:opacity-50"
           >
-            <MessageSquarePlus className="h-4 w-4" />
-            {showForm ? "Annuler" : "Laisser un avis"}
+            <Flag className="h-4 w-4" />
+            Signaler le plat
           </button>
-        )}
+        </div>
       </div>
 
       {/* Formulaire d'avis (conditionnel) */}
@@ -179,6 +263,75 @@ export function ReviewsList({
           />
         </div>
       )}
+
+      <Modal
+        isOpen={isReportModalOpen}
+        onClose={handleCloseReportModal}
+        title="Signaler le plat"
+        size="md"
+      >
+        <form onSubmit={handleSubmitReport} className="space-y-4">
+          <div className="rounded-xl bg-background-warm p-4">
+            <p className="text-sm font-semibold text-foreground">
+              {dishName || "Plat concerné"}
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Votre signalement sera transmis à l'équipe Yakalma pour examen.
+            </p>
+          </div>
+
+          <div>
+            <label
+              htmlFor="dish-report-description"
+              className="mb-2 block font-poppins text-sm font-medium text-foreground"
+            >
+              Description du problème
+            </label>
+            <textarea
+              id="dish-report-description"
+              value={reportDescription}
+              onChange={(event) => {
+                setReportDescription(event.target.value);
+                if (reportError) setReportError("");
+              }}
+              placeholder="Expliquez brièvement le problème rencontré avec ce plat..."
+              rows={4}
+              maxLength={600}
+              disabled={submittingReport}
+              className="w-full resize-none rounded-xl border border-border-warm bg-white px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
+              aria-invalid={!!reportError}
+              aria-describedby={reportError ? "dish-report-error" : undefined}
+            />
+            <p className="mt-1 text-right text-xs text-muted-foreground">
+              {reportDescription.length}/600
+            </p>
+          </div>
+
+          {reportError && (
+            <div
+              id="dish-report-error"
+              className="rounded-xl border border-error/20 bg-error/5 px-4 py-3 text-sm font-medium text-error animate-fade-in"
+              role="alert"
+            >
+              {reportError}
+            </div>
+          )}
+
+          <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
+            <Button
+              type="button"
+              variant="ghost"
+              disabled={submittingReport}
+              onClick={handleCloseReportModal}
+            >
+              Annuler
+            </Button>
+            <Button type="submit" isLoading={submittingReport}>
+              Envoyer le signalement
+            </Button>
+          </div>
+        </form>
+      </Modal>
 
       {/* Liste des avis */}
       {reviewsLoading ? (

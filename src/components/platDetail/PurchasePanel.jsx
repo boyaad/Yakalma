@@ -36,6 +36,17 @@ export function PurchasePanel({
           <ShoppingCart className="h-5 w-5" />
           Ajouter au panier
         </Button>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onToggleFavorite}
+          className={`group h-12 px-4 ${isFavorite
+              ? "bg-primary text-primary-foreground border-primary"
+              : "bg-white border-border hover:bg-muted"
+            }`}
+        >
+          <Heart className={`w-5 h-5 ${isFavorite ? "fill-current" : "text-primary group-hover:text-white"}`} />
+        </Button>
       </div>
     </section>
   );

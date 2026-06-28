@@ -47,3 +47,21 @@ export async function updatePassword(password) {
     password,
   });
 }
+
+export async function changePassword(email, currentPassword, newPassword) {
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email,
+    password: currentPassword,
+  });
+
+  if (signInError) {
+    return {
+      data: null,
+      error: new Error("Le mot de passe actuel est incorrect."),
+    };
+  }
+
+  return await supabase.auth.updateUser({
+    password: newPassword,
+  });
+}

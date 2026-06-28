@@ -84,6 +84,7 @@ function PlatDetail() {
 
       const dishTransforme = {
         id: data.id,
+        sellerId: data.vendeur_id,
         name: data.titre,
         image: data.image_url,
         price: data.prix,
@@ -311,6 +312,10 @@ function PlatDetail() {
           averageRating={averageRating}
           reviewsLoading={reviewsLoading}
           isLoggedIn={!!user}
+          userId={user?.id}
+          dishId={id}
+          sellerId={dishWithRatings.sellerId}
+          dishName={dishWithRatings.name}
           onSubmitReview={handleSubmitReview}
           submittingReview={submittingReview}
         />

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Heart,
+  Flag,
   Home,
   MapPin,
   Package,
@@ -19,7 +20,7 @@ import { ProfileHeader } from "../components/profile/ProfileHeader";
 import { ProfileOverview } from "../components/profile/ProfileOverview";
 import { ProfileSettings } from "../components/profile/ProfileSettings";
 import { ProfileSidebar } from "../components/profile/ProfileSidebar";
-import { allDishes } from "../data/Dishes";
+import { UserReports } from "../components/profile/UserReports";
 import { signOut } from "../services/authService";
 import { useUserInfo } from "../context/UserInfoContext";
 import { useAuth } from "../context/AuthContext";
@@ -30,6 +31,7 @@ const menuItems = [
   { id: "orders", label: "Commandes", icon: Package },
   { id: "favorites", label: "Favoris", icon: Heart },
   { id: "addresses", label: "Adresses", icon: MapPin },
+  { id: "reports", label: "Signalements", icon: Flag },
   { id: "settings", label: "Paramètres", icon: Settings },
 ];
 
@@ -123,6 +125,7 @@ export default function Profile() {
           {activeSection === "addresses" && (
             <AddressBook />
           )}
+          {activeSection === "reports" && <UserReports />}
           {activeSection === "settings" && <ProfileSettings />}
         </div>
       </main>
