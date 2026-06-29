@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { UserInfoProvider } from "./context/UserInfoContext.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
 import SellerInfoProvider from "./context/SellerInfoContext.jsx";
+import AdminInfoProvider from "./context/AdminInfoContext.jsx";
 
 ReactDOM.createRoot(
   document.getElementById(
@@ -20,8 +21,10 @@ ReactDOM.createRoot(
       <UserInfoProvider>
         <CartProvider>
           <SellerInfoProvider>
-            <App />
-            <ToastContainer position="bottom-right" />
+            <AdminInfoProvider>
+              <App />
+              <ToastContainer position="bottom-right" />
+            </AdminInfoProvider>
           </SellerInfoProvider>
         </CartProvider>
       </UserInfoProvider>

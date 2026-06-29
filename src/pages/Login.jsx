@@ -53,23 +53,15 @@ export default function Login() {
         );
       }
 
-      if (
-        data.role ===
-        "acheteur"
-      ) {
+      if (data.role === "acheteur") {
         navigate("/");
-        toast.success(
-          "Connexion réussie !",
-        );
-      } else if (
-        data.role == "vendeur"
-      ) {
-        navigate(
-          "/seller/dashboard",
-        );
-        toast.success(
-          "Connexion réussie !",
-        );
+        toast.success("Connexion réussie !");
+      } else if (data.role === "vendeur") {
+        navigate("/seller/dashboard");
+        toast.success("Connexion réussie !");
+      } else if (data.role === "admin") {
+        navigate("/dashboard");
+        toast.success("Connexion admin réussie !");
       }
     } catch (error) {
       toast.error(
