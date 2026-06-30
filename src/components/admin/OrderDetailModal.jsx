@@ -11,7 +11,7 @@ export default function OrderDetailModal({ order, isOpen, onClose }) {
     <Modal isOpen={isOpen} onClose={onClose} title={`Détails de la commande ${order.id}`} size="xl">
       <div className="space-y-6">
         <Section title="Informations commande">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <DetailRow label="ID" value={order.id} mono />
             <DetailRow label="Date" value={order.date} />
             <DetailRow label="Statut">
@@ -24,7 +24,7 @@ export default function OrderDetailModal({ order, isOpen, onClose }) {
         </Section>
 
         <Section title="Acheteur">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <DetailRow label="Nom" value={order.customer} />
             <DetailRow label="Téléphone" value={order.customerPhone || "Non renseigné"} />
             <DetailRow label="Localisation" value={order.customerLocation || "Non renseignée"} colSpan />
@@ -32,7 +32,7 @@ export default function OrderDetailModal({ order, isOpen, onClose }) {
         </Section>
 
         <Section title="Vendeur">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <DetailRow label="Nom" value={order.seller} />
             <DetailRow label="Téléphone" value={order.sellerPhone || "Non renseigné"} />
             <DetailRow label="Localisation" value={order.sellerLocation || "Non renseignée"} colSpan />
@@ -41,7 +41,8 @@ export default function OrderDetailModal({ order, isOpen, onClose }) {
 
         <Section title="Plats commandés">
           {order.ligne_commandes && order.ligne_commandes.length > 0 ? (
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto">
+            <table className="w-full min-w-[560px] text-sm">
               <thead>
                 <tr className="border-b border-border-warm">
                   <th className="text-left py-2 font-semibold text-muted-foreground">Plat</th>
@@ -67,6 +68,7 @@ export default function OrderDetailModal({ order, isOpen, onClose }) {
                 </tr>
               </tfoot>
             </table>
+            </div>
           ) : (
             <p className="text-muted-foreground">Aucun détail de plat disponible.</p>
           )}
@@ -87,9 +89,9 @@ function Section({ title, children }) {
 
 function DetailRow({ label, value, children, mono = false, colSpan = false }) {
   return (
-    <div className={`flex items-center gap-2 ${colSpan ? "col-span-2" : ""}`}>
-      <span className="text-muted-foreground text-sm min-w-[100px]">{label}</span>
-      {children || <span className={`font-medium text-sm ${mono ? "font-mono text-primary" : ""}`}>{value}</span>}
+    <div className={`flex min-w-0 flex-col gap-1 min-[420px]:flex-row min-[420px]:items-center min-[420px]:gap-2 ${colSpan ? "sm:col-span-2" : ""}`}>
+      <span className="text-sm text-muted-foreground min-[420px]:min-w-[100px]">{label}</span>
+      {children || <span className={`break-words text-sm font-medium ${mono ? "font-mono text-primary" : ""}`}>{value}</span>}
     </div>
   );
 }

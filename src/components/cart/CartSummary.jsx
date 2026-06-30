@@ -3,21 +3,21 @@ import { formatFcfa } from "../../utils/currency";
 
 export function CartSummary({ subtotal, deliveryFee, total, onCheckout }) {
   return (
-    <aside className="bg-white rounded-xl p-6 sticky top-24">
+    <aside className="rounded-xl bg-white p-4 lg:sticky lg:top-24 sm:p-6">
       <h3 className="mb-4">Résumé de la commande</h3>
 
       <div className="space-y-3 mb-4 pb-4">
-        <div className="flex justify-between text-muted-foreground">
+        <div className="flex justify-between gap-3 text-muted-foreground">
           <span>Sous-total</span>
           <span>{formatFcfa(subtotal)}</span>
         </div>
-        <div className="flex justify-between text-muted-foreground">
+        <div className="flex justify-between gap-3 text-muted-foreground">
           <span>Frais de livraison</span>
           <span>{formatFcfa(deliveryFee)}</span>
         </div>
       </div>
 
-      <div className="flex justify-between mb-6">
+      <div className="flex justify-between gap-3 mb-6">
         <span className="font-medium">Total</span>
         <span className="text-primary font-medium text-xl">
           {formatFcfa(total)}

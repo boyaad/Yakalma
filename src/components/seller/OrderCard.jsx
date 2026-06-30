@@ -84,10 +84,10 @@ export function OrderCard({ order, onStatusUpdated }) {
         </Card.Content>
       </div>
 
-      <Card.Footer className="border-t border-border-warm/50 pt-4 mt-4 flex items-center justify-between gap-4">
-        <div className="text-xl font-bold text-primary">{Number(order.total).toFixed(0)} FCFA</div>
+      <Card.Footer className="mt-4 border-t border-border-warm/50 pt-4">
+        <div className="break-words text-lg font-bold text-primary sm:text-xl">{Number(order.total).toFixed(0)} FCFA</div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {loading ? (
             <Loader2 className="w-5 h-5 animate-spin text-primary" />
           ) : (

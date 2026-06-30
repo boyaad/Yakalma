@@ -109,8 +109,8 @@ function FeaturedDishCard({ dish, isFavorite, onToggleFavorite }) {
           <span>{dish.deliveryTime}</span>
         </div>
 
-        <div className="mt-auto flex items-center justify-between gap-4">
-          <span className="text-xl font-bold text-primary">
+        <div className="mt-auto flex items-center justify-between gap-3">
+          <span className="min-w-0 break-words text-lg font-bold text-primary sm:text-xl">
             {dish.price} FCFA
           </span>
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-foreground transition-colors group-hover:bg-primary group-hover:text-white">

@@ -139,7 +139,7 @@ export function UserReports() {
 
   if (isLoading) {
     return (
-      <section className="rounded-2xl border border-border-warm bg-white p-6 sm:p-8">
+      <section className="rounded-2xl border border-border-warm bg-white p-4 sm:p-8">
         <div className="mb-8">
           <h2 className="text-2xl font-semibold">Mes signalements</h2>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -154,7 +154,7 @@ export function UserReports() {
   }
 
   return (
-    <section className="rounded-2xl border border-border-warm bg-white p-6 sm:p-8">
+    <section className="rounded-2xl border border-border-warm bg-white p-4 sm:p-8">
       <div className="mb-8">
         <h2 className="text-2xl font-semibold">Mes signalements</h2>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -188,18 +188,18 @@ export function UserReports() {
                 key={report.id}
                 type="button"
                 onClick={() => setSelectedReport(report)}
-                className="w-full rounded-xl border border-border-warm bg-background-warm p-4 text-left transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className="min-w-0 w-full rounded-xl border border-border-warm bg-background-warm p-4 text-left transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div className="flex gap-3">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                       <AlertCircle className="h-5 w-5" aria-hidden="true" />
                     </div>
-                    <div>
-                      <p className="font-semibold text-foreground">
+                    <div className="min-w-0">
+                      <p className="break-words font-semibold text-foreground">
                         {report.type}
                       </p>
-                      <p className="mt-1 text-sm text-muted-foreground">
+                      <p className="mt-1 break-words text-sm text-muted-foreground">
                         {report.target}
                       </p>
                       <p className="mt-2 text-xs text-muted-foreground">
@@ -208,7 +208,7 @@ export function UserReports() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between gap-3 sm:flex-col sm:items-end">
+                  <div className="flex flex-wrap items-center justify-between gap-3 sm:flex-col sm:items-end">
                     <Badge
                       variant={statusInfo.variant}
                       className="normal-case tracking-normal"

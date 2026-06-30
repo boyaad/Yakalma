@@ -3,8 +3,8 @@ import { Star } from "lucide-react";
 
 export function TopDishes({ dishes }) {
   return (
-    <div className="bg-white rounded-xl border border-border-warm p-5">
-      <div className="flex items-center justify-between mb-4">
+    <div className="rounded-xl border border-border-warm bg-white p-4 sm:p-5">
+      <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="text-lg font-bold">Plats populaires</h2>
         <Link
           to="/seller/dishes"
@@ -17,12 +17,12 @@ export function TopDishes({ dishes }) {
         {dishes.slice(0, 3).map((dish) => (
           <div
             key={dish.id}
-            className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg hover:shadow-sm transition-all"
+            className="flex flex-col gap-3 rounded-lg bg-muted/30 p-3 transition-all hover:shadow-sm min-[420px]:flex-row min-[420px]:items-center"
           >
             <img
               src={dish.image}
               alt={dish.name}
-              className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
+              className="h-32 w-full shrink-0 rounded-lg object-cover min-[420px]:h-14 min-[420px]:w-14"
             />
             <div className="flex-1 min-w-0">
               <div className="font-semibold text-sm truncate">{dish.name}</div>
@@ -35,9 +35,9 @@ export function TopDishes({ dishes }) {
                 <span>{dish.orders} ventes</span>
               </div>
             </div>
-            <div className="text-right flex-shrink-0">
-              <div className="font-bold text-primary">{dish.price} FCFA</div>
-              <div className="text-xs text-muted-foreground">
+            <div className="shrink-0 text-left min-[420px]:text-right">
+              <div className="break-words font-bold text-primary">{dish.price} FCFA</div>
+              <div className="break-words text-xs text-muted-foreground">
                 {dish.revenue}
               </div>
             </div>

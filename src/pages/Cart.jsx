@@ -49,7 +49,7 @@ export default function Cart() {
   }
 
   return (
-    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen px-3 py-6 sm:px-6 sm:py-8 lg:px-8">
       <div className="max-w-5xl mx-auto">
         <Link
           to="/plats"
@@ -59,7 +59,7 @@ export default function Cart() {
           Continuer mes achats
         </Link>
 
-        <h1 className="mb-8">Mon panier ({cartItems.length} articles)</h1>
+        <h1 className="mb-6 text-2xl font-bold sm:mb-8 sm:text-3xl">Mon panier ({cartItems.length} articles)</h1>
 
         {cartItems.length === 0 ? (
           <EmptyCart />

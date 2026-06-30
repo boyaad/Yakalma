@@ -43,8 +43,8 @@ function Navbar() {
 
   return (
     <nav className="w-full bg-white sticky top-0 z-40 shadow-sm">
-      <div className="w-full px-6 lg:px-10">
-        <div className="flex h-18 items-center justify-between gap-7">
+      <div className="w-full px-4 sm:px-6 lg:px-10">
+        <div className="flex h-16 items-center justify-between gap-4 sm:h-18 lg:gap-7">
           <Link
             to="/"
             className="flex items-center shrink-0"
@@ -53,7 +53,7 @@ function Navbar() {
             <img
               src={logo}
               alt="Yakalma"
-              className="h-12 w-auto object-contain"
+              className="h-10 w-auto object-contain sm:h-12"
             />
           </Link>
 
@@ -150,7 +150,7 @@ function Navbar() {
       </div>
 
       {isOpen && (
-        <div className="md:hidden bg-white px-6 pb-5 shadow-lg animate-fade-in">
+        <div className="md:hidden bg-white px-4 pb-5 shadow-lg animate-fade-in sm:px-6">
           <div className="flex flex-col gap-2">
             {navLinks.map(
               (link) => (

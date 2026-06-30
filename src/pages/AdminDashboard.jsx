@@ -131,13 +131,13 @@ export default function AdminDashboard() {
         setSidebarOpen={setSidebarOpen}
       />
 
-      <main className="flex-1 lg:ml-64 xl:ml-72">
+      <main className="min-w-0 flex-1 lg:ml-64 xl:ml-72">
         <AdminHeader
           activeSection={activeSection}
           setSidebarOpen={setSidebarOpen}
         />
 
-        <div className="p-4 sm:p-6 max-w-[1600px] mx-auto">
+        <div className="mx-auto w-full max-w-[1600px] p-3 sm:p-6">
           {activeSection === "dashboard" && (
             <DashboardSection setActiveSection={setActiveSection} />
           )}
@@ -349,7 +349,7 @@ function DashboardSection({ setActiveSection }) {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
         {statCards.map((stat) => (
           <CardStat
             key={stat.label}

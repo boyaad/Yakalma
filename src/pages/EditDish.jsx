@@ -142,7 +142,7 @@ export default function EditDish() {
   }
 
   return (
-    <div className="min-h-screen py-6 sm:py-8 px-4 sm:px-6 lg:px-8 bg-background">
+    <div className="min-h-screen bg-background px-3 py-6 sm:px-6 sm:py-8 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <Button
           to="/seller/dishes"
@@ -154,8 +154,8 @@ export default function EditDish() {
         </Button>
 
         <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl mb-2">Modifier le plat</h1>
-          <p className="text-muted-foreground text-lg">
+          <h1 className="mb-2 text-2xl font-bold sm:text-4xl">Modifier le plat</h1>
+          <p className="text-base text-muted-foreground sm:text-lg">
             Modifiez les informations de votre plat
           </p>
         </div>
@@ -167,7 +167,7 @@ export default function EditDish() {
             error={null}
           />
 
-          <div className="bg-white rounded-2xl p-6 shadow-sm">
+          <div className="rounded-2xl bg-white p-4 shadow-sm sm:p-6">
             <h2 className="text-xl font-semibold mb-6">
               Informations générales
             </h2>
