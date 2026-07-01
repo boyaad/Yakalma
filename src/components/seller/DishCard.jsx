@@ -9,7 +9,7 @@ export function DishCard({ dish, statusInfo, onDelete, onEdit }) {
 
   return (
     <>
-      <div className="bg-white rounded-xl border border-border-warm hover:shadow-md transition-all overflow-hidden">
+      <div className="min-w-0 overflow-hidden rounded-xl border border-border-warm bg-white transition-all hover:shadow-md">
         <div className="relative">
           <img
             src={dish.image_url}
@@ -26,7 +26,7 @@ export function DishCard({ dish, statusInfo, onDelete, onEdit }) {
         </div>
         <div className="p-4">
           <h3 className="font-bold text-base mb-2 truncate">{dish.titre}</h3>
-          <div className="flex items-center gap-3 mb-3 text-sm text-muted-foreground">
+          <div className="mb-3 flex flex-wrap items-center gap-2 text-sm text-muted-foreground sm:gap-3">
             <div className="flex items-center gap-1">
               <Star className="w-4 h-4 text-warning fill-warning" />
               <span className="font-semibold text-foreground">{dish.rating}</span>
@@ -38,12 +38,12 @@ export function DishCard({ dish, statusInfo, onDelete, onEdit }) {
               <span>{dish.orders} ventes</span>
             </div>
           </div>
-          <div className="flex items-center justify-between pt-3 border-t border-border-warm">
-            <div>
-              <div className="text-2xl font-bold text-primary">
+          <div className="flex flex-col gap-3 pt-3 border-t border-border-warm min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
+            <div className="min-w-0">
+              <div className="break-words text-xl font-bold text-primary sm:text-2xl">
                 {dish.prix} FCFA
               </div>
-              <div className="text-xs text-muted-foreground">
+              <div className="break-words text-xs text-muted-foreground">
                 Rev: {dish.revenue}
               </div>
             </div>
@@ -80,7 +80,7 @@ export function DishCard({ dish, statusInfo, onDelete, onEdit }) {
           Êtes-vous sûr de vouloir supprimer <strong className="text-foreground">"{dish.titre}"</strong> ?
           Cette action est irréversible.
         </p>
-        <div className="flex gap-3 justify-end">
+        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <Button
             variant="secondary"
             size="sm"

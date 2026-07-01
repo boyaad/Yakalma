@@ -25,7 +25,7 @@ export default function ReportDetailModal({ report, isOpen, onClose, onUpdateSta
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={`Signalement #${report.id}`} size="xl">
-      <div className="space-y-6 overflow-y-auto max-h-[75vh] pr-1">
+      <div className="space-y-6 overflow-y-auto pr-1">
         <Section title="Signalement">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
             <DetailRow label="Date" value={report.date} />
@@ -50,12 +50,12 @@ export default function ReportDetailModal({ report, isOpen, onClose, onUpdateSta
         </Section>
 
         <Section title="Signalé par">
-          <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg">
+          <div className="flex min-w-0 items-center gap-3 rounded-lg bg-muted/30 p-4">
             <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold shrink-0 text-base">
               {report.reporter?.charAt(0) || "?"}
             </div>
-            <div>
-              <div className="font-semibold">{report.reporter}</div>
+            <div className="min-w-0">
+              <div className="break-words font-semibold">{report.reporter}</div>
               {report.reporterId && (
                 <div className="text-xs text-muted-foreground mt-0.5">ID: {report.reporterId}</div>
               )}
@@ -65,13 +65,13 @@ export default function ReportDetailModal({ report, isOpen, onClose, onUpdateSta
 
         <Section title="Élément concerné">
           <div className="p-4 bg-muted/30 rounded-lg space-y-2">
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-muted-foreground font-medium min-w-[80px]">Type :</span>
+            <div className="flex flex-col gap-1 text-sm min-[420px]:flex-row min-[420px]:items-center min-[420px]:gap-2">
+              <span className="font-medium text-muted-foreground min-[420px]:min-w-[80px]">Type :</span>
               <span>{report.targetType || "Non spécifié"}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-muted-foreground font-medium min-w-[80px]">Cible :</span>
-              <span className="font-medium">{report.target}</span>
+            <div className="flex flex-col gap-1 text-sm min-[420px]:flex-row min-[420px]:items-center min-[420px]:gap-2">
+              <span className="font-medium text-muted-foreground min-[420px]:min-w-[80px]">Cible :</span>
+              <span className="break-words font-medium">{report.target}</span>
             </div>
             {report.sellerId && (
               <div className="text-xs text-muted-foreground">Vendeur ID: {report.sellerId}</div>
@@ -137,9 +137,9 @@ function Section({ title, children }) {
 
 function DetailRow({ label, value, children, span = false }) {
   return (
-    <div className={`flex items-center gap-2 ${span ? "sm:col-span-2" : ""}`}>
-      <span className="text-muted-foreground text-sm min-w-[80px] shrink-0">{label}</span>
-      {children || <span className="font-medium text-sm">{value}</span>}
+    <div className={`flex min-w-0 flex-col gap-1 min-[420px]:flex-row min-[420px]:items-center min-[420px]:gap-2 ${span ? "sm:col-span-2" : ""}`}>
+      <span className="shrink-0 text-sm text-muted-foreground min-[420px]:min-w-[80px]">{label}</span>
+      {children || <span className="break-words text-sm font-medium">{value}</span>}
     </div>
   );
 }

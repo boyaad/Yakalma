@@ -6,7 +6,7 @@ export function FavoriteDishes() {
   const { favorites, favoritesLoading: loading } = useUserInfo();
 
   return (
-    <section className="rounded-2xl border border-border-warm bg-white p-6 sm:p-8">
+    <section className="rounded-2xl border border-border-warm bg-white p-4 sm:p-8">
       <div className="mb-6">
         <h2 className="text-2xl font-semibold">Mes favoris</h2>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -65,13 +65,13 @@ export function FavoriteDishes() {
                   </span>
                 </div>
 
-                <div className="mt-4 flex items-center justify-between gap-4">
+                <div className="mt-4 flex flex-col gap-3 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
                   <span className="text-xl font-bold text-primary">
                     {dish.price} FCFA
                   </span>
                   <Link
                     to={`/plats/${dish.id}`}
-                    className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent"
+                    className="inline-flex w-full justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent min-[420px]:w-auto"
                   >
                     Commander
                   </Link>

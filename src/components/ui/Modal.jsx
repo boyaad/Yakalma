@@ -101,7 +101,7 @@ function Modal({ isOpen, onClose, title, children, size = "md" }) {
   const titleId = modalIdRef.current;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-3 sm:p-4 animate-fade-in">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
@@ -112,16 +112,16 @@ function Modal({ isOpen, onClose, title, children, size = "md" }) {
       {/* Modal Dialog */}
       <div
         ref={dialogRef}
-        className={`bg-white w-full ${currentSize} rounded-2xl p-8 shadow-[0_20px_60px_rgba(0,0,0,0.3)] relative z-10 animate-slide-up transform transition-all text-left flex flex-col`}
+        className={`bg-white w-full ${currentSize} max-h-[calc(100dvh-1.5rem)] overflow-y-auto rounded-2xl p-4 shadow-[0_20px_60px_rgba(0,0,0,0.3)] relative z-10 animate-slide-up transform transition-all text-left flex flex-col sm:p-8`}
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? titleId : undefined}
         tabIndex={-1}
       >
         {/* Header */}
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex items-start justify-between gap-4 mb-5">
           {title && (
-            <h3 id={titleId} className="font-poppins font-bold text-xl text-foreground">
+            <h3 id={titleId} className="font-poppins font-bold text-lg text-foreground sm:text-xl">
               {title}
             </h3>
           )}

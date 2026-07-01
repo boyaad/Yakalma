@@ -203,7 +203,7 @@ export default function Checkout() {
   };
 
   return (
-    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 bg-background-warm font-poppins">
+    <div className="min-h-screen bg-background-warm px-3 py-6 font-poppins sm:px-6 sm:py-8 lg:px-8">
       <div className="max-w-5xl mx-auto">
         <Link
           to="/panier"
@@ -213,14 +213,14 @@ export default function Checkout() {
           Retour au panier
         </Link>
 
-        <h1 className="text-3xl font-bold mb-8 text-foreground">Validation de la commande</h1>
+        <h1 className="mb-6 text-2xl font-bold text-foreground sm:mb-8 sm:text-3xl">Validation de la commande</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Formulaires d'Adresse et de Paiement */}
           <div className="lg:col-span-2 space-y-6">
             
             {/* Section 1 : Adresse de Livraison */}
-            <div className="bg-white rounded-2xl p-6 border border-border-warm shadow-sm">
+            <div className="bg-white rounded-2xl p-4 border border-border-warm shadow-sm sm:p-6">
               <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-foreground">
                 <MapPin className="text-primary w-5 h-5" />
                 1. Adresse de livraison
@@ -274,7 +274,7 @@ export default function Checkout() {
                 </button>
               ) : (
                 <div className="space-y-4 border-t border-border-warm pt-4">
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <h3 className="font-semibold text-foreground">Nouvelle adresse de livraison</h3>
                     {savedAddresses && savedAddresses.length > 0 && (
                       <button
@@ -311,7 +311,7 @@ export default function Checkout() {
             </div>
 
             {/* Section 2 : Mode de paiement */}
-            <div className="bg-white rounded-2xl p-6 border border-border-warm shadow-sm">
+            <div className="bg-white rounded-2xl p-4 border border-border-warm shadow-sm sm:p-6">
               <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-foreground">
                 <CreditCard className="text-primary w-5 h-5" />
                 2. Paiement par carte (Simulé)
@@ -335,7 +335,7 @@ export default function Checkout() {
                   error={errors.cardNumber}
                 />
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <Input
                     label="Date d'expiration"
                     placeholder="MM/AA"
@@ -360,7 +360,7 @@ export default function Checkout() {
                     type="submit"
                     variant="primary"
                     disabled={checkoutLoading}
-                    className="w-full md:w-auto px-8 py-3.5 flex items-center justify-center gap-2 rounded-xl text-lg font-semibold"
+                    className="w-full px-5 py-3.5 text-base font-semibold md:w-auto md:px-8 md:text-lg"
                   >
                     {checkoutLoading ? (
                       <>
@@ -379,7 +379,7 @@ export default function Checkout() {
 
           {/* Résumé de commande */}
           <div className="lg:col-span-1">
-            <aside className="bg-white rounded-2xl p-6 border border-border-warm shadow-sm sticky top-24 space-y-6">
+            <aside className="bg-white rounded-2xl p-4 border border-border-warm shadow-sm lg:sticky lg:top-24 space-y-6 sm:p-6">
               <h3 className="text-lg font-bold text-foreground">Résumé des plats</h3>
 
               <div className="space-y-4 divide-y divide-border-warm max-h-60 overflow-y-auto pr-1">
@@ -393,7 +393,7 @@ export default function Checkout() {
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-foreground text-sm truncate">{item.name}</p>
                       <p className="text-xs text-muted-foreground truncate">Chef: {item.chef}</p>
-                      <div className="flex justify-between items-center mt-1">
+                      <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
                         <span className="text-xs text-muted-foreground">Qté: {item.quantity}</span>
                         <span className="font-semibold text-primary text-sm">{formatFcfa(item.price * item.quantity)}</span>
                       </div>
@@ -403,15 +403,15 @@ export default function Checkout() {
               </div>
 
               <div className="border-t border-border-warm pt-4 space-y-2">
-                <div className="flex justify-between text-sm text-muted-foreground">
+                <div className="flex justify-between gap-3 text-sm text-muted-foreground">
                   <span>Sous-total</span>
                   <span>{formatFcfa(subtotal)}</span>
                 </div>
-                <div className="flex justify-between text-sm text-muted-foreground">
+                <div className="flex justify-between gap-3 text-sm text-muted-foreground">
                   <span>Frais de livraison</span>
                   <span>{formatFcfa(DELIVERY_FEE)}</span>
                 </div>
-                <div className="flex justify-between font-bold text-foreground text-lg border-t border-border-warm pt-3 mt-2">
+                <div className="flex justify-between gap-3 font-bold text-foreground text-lg border-t border-border-warm pt-3 mt-2">
                   <span>Total</span>
                   <span className="text-primary">{formatFcfa(total)}</span>
                 </div>

@@ -33,10 +33,10 @@ export function IngredientManager({ value = [], onChange, error }) {
   }
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm">
+    <div className="rounded-2xl bg-white p-4 shadow-sm sm:p-6">
       <h2 className="text-xl font-semibold mb-6">Ingrédients</h2>
 
-      <div className="flex gap-2 mb-4 items-start">
+      <div className="mb-4 flex flex-col gap-2 min-[420px]:flex-row min-[420px]:items-start">
         <Input
           type="text"
           value={newIngredient}
@@ -49,7 +49,7 @@ export function IngredientManager({ value = [], onChange, error }) {
           type="button"
           onClick={handleAdd}
           variant="primary"
-          className="h-[50px] px-6"
+          className="h-[50px] w-full px-6 min-[420px]:w-auto"
         >
           <Plus className="w-5 h-5" />
         </Button>
@@ -60,7 +60,7 @@ export function IngredientManager({ value = [], onChange, error }) {
           {value.map((ingredient, index) => (
             <span
               key={index}
-              className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-xl font-medium"
+              className="flex max-w-full items-center gap-2 break-words px-4 py-2 bg-primary/10 text-primary rounded-xl font-medium"
             >
               {ingredient}
               <button

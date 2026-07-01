@@ -32,7 +32,7 @@ export function ProfileOverview({
   return (
     <div className="space-y-6 font-poppins">
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
         {stats.map((stat) => (
           <CardStat 
             key={stat.label} 
@@ -46,9 +46,9 @@ export function ProfileOverview({
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Dernière Commande */}
-        <section className="rounded-2xl border border-border-warm bg-white p-6 lg:col-span-2 shadow-sm flex flex-col justify-between">
+        <section className="rounded-2xl border border-border-warm bg-white p-4 shadow-sm flex flex-col justify-between sm:p-6 lg:col-span-2">
           <div>
-            <div className="mb-5 flex items-center justify-between gap-4">
+            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="text-xl font-bold text-foreground">Dernière commande</h2>
                 <p className="text-sm text-muted-foreground mt-0.5">
@@ -67,12 +67,12 @@ export function ProfileOverview({
 
             {lastOrder ? (
               <article className="rounded-xl bg-background-warm p-5 border border-border-warm/50">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-start gap-3">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="flex min-w-0 items-start gap-3">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                       <Package className="h-5 w-5 text-primary" />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="font-semibold text-foreground text-sm sm:text-base">Commande #{lastOrder.id.slice(0, 8)}...</p>
                       <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
                         {lastOrder.date} • {lastOrder.items} articles
@@ -110,9 +110,9 @@ export function ProfileOverview({
         </section>
 
         {/* Adresse Favorite */}
-        <section className="rounded-2xl border border-border-warm bg-white p-6 shadow-sm flex flex-col justify-between">
+        <section className="rounded-2xl border border-border-warm bg-white p-4 shadow-sm flex flex-col justify-between sm:p-6">
           <div>
-            <div className="mb-5 flex items-center justify-between gap-4">
+            <div className="mb-5 flex items-start justify-between gap-4">
               <h2 className="text-xl font-bold text-foreground">Adresse favorite</h2>
               <MapPin className="h-5 w-5 text-primary" />
             </div>
@@ -144,8 +144,8 @@ export function ProfileOverview({
       </div>
 
       {/* Plat Favori */}
-      <section className="rounded-2xl border border-border-warm bg-white p-6 shadow-sm">
-        <div className="mb-5 flex items-center justify-between gap-4">
+      <section className="rounded-2xl border border-border-warm bg-white p-4 shadow-sm sm:p-6">
+        <div className="mb-5 flex items-start justify-between gap-4">
           <div>
             <h2 className="text-xl font-bold text-foreground">Plat favori du moment</h2>
             <p className="text-sm text-muted-foreground mt-0.5">
@@ -169,14 +169,14 @@ export function ProfileOverview({
               <p className="mt-1 text-sm text-muted-foreground">
                 Par {favoriteDish.chef || "Chef inconnu"}
               </p>
-              <div className="mt-4 flex items-center justify-between gap-4">
+            <div className="mt-4 flex flex-col gap-3 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
                 <span className="text-2xl font-bold text-primary">
                   {Number(favoriteDish.price).toFixed(0)} FCFA
                 </span>
                 <Button
                   to={`/plats/${favoriteDish.id}`}
                   variant="primary"
-                  className="px-5 py-2.5 rounded-lg font-semibold"
+                  className="w-full px-5 py-2.5 rounded-lg font-semibold min-[420px]:w-auto"
                 >
                   Voir le plat
                 </Button>

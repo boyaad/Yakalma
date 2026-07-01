@@ -33,7 +33,7 @@ export function LoginQuickActions() {
           to="/plats"
           className="flex items-center justify-center gap-2 px-4 py-3 bg-white border-2 border-border rounded-xl hover:bg-muted transition-colors"
         >
-          <span className="text-sm font-medium">Continuer sans compte</span>
+          <span className="text-sm text-center font-medium">Continuer sans compte</span>
         </Link>
         <Link
           to="/register?role=chef"

@@ -55,7 +55,7 @@ export function DishCard({ dish, isFavorite, onToggleFavorite }) {
         </Link>
 
         {/* Rating and Delivery */}
-        <div className="flex items-center gap-3 mb-3">
+        <div className="mb-3 flex flex-wrap items-center gap-2 sm:gap-3">
           <div className="flex items-center gap-1">
             <Star className="w-4 h-4 text-warning fill-warning" />
             <span className="text-sm font-medium">{dish.rating}</span>
@@ -71,12 +71,12 @@ export function DishCard({ dish, isFavorite, onToggleFavorite }) {
         </div>
 
         {/* Distance and Price */}
-        <div className="flex items-center justify-between pt-3 border-t border-border">
+        <div className="flex flex-col gap-2 pt-3 border-t border-border min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
           <div className="flex items-center gap-1 text-muted-foreground">
             <MapPin className="w-4 h-4" />
             <span className="text-sm">{dish.distance} km</span>
           </div>
-          <span className="text-lg font-semibold text-primary">
+          <span className="break-words text-lg font-semibold text-primary">
             {dish.price} FCFA
           </span>
         </div>

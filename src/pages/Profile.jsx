@@ -99,14 +99,14 @@ export default function Profile() {
         user={userObj}
       />
 
-      <main className="flex-1 lg:ml-64 xl:ml-72">
+      <main className="min-w-0 flex-1 lg:ml-64 xl:ml-72">
         <ProfileHeader
           activeSection={activeSection}
           setSidebarOpen={setSidebarOpen}
           user={userObj}
         />
 
-        <div className="mx-auto max-w-400 p-4 sm:p-6">
+        <div className="mx-auto w-full max-w-[1600px] p-3 sm:p-6">
           {activeSection === "overview" && (
             <ProfileOverview
               addresses={userInfoAddresses || []}

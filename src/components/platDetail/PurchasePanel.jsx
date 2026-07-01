@@ -26,12 +26,12 @@ export function PurchasePanel({
         </span>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex flex-col gap-3 min-[420px]:flex-row">
         <Button
           type="button"
           variant="primary"
           onClick={onAddToCart}
-          className="flex-1 shadow-[0_6px_14px_rgba(160,67,10,0.22)] h-12"
+          className="h-12 flex-1 shadow-[0_6px_14px_rgba(160,67,10,0.22)]"
         >
           <ShoppingCart className="h-5 w-5" />
           Ajouter au panier

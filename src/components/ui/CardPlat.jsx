@@ -51,7 +51,7 @@ function CardPlat({
       }}
       role="button"
       tabIndex={0}
-      className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all duration-300 flex flex-col h-full group text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
+      className="min-w-0 bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all duration-300 flex flex-col h-full group text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30"
     >
       {/* Image container */}
       <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
@@ -85,10 +85,10 @@ function CardPlat({
       </div>
 
       {/* Content */}
-      <div className="p-5 flex flex-col justify-between flex-grow">
+      <div className="min-w-0 p-4 flex flex-col justify-between flex-grow sm:p-5">
         <div>
           {/* Title */}
-          <h4 className="font-poppins font-semibold text-lg text-foreground mb-1 line-clamp-1 group-hover:text-primary transition-colors">
+          <h4 className="font-poppins font-semibold text-lg text-foreground mb-1 line-clamp-2 group-hover:text-primary transition-colors">
             {title}
           </h4>
 
@@ -110,9 +110,9 @@ function CardPlat({
         </div>
 
         {/* Footer info (Price & CTA) */}
-        <div className="flex items-center justify-between pt-4 mt-auto">
-          <div>
-            <span className="font-poppins font-bold text-2xl text-primary">
+        <div className="flex items-center justify-between gap-3 pt-4 mt-auto">
+          <div className="min-w-0">
+            <span className="break-words font-poppins font-bold text-xl text-primary sm:text-2xl">
               {price}
             </span>
             <span className="font-poppins text-sm text-primary font-bold ml-0.5">

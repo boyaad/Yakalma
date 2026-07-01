@@ -93,7 +93,7 @@ function AddressModal({ initial, onClose, onSave, isSaving }) {
         </label>
 
         {/* Actions */}
-        <div className="flex justify-end gap-3 pt-2">
+        <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
           <Button type="button" variant="ghost" onClick={onClose} className="px-5">
             Annuler
           </Button>
@@ -168,7 +168,7 @@ export function AddressBook() {
 
   return (
     <>
-      <section className="rounded-2xl border border-border-warm bg-white p-6 sm:p-8">
+      <section className="rounded-2xl border border-border-warm bg-white p-4 sm:p-8">
         {/* En-tête */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -180,7 +180,7 @@ export function AddressBook() {
           <Button
             type="button"
             variant="primary"
-            className="h-11 px-5"
+            className="h-11 w-full px-5 sm:w-auto"
             onClick={openAdd}
           >
             <Plus className="h-4 w-4 mr-2" />
@@ -206,7 +206,7 @@ export function AddressBook() {
             addresses.map((item) => (
               <article
                 key={item.id}
-                className="rounded-xl border border-border-warm bg-background-warm p-5 flex flex-col gap-3"
+                className="min-w-0 rounded-xl border border-border-warm bg-background-warm p-4 flex flex-col gap-3 sm:p-5"
               >
                 {/* Titre + badge */}
                 <div className="flex items-start gap-3">
@@ -232,11 +232,11 @@ export function AddressBook() {
                 </div>
 
                 {/* Boutons */}
-                <div className="flex gap-2 mt-auto">
+                <div className="mt-auto flex flex-col gap-2 min-[420px]:flex-row">
                   <button
                     type="button"
                     onClick={() => openEdit(item)}
-                    className="flex items-center gap-1.5 rounded-lg border border-border-warm bg-white px-3 py-1.5 text-sm font-medium text-foreground hover:bg-primary hover:text-white hover:border-primary transition-colors cursor-pointer font-poppins"
+                    className="flex items-center justify-center gap-1.5 rounded-lg border border-border-warm bg-white px-3 py-1.5 text-sm font-medium text-foreground hover:bg-primary hover:text-white hover:border-primary transition-colors cursor-pointer font-poppins"
                   >
                     <Pencil className="h-3.5 w-3.5" />
                     Modifier
@@ -245,7 +245,7 @@ export function AddressBook() {
                     type="button"
                     onClick={() => setDeleteConfirmId(item.id)}
                     disabled={deletingId === item.id}
-                    className="flex items-center gap-1.5 rounded-lg border border-border-warm bg-white px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-error hover:text-white hover:border-error transition-colors disabled:opacity-50 cursor-pointer font-poppins"
+                    className="flex items-center justify-center gap-1.5 rounded-lg border border-border-warm bg-white px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-error hover:text-white hover:border-error transition-colors disabled:opacity-50 cursor-pointer font-poppins"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                     {deletingId === item.id ? "Suppression…" : "Supprimer"}
@@ -277,7 +277,7 @@ export function AddressBook() {
         <p className="mb-6 text-foreground/70 font-poppins">
           Êtes-vous sûr de vouloir supprimer cette adresse de votre carnet d'adresses ?
         </p>
-        <div className="flex gap-3 justify-end">
+        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <Button
             variant="secondary"
             size="sm"

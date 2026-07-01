@@ -31,16 +31,16 @@ export function AllergenSelector({
   }
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm">
+    <div className="rounded-2xl bg-white p-4 shadow-sm sm:p-6">
       <h2 className="text-xl font-semibold mb-6">Allergènes (optionnel)</h2>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
         {options.map((allergen) => {
           const isSelected = value.includes(allergen);
           return (
             <label
               key={allergen}
               className={[
-                "flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all",
+                "flex min-w-0 items-center gap-3 p-3 rounded-xl cursor-pointer transition-all",
                 isSelected
                   ? "bg-primary/5"
                   : "hover:bg-muted/50",
@@ -52,7 +52,7 @@ export function AllergenSelector({
                 onChange={(e) => toggle(allergen, e.target.checked)}
                 className="w-5 h-5 rounded text-primary focus:ring-2 focus:ring-primary/20"
               />
-              <span className="text-sm font-medium">{allergen}</span>
+              <span className="min-w-0 break-words text-sm font-medium">{allergen}</span>
             </label>
           );
         })}

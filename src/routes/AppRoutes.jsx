@@ -37,31 +37,9 @@ function AppRoutes() {
       <Routes>
         <Route element={<MainLayout />}>
           {/* Public Routes */}
-          <Route
-            path="/"
-            element={
-              <RoleRoute allowedRoles={["acheteur"]}>
-                <Home />
-              </RoleRoute>
-            }
-          />
-          <Route
-            path="/plats"
-            element={
-              <RoleRoute allowedRoles={["acheteur"]}>
-                <Catalogue />
-              </RoleRoute>
-            }
-          />
-          <Route
-            path="/plats/:id"
-            element={
-              <RoleRoute allowedRoles={["acheteur", "admin"]}>
-                <PlatDetail />
-              </RoleRoute>
-            }
-          />
-
+          <Route path="/" element={<Home />} />
+          <Route path="/plats" element={<Catalogue />} />
+          <Route path="/plats/:id" element={<PlatDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -72,7 +50,10 @@ function AppRoutes() {
           <Route path="/centre-aide" element={<HelpCenter />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/cgu" element={<Terms />} />
-          <Route path="/politique-confidentialite" element={<PrivacyPolicy />} />
+          <Route
+            path="/politique-confidentialite"
+            element={<PrivacyPolicy />}
+          />
           <Route
             path="/create-profile"
             element={

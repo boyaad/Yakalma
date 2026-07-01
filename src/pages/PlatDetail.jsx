@@ -284,10 +284,10 @@ function PlatDetail() {
   }
 
   return (
-    <div className="bg-background-warm px-4 py-8 sm:px-6 lg:px-10">
+    <div className="bg-background-warm px-3 py-6 sm:px-6 sm:py-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
-        <section className="mb-12 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(420px,0.9fr)]">
-          <div className="aspect-square overflow-hidden rounded-2xl bg-white">
+        <section className="mb-12 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.9fr)] lg:gap-8">
+          <div className="aspect-[4/3] overflow-hidden rounded-2xl bg-white sm:aspect-square">
             <img
               src={dishWithRatings.image}
               alt={dishWithRatings.name}

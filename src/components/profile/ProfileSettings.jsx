@@ -196,7 +196,7 @@ export function ProfileSettings() {
   };
 
   return (
-    <section className="rounded-2xl border border-border-warm bg-white p-6 sm:p-8">
+    <section className="rounded-2xl border border-border-warm bg-white p-4 sm:p-8">
       <div className="mb-8">
         <h2 className="text-2xl font-semibold">Paramètres</h2>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -223,9 +223,9 @@ export function ProfileSettings() {
                 <label
                   key={option.id}
                   htmlFor={option.id}
-                  className="flex cursor-pointer items-center justify-between gap-4 rounded-xl bg-background-warm px-4 py-3 transition-all hover:border-primary/30"
+                  className="flex cursor-pointer flex-col gap-3 rounded-xl bg-background-warm px-4 py-3 transition-all hover:border-primary/30 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between"
                 >
-                  <span>{option.label}</span>
+                  <span className="min-w-0 break-words">{option.label}</span>
                   <span className="flex items-center gap-3">
                     {isSaving && (
                       <span
@@ -253,7 +253,7 @@ export function ProfileSettings() {
           <Button
             type="button"
             variant="ghost"
-            className="bg-background-warm hover:bg-primary hover:text-white px-4 py-2 font-medium"
+            className="w-full bg-background-warm px-4 py-2 font-medium hover:bg-primary hover:text-white sm:w-auto"
             onClick={() => setIsPasswordModalOpen(true)}
           >
             Changer le mot de passe

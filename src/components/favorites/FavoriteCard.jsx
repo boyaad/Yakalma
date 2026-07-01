@@ -16,14 +16,14 @@ export function FavoriteCard({ dish, onRemove }) {
         <div className="p-4">
           <h3 className="text-lg font-semibold mb-1">{dish.name}</h3>
           <p className="text-sm text-muted-foreground mb-3">Par {dish.chef}</p>
-          <div className="flex items-center justify-between mb-2">
+          <div className="mb-2 flex flex-col gap-2 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
             <div className="flex items-center gap-1">
               <Star className="w-4 h-4 text-warning fill-warning" />
               <span className="text-sm font-medium">
                 {dish.rating} ({dish.reviews})
               </span>
             </div>
-            <span className="text-primary font-semibold">{dish.price} FCFA</span>
+            <span className="break-words font-semibold text-primary">{dish.price} FCFA</span>
           </div>
           <div className="flex items-center gap-1 text-sm text-muted-foreground">
             <MapPin className="w-4 h-4" />

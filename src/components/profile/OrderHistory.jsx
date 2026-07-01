@@ -70,12 +70,12 @@ function OrderCard({ order, onCancel, onHide, onDelete, isHidden, onRestore }) {
   return (
     <>
       <article
-        className={`rounded-xl p-5 transition-all hover:shadow-sm border bg-white ${
+        className={`rounded-xl p-4 transition-all hover:shadow-sm border bg-white sm:p-5 ${
           isHidden ? "border-border-warm/40 opacity-60" : "border-border-warm"
         }`}
       >
-        <div className="mb-4 flex items-start justify-between gap-4">
-          <div>
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+          <div className="min-w-0">
             <p className="font-semibold text-foreground text-sm sm:text-base">Commande #{order.id.slice(0, 8)}...</p>
             <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
               {order.date} • {order.items} articles
@@ -94,9 +94,9 @@ function OrderCard({ order, onCancel, onHide, onDelete, isHidden, onRestore }) {
           </div>
         </div>
 
-        <div className="flex items-center justify-between gap-4 pt-3 border-t border-border-warm/50 mt-3">
+        <div className="flex flex-col gap-3 pt-3 border-t border-border-warm/50 mt-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <span className="font-bold text-primary text-base sm:text-lg">{order.total} FCFA</span>
-          <div className="flex items-center gap-2.5 flex-wrap justify-end">
+          <div className="flex flex-wrap items-center gap-2.5 sm:justify-end">
             {/* Bouton Annuler (seulement pour les commandes en attente) */}
             {isCancelable && !isHidden && (
               <Button
@@ -167,7 +167,7 @@ function OrderCard({ order, onCancel, onHide, onDelete, isHidden, onRestore }) {
                   {order.ligne_commandes.map((line) => (
                     <div
                       key={line.id}
-                      className="flex items-center justify-between gap-3 rounded-lg bg-background-warm/70 border border-border-warm/50 px-3 py-2"
+                      className="flex flex-col gap-2 rounded-lg bg-background-warm/70 border border-border-warm/50 px-3 py-2 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between min-[420px]:gap-3"
                     >
                       <div className="flex items-center gap-2">
                         <Package className="h-4 w-4 text-primary shrink-0" />
@@ -184,7 +184,7 @@ function OrderCard({ order, onCancel, onHide, onDelete, isHidden, onRestore }) {
               </div>
             )}
 
-            <div className="flex items-center justify-between pt-2 border-t border-dashed border-border-warm/50 mt-2">
+            <div className="flex flex-col gap-2 pt-2 border-t border-dashed border-border-warm/50 mt-2 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
               <span className="text-sm font-semibold text-foreground">Total</span>
               <span className="text-lg font-bold text-primary">{order.total} FCFA</span>
             </div>
@@ -203,7 +203,7 @@ function OrderCard({ order, onCancel, onHide, onDelete, isHidden, onRestore }) {
           Êtes-vous sûr de vouloir annuler la commande <strong className="text-foreground">#{order.id.slice(0, 8)}...</strong> ?
           Cette action ne peut pas être annulée.
         </p>
-        <div className="flex gap-3 justify-end">
+        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <Button
             variant="secondary"
             size="sm"
@@ -235,7 +235,7 @@ function OrderCard({ order, onCancel, onHide, onDelete, isHidden, onRestore }) {
           Êtes-vous sûr de vouloir supprimer définitivement la commande <strong className="text-foreground">#{order.id.slice(0, 8)}...</strong> de votre historique ?
           Cette action est irréversible.
         </p>
-        <div className="flex gap-3 justify-end">
+        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <Button
             variant="secondary"
             size="sm"
@@ -312,8 +312,8 @@ export function OrderHistory() {
   const hiddenOrders = commandes?.filter((order) => order.masquee) || [];
 
   return (
-    <section className="rounded-2xl border border-border-warm bg-white p-6 sm:p-8">
-      <div className="mb-8 flex items-start justify-between gap-4">
+    <section className="rounded-2xl border border-border-warm bg-white p-4 sm:p-8">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h2 className="text-2xl font-semibold">Mes commandes</h2>
           <p className="mt-1 text-sm text-muted-foreground">

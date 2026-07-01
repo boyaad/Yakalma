@@ -26,7 +26,7 @@ function Button({
   ...props
 }) {
   // Base classes for Poppins, font weight, flex centering, transitions
-  const baseClasses = "font-poppins font-semibold rounded-xl inline-flex items-center justify-center gap-2 transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary cursor-pointer select-none active:scale-[0.98]";
+  const baseClasses = "max-w-full font-poppins font-semibold rounded-xl inline-flex items-center justify-center gap-2 text-center whitespace-normal transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary cursor-pointer select-none active:scale-[0.98]";
 
   // Size variations
   const sizeClasses = {

@@ -8,55 +8,6 @@ import { useUserInfo } from "../../context/UserInfoContext";
 import { supabase } from "../../services/supabase";
 import { toast } from "react-toastify";
 
-const featuredDishes = [
-  {
-    id: 1,
-    name: "Couscous Royal",
-    chef: "Fatima K.",
-    image:
-      "https://images.unsplash.com/photo-1574484284002-952d92456975?w=900&q=80",
-    price: 15,
-    rating: 4.8,
-    reviews: 127,
-    deliveryTime: "30-45 min",
-    badge: "Populaire",
-  },
-  {
-    id: 2,
-    name: "Tajine Poulet Citron",
-    chef: "Rachid M.",
-    image:
-      "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=900&q=80",
-    price: 12,
-    rating: 4.9,
-    reviews: 89,
-    deliveryTime: "25-40 min",
-    badge: "Nouveau",
-  },
-  {
-    id: 3,
-    name: "Pastilla au Poulet",
-    chef: "Samira B.",
-    image:
-      "https://images.unsplash.com/photo-1626804475297-41608ea09aeb?w=900&q=80",
-    price: 18,
-    rating: 5.0,
-    reviews: 64,
-    deliveryTime: "35-50 min",
-  },
-  {
-    id: 4,
-    name: "Mezze Libanais",
-    chef: "Ali R.",
-    image:
-      "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=900&q=80",
-    price: 14,
-    rating: 4.7,
-    reviews: 52,
-    deliveryTime: "20-35 min",
-  },
-];
-
 function FeaturedDishCard({ dish, isFavorite, onToggleFavorite }) {
   return (
     <Link
@@ -87,7 +38,9 @@ function FeaturedDishCard({ dish, isFavorite, onToggleFavorite }) {
                 ? "bg-primary text-white border-primary"
                 : "bg-white/85 backdrop-blur-sm text-foreground border-transparent hover:bg-white hover:scale-105"
             }`}
-            aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+            aria-label={
+              isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"
+            }
           >
             <Heart className={`w-5 h-5 ${isFavorite ? "fill-current" : ""}`} />
           </button>
@@ -109,8 +62,8 @@ function FeaturedDishCard({ dish, isFavorite, onToggleFavorite }) {
           <span>{dish.deliveryTime}</span>
         </div>
 
-        <div className="mt-auto flex items-center justify-between gap-4">
-          <span className="text-xl font-bold text-primary">
+        <div className="mt-auto flex items-center justify-between gap-3">
+          <span className="min-w-0 break-words text-lg font-bold text-primary sm:text-xl">
             {dish.price} FCFA
           </span>
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-foreground transition-colors group-hover:bg-primary group-hover:text-white">
@@ -138,7 +91,9 @@ export function FeaturedDishes() {
   const handleToggleFavorite = useCallback(
     async (dishId) => {
       if (!user) {
-        toast.error("Vous devez être connecté pour ajouter un plat aux favoris.");
+        toast.error(
+          "Vous devez être connecté pour ajouter un plat aux favoris.",
+        );
         return;
       }
 
@@ -154,12 +109,10 @@ export function FeaturedDishes() {
           if (error) throw error;
           toast.success("Retiré des favoris !");
         } else {
-          const { error } = await supabase
-            .from("favoris")
-            .insert({
-              utilisateur_id: user.id,
-              plat_id: dishId,
-            });
+          const { error } = await supabase.from("favoris").insert({
+            utilisateur_id: user.id,
+            plat_id: dishId,
+          });
           if (error) throw error;
           toast.success("Ajouté aux favoris !");
         }
@@ -182,11 +135,14 @@ export function FeaturedDishes() {
 
       const platsTransformes = data.map((plat) => {
         const totalReviews = plat.avis ? plat.avis.length : 0;
-        const averageRating = totalReviews > 0
-          ? parseFloat(
-              (plat.avis.reduce((sum, a) => sum + a.note, 0) / totalReviews).toFixed(1)
-            )
-          : 0;
+        const averageRating =
+          totalReviews > 0
+            ? parseFloat(
+                (
+                  plat.avis.reduce((sum, a) => sum + a.note, 0) / totalReviews
+                ).toFixed(1),
+              )
+            : 0;
 
         return {
           id: plat.id,

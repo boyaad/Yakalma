@@ -6,14 +6,15 @@ import { FALLBACK_PLATS, FALLBACK_CATEGORIES } from "../../data/plats";
 // Images correspondant exactement aux catégories sénégalaises
 const IMAGES_PAR_CATEGORIE = {
   // Catégories BDD réelle
-  "Plat principal":
+  "Plats locaux":
     "https://images.unsplash.com/photo-1665332195309-9d75071138f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkZWxpY2lvdXMlMjByaWNlJTIwZmlzaCUyMG1lYWx8ZW58MXx8fHwxNzgwNTg0MTgxfDA&ixlib=rb-4.1.0&q=80&w=1080",
-  "Thiéboudienne Rouge":
-    "https://images.unsplash.com/photo-1665332195309-9d75071138f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkZWxpY2lvdXMlMjByaWNlJTIwZmlzaCUyMG1lYWx8ZW58MXx8fHwxNzgwNTg0MTgxfDA&ixlib=rb-4.1.0&q=80&w=1080",
-  "Yassa poulet":
-    "https://images.unsplash.com/photo-1665400808116-f0e6339b7e9a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzZW5lZ2FsZXNlJTIwZm9vZCUyMHlhc3NhJTIwY2hpY2tlbnxlbnwxfHx8fDE3ODA1ODQxNzd8MA&ixlib=rb-4.1.0&q=80&w=1080",
-  Mafé: "https://images.unsplash.com/photo-1608500218861-01091cdc501e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cmFkaXRpb25hbCUyMHN0ZXclMjBtZWF0JTIwdmVnZXRhYmxlc3xlbnwxfHx8fDE3ODA1ODQxODN8MA&ixlib=rb-4.1.0&q=80&w=1080",
-  Desserts:
+  "Plats africains":
+    "https://i.pinimg.com/736x/4e/85/db/4e85dba33993fac47e0ffcb8dcca88c8.jpg",
+  "Jus naturels":
+    "https://i.pinimg.com/736x/6c/7b/e3/6c7be37772213184702a242ed3ba4204.jpg",
+  FastFood:
+    "https://i.pinimg.com/736x/ad/9a/1f/ad9a1f5be9843d9809822c983ea9d8da.jpg",
+  Pâtisseries:
     "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=800&q=80",
   "Jus locaux":
     "https://images.unsplash.com/photo-1546173159-315724a31696?w=800&q=80",

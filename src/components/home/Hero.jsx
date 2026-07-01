@@ -3,7 +3,7 @@ import Button from "../ui/Button";
 
 export function Hero() {
   return (
-    <section className="relative min-h-[600px] lg:min-h-[700px] overflow-hidden">
+    <section className="relative min-h-[560px] overflow-hidden lg:min-h-[700px]">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0">
         <img
@@ -16,8 +16,8 @@ export function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-40 min-h-[600px] lg:min-h-[700px] flex items-center">
-        <div className="max-w-2xl">
+      <div className="relative mx-auto flex min-h-[560px] max-w-7xl items-center px-4 py-20 sm:min-h-[600px] sm:px-6 sm:py-32 lg:min-h-[700px] lg:px-8 lg:py-40">
+        <div className="max-w-2xl min-w-0">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full mb-8 shadow-lg">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -27,13 +27,13 @@ export function Hero() {
           </div>
 
           {/* Main Title */}
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl leading-[1.1] mb-6 text-white">
+          <h1 className="mb-6 break-words text-4xl leading-[1.12] text-white sm:text-6xl lg:text-7xl">
             Des plats faits maison,
             <span className="block text-amber-300 mt-3">livrés chez vous</span>
           </h1>
 
           {/* Description */}
-          <p className="text-xl text-white/90 max-w-xl leading-relaxed mb-10">
+          <p className="mb-10 max-w-xl text-base leading-relaxed text-white/90 sm:text-xl">
             Découvrez les saveurs authentiques de nos chefs passionnés.
             Commandez en quelques clics et régalez-vous !
           </p>

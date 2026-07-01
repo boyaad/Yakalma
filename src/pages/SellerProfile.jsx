@@ -169,15 +169,15 @@ export default function SellerProfile() {
         onLogout={handleLogout}
       />
 
-      <main className="flex-1 lg:ml-64 xl:ml-72">
+      <main className="min-w-0 flex-1 lg:ml-64 xl:ml-72">
         <DashboardHeader
           activeSection="profile"
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
 
-        <div className="mx-auto max-w-400 p-4 sm:p-6">
-          <div className="grid gap-6 lg:grid-cols-[360px_minmax(0,1fr)]">
+        <div className="mx-auto w-full max-w-[1600px] p-3 sm:p-6">
+          <div className="grid gap-6 lg:grid-cols-[minmax(280px,360px)_minmax(0,1fr)]">
             <section className="rounded-2xl border border-border-warm bg-white p-6">
               <div className="text-center">
                 <img
@@ -195,7 +195,7 @@ export default function SellerProfile() {
             </section>
 
             <div className="space-y-6">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                 <SellerStat icon={Star} label="Note moyenne" value={averageRating} />
                 <SellerStat
                   icon={UtensilsCrossed}
@@ -253,7 +253,7 @@ export default function SellerProfile() {
                 <Button
                   type="submit"
                   variant="primary"
-                  className="mt-6 px-6 py-3"
+                  className="mt-6 w-full px-6 py-3 sm:w-auto"
                 >
                   Enregistrer les modifications
                 </Button>

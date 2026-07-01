@@ -219,7 +219,7 @@ export default function SellerDashboard() {
       />
 
       {/* Main Content */}
-      <main className="flex-1 lg:ml-64 xl:ml-72">
+      <main className="min-w-0 flex-1 lg:ml-64 xl:ml-72">
         {/* Header */}
         <DashboardHeader
           activeSection={activeSection}
@@ -228,13 +228,13 @@ export default function SellerDashboard() {
         />
 
         {/* Content Area */}
-        <div className="p-4 sm:p-6 max-w-400 mx-auto">
+        <div className="mx-auto w-full max-w-[1600px] p-3 sm:p-6">
           
           {/* Dashboard Section */}
           {activeSection === "dashboard" && (
             <div className="space-y-6">
               {/* Stats Grid */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
                 {dynamicStats.map((stat, index) => (
                   <CardStat
                     key={index}
