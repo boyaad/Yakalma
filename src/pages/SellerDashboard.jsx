@@ -234,7 +234,7 @@ export default function SellerDashboard() {
           {activeSection === "dashboard" && (
             <div className="space-y-6">
               {/* Stats Grid */}
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
                 {dynamicStats.map((stat, index) => (
                   <CardStat
                     key={index}

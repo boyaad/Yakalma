@@ -195,7 +195,7 @@ export default function SellerProfile() {
             </section>
 
             <div className="space-y-6">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                 <SellerStat icon={Star} label="Note moyenne" value={averageRating} />
                 <SellerStat
                   icon={UtensilsCrossed}
