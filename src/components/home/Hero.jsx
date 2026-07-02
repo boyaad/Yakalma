@@ -22,7 +22,7 @@ export function Hero() {
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full mb-8 shadow-lg">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
             <span className="text-sm font-semibold text-foreground">
-              350 chefs actifs
+              250 chefs actifs
             </span>
           </div>
 
