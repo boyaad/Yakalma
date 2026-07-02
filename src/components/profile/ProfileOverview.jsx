@@ -5,17 +5,57 @@ import Button from "../ui/Button";
 import { Link } from "react-router-dom";
 
 const statusLabels = {
-  en_attente: { text: "En attente", color: "bg-warning/15 text-warning", variant: "pending" },
-  en_cours: { text: "En préparation", color: "bg-info/15 text-info", variant: "pending" },
-  pret: { text: "Prêt", color: "bg-success/15 text-success", variant: "success" },
-  livre: { text: "Livré", color: "bg-success/15 text-success", variant: "success" },
-  annulee: { text: "Annulé", color: "bg-error/15 text-error", variant: "danger" },
+  en_attente: {
+    text: "En attente",
+    color: "bg-warning/15 text-warning",
+    variant: "pending",
+  },
+  en_cours: {
+    text: "En préparation",
+    color: "bg-info/15 text-info",
+    variant: "pending",
+  },
+  pret: {
+    text: "Prêt",
+    color: "bg-success/15 text-success",
+    variant: "success",
+  },
+  livre: {
+    text: "Livré",
+    color: "bg-success/15 text-success",
+    variant: "success",
+  },
+  annulee: {
+    text: "Annulé",
+    color: "bg-error/15 text-error",
+    variant: "danger",
+  },
 
-  pending: { text: "En attente", color: "bg-warning/15 text-warning", variant: "pending" },
-  preparing: { text: "En préparation", color: "bg-info/15 text-info", variant: "pending" },
-  ready: { text: "Prêt", color: "bg-success/15 text-success", variant: "success" },
-  delivered: { text: "Livré", color: "bg-success/15 text-success", variant: "success" },
-  cancelled: { text: "Annulé", color: "bg-error/15 text-error", variant: "danger" },
+  pending: {
+    text: "En attente",
+    color: "bg-warning/15 text-warning",
+    variant: "pending",
+  },
+  preparing: {
+    text: "En préparation",
+    color: "bg-info/15 text-info",
+    variant: "pending",
+  },
+  ready: {
+    text: "Prêt",
+    color: "bg-success/15 text-success",
+    variant: "success",
+  },
+  delivered: {
+    text: "Livré",
+    color: "bg-success/15 text-success",
+    variant: "success",
+  },
+  cancelled: {
+    text: "Annulé",
+    color: "bg-error/15 text-error",
+    variant: "danger",
+  },
 };
 
 export function ProfileOverview({
@@ -26,20 +66,24 @@ export function ProfileOverview({
   stats,
 }) {
   const lastOrder = orders && orders.length > 0 ? orders[0] : null;
-  const mainAddress = addresses && addresses.length > 0 ? (addresses.find(a => a.isDefault) || addresses[0]) : null;
-  const favoriteDish = favoriteDishes && favoriteDishes.length > 0 ? favoriteDishes[0] : null;
+  const mainAddress =
+    addresses && addresses.length > 0
+      ? addresses.find((a) => a.isDefault) || addresses[0]
+      : null;
+  const favoriteDish =
+    favoriteDishes && favoriteDishes.length > 0 ? favoriteDishes[0] : null;
 
   return (
     <div className="space-y-6 font-poppins">
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
         {stats.map((stat) => (
-          <CardStat 
-            key={stat.label} 
-            label={stat.label} 
-            value={stat.value} 
-            icon={stat.icon} 
-            badgeText={stat.badge} 
+          <CardStat
+            key={stat.label}
+            label={stat.label}
+            value={stat.value}
+            icon={stat.icon}
+            badgeText={stat.badge}
           />
         ))}
       </div>
@@ -50,7 +94,9 @@ export function ProfileOverview({
           <div>
             <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h2 className="text-xl font-bold text-foreground">Dernière commande</h2>
+                <h2 className="text-xl font-bold text-foreground">
+                  Dernière commande
+                </h2>
                 <p className="text-sm text-muted-foreground mt-0.5">
                   Retrouvez rapidement son état et ses détails.
                 </p>
@@ -73,7 +119,9 @@ export function ProfileOverview({
                       <Package className="h-5 w-5 text-primary" />
                     </div>
                     <div className="min-w-0">
-                      <p className="font-semibold text-foreground text-sm sm:text-base">Commande #{lastOrder.id.slice(0, 8)}...</p>
+                      <p className="font-semibold text-foreground text-sm sm:text-base">
+                        Commande #{lastOrder.id.slice(0, 8)}...
+                      </p>
                       <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
                         {lastOrder.date} • {lastOrder.items} articles
                       </p>
@@ -83,7 +131,9 @@ export function ProfileOverview({
                     </div>
                   </div>
                   <Badge
-                    variant={statusLabels[lastOrder.order_status]?.variant || "pending"}
+                    variant={
+                      statusLabels[lastOrder.order_status]?.variant || "pending"
+                    }
                     className="normal-case tracking-normal px-2.5 py-1 font-semibold text-xs sm:text-sm rounded-lg"
                   >
                     {statusLabels[lastOrder.order_status]?.text || "En attente"}
@@ -113,13 +163,17 @@ export function ProfileOverview({
         <section className="rounded-2xl border border-border-warm bg-white p-4 shadow-sm flex flex-col justify-between sm:p-6">
           <div>
             <div className="mb-5 flex items-start justify-between gap-4">
-              <h2 className="text-xl font-bold text-foreground">Adresse favorite</h2>
+              <h2 className="text-xl font-bold text-foreground">
+                Adresse favorite
+              </h2>
               <MapPin className="h-5 w-5 text-primary" />
             </div>
 
             {mainAddress ? (
               <div className="p-4 bg-background-warm rounded-xl border border-border-warm/50">
-                <p className="font-bold text-foreground text-sm sm:text-base">{mainAddress.label}</p>
+                <p className="font-bold text-foreground text-sm sm:text-base">
+                  {mainAddress.label}
+                </p>
                 <p className="mt-1 text-xs sm:text-sm leading-relaxed text-muted-foreground">
                   {mainAddress.localisation}
                 </p>
@@ -147,7 +201,9 @@ export function ProfileOverview({
       <section className="rounded-2xl border border-border-warm bg-white p-4 shadow-sm sm:p-6">
         <div className="mb-5 flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-xl font-bold text-foreground">Plat favori du moment</h2>
+            <h2 className="text-xl font-bold text-foreground">
+              Plat favori du moment
+            </h2>
             <p className="text-sm text-muted-foreground mt-0.5">
               Votre prochain panier peut commencer ici.
             </p>
@@ -169,7 +225,7 @@ export function ProfileOverview({
               <p className="mt-1 text-sm text-muted-foreground">
                 Par {favoriteDish.chef || "Chef inconnu"}
               </p>
-            <div className="mt-4 flex flex-col gap-3 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
+              <div className="mt-4 flex flex-col gap-3 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
                 <span className="text-2xl font-bold text-primary">
                   {Number(favoriteDish.price).toFixed(0)} FCFA
                 </span>
@@ -185,7 +241,8 @@ export function ProfileOverview({
           </div>
         ) : (
           <div className="text-center py-8 text-muted-foreground text-sm border border-dashed border-border-warm rounded-xl">
-            Vous n'avez pas encore de plats favoris. Cliquez sur le cœur ❤️ sur la fiche d'un plat pour l'ajouter.
+            Vous n'avez pas encore de plats favoris. Cliquez sur le cœur ❤️ sur
+            la fiche d'un plat pour l'ajouter.
           </div>
         )}
       </section>
