@@ -127,25 +127,27 @@ function Navbar() {
             )}
           </div>
 
-          <button
-            onClick={() =>
-              setIsOpen(
-                !isOpen,
-              )
-            }
-            className="md:hidden p-2 rounded-lg text-foreground hover:text-primary hover:bg-background-warm transition-colors"
-            aria-label="Menu principal"
-          >
-            {isOpen ? (
-              <LuX
-                size={26}
-              />
-            ) : (
-              <LuMenu
-                size={26}
-              />
-            )}
-          </button>
+          <div className="flex md:hidden items-center gap-3">
+            <button
+              onClick={() =>
+                setIsOpen(
+                  !isOpen,
+                )
+              }
+              className="p-2 rounded-lg text-foreground hover:text-primary hover:bg-background-warm transition-colors"
+              aria-label="Menu principal"
+            >
+              {isOpen ? (
+                <LuX
+                  size={26}
+                />
+              ) : (
+                <LuMenu
+                  size={26}
+                />
+              )}
+            </button>
+          </div>
         </div>
       </div>
 

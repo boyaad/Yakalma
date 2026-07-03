@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, CheckCircle } from "lucide-react";
 import { ImageUploader } from "../components/addDishe/Imageuploader";
+import { IngredientManager } from "../components/addDishe/Ingredientmanager";
+import { AllergenSelector } from "../components/addDishe/Allergenselector";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import { toast } from "react-toastify";
@@ -33,9 +35,13 @@ export default function EditDish() {
   const [formData, setFormData] = useState({
     name: "",
     price: "",
+    prepTime: "",
+    servings: "",
     category: "",
     description: "",
   });
+  const [ingredients, setIngredients] = useState([]);
+  const [allergens, setAllergens] = useState([]);
   const [imagePreview, setImagePreview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -56,10 +62,14 @@ export default function EditDish() {
       setFormData({
         name: data.titre || "",
         price: data.prix || "",
+        prepTime: data.temps_preparation || "",
+        servings: data.portions || "",
         category: data.categorie_id || "",
         description: data.description || "",
       });
       setImagePreview(data.image_url || null);
+      setIngredients(data.ingredients || []);
+      setAllergens(data.allergenes || []);
       setLoading(false);
     }
 
@@ -112,6 +122,10 @@ export default function EditDish() {
         prix: Number(formData.price),
         image_url: imageUrl,
         categorie_id: formData.category || null,
+        temps_preparation: formData.prepTime || null,
+        portions: formData.servings || null,
+        ingredients: ingredients || [],
+        allergenes: allergens || [],
       };
 
       const { error } = await updatePlat(id, modifications);
@@ -184,17 +198,39 @@ export default function EditDish() {
                 placeholder="Ex: Thiéboudienne rouge"
               />
 
-              <Input
-                id="price"
-                label="Prix (FCFA)"
-                required
-                type="number"
-                value={formData.price}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, price: e.target.value }))
-                }
-                placeholder="2500"
-              />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Input
+                  id="price"
+                  label="Prix (FCFA)"
+                  required
+                  type="number"
+                  value={formData.price}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, price: e.target.value }))
+                  }
+                  placeholder="2500"
+                />
+                <Input
+                  id="prepTime"
+                  label="Temps de préparation"
+                  type="text"
+                  value={formData.prepTime}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, prepTime: e.target.value }))
+                  }
+                  placeholder="45 min"
+                />
+                <Input
+                  id="servings"
+                  label="Portions"
+                  type="text"
+                  value={formData.servings}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, servings: e.target.value }))
+                  }
+                  placeholder="2-3 pers."
+                />
+              </div>
 
               <Input
                 id="category"
@@ -230,6 +266,15 @@ export default function EditDish() {
               />
             </div>
           </div>
+
+          {/* Ingredients */}
+          <IngredientManager
+            value={ingredients}
+            onChange={setIngredients}
+          />
+
+          {/* Allergens */}
+          <AllergenSelector value={allergens} onChange={setAllergens} />
 
           <div className="flex flex-col sm:flex-row gap-4">
             <Button
