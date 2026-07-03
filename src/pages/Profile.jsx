@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Heart,
   Flag,
@@ -39,7 +39,10 @@ const menuItems = [
 export default function Profile() {
   const { user: authUser, profile } = useAuth();
   const { commandes, favorites, addresses: userInfoAddresses } = useUserInfo();
-  const [activeSection, setActiveSection] = useState("overview");
+  const location = useLocation();
+  const [activeSection, setActiveSection] = useState(
+    location.state?.activeSection || "overview"
+  );
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   
