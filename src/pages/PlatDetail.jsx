@@ -91,15 +91,11 @@ function PlatDetail() {
         rating: 0, // sera recalculé dynamiquement ci-dessous
         reviews: 0, // sera recalculé dynamiquement ci-dessous
         distance: "0 km",
-        prepTime: "30-45 min",
+        prepTime: data.temps_preparation || "Non spécifié",
         description: data.description,
-        ingredients: [
-          "Ingrédients frais",
-          "Épices maison",
-          "Recette artisanale",
-        ],
-        allergens: [],
-        servings: "1-2 personnes",
+        ingredients: data.ingredients && data.ingredients.length > 0 ? data.ingredients : ["Ingrédients frais", "Épices maison", "Recette artisanale"],
+        allergens: data.allergenes || [],
+        servings: data.portions || "Non spécifié",
         chef: {
           name: data.profiles?.nom_complet || "Vendeur inconnu",
           avatar: data.profiles?.avatar || "",
