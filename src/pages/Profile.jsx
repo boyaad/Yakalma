@@ -21,6 +21,7 @@ import { ProfileOverview } from "../components/profile/ProfileOverview";
 import { ProfileSettings } from "../components/profile/ProfileSettings";
 import { ProfileSidebar } from "../components/profile/ProfileSidebar";
 import { UserReports } from "../components/profile/UserReports";
+import { ActiveOrderFloatingIndicator } from "../components/profile/ActiveOrderFloatingIndicator";
 import { signOut } from "../services/authService";
 import { useUserInfo } from "../context/UserInfoContext";
 import { useAuth } from "../context/AuthContext";
@@ -129,6 +130,11 @@ export default function Profile() {
           {activeSection === "settings" && <ProfileSettings />}
         </div>
       </main>
+      
+      <ActiveOrderFloatingIndicator
+        orders={commandes}
+        onViewOrders={() => setActiveSection("orders")}
+      />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { createNotification } from "./notificationService";
 
 export async function getOrders(userId) {
   return await supabase
@@ -88,6 +89,22 @@ export async function checkoutCartToOrder(userId, total, vendeurId, adresseLabel
     console.error("Erreur lors du nettoyage du panier après commande:", clearError);
   }
 
+  // 6. Notifier le vendeur de la nouvelle commande
+  try {
+    const vendeurId = order.vendeur_id;
+    const nbArticles = cartItems.reduce((sum, item) => sum + item.quantite, 0);
+    await createNotification({
+      utilisateur_id: vendeurId,
+      type: "nouvelle_commande",
+      titre: "Nouvelle commande reçue !",
+      message: `Vous avez reçu une commande de ${nbArticles} article${nbArticles > 1 ? "s" : ""} pour un total de ${total} FCFA.`,
+      commande_id: order.id,
+    });
+  } catch (notifError) {
+    // On ne bloque pas la commande si la notification échoue
+    console.error("Erreur envoi notification vendeur:", notifError);
+  }
+
   return order;
 }
 
@@ -100,6 +117,46 @@ export async function updateOrderStatus(orderId, newStatus) {
     .single();
 
   if (error) throw error;
+
+  // Notifier le client du changement de statut
+  try {
+    const statusMessages = {
+      en_cours: {
+        titre: "Commande acceptée !",
+        message: "Votre commande a été acceptée et est en cours de préparation. 👨‍🍳",
+        type: "commande_acceptee",
+      },
+      pret: {
+        titre: "Commande prête !",
+        message: "Votre commande est prête ! Elle sera bientôt livrée. 🍽️",
+        type: "commande_prete",
+      },
+      livre: {
+        titre: "Commande livrée !",
+        message: "Votre commande a été livrée avec succès. Bon appétit ! 📦",
+        type: "commande_livree",
+      },
+      annulee: {
+        titre: "Commande annulée",
+        message: "Votre commande a été annulée par le vendeur. ❌",
+        type: "commande_annulee",
+      },
+    };
+
+    const notifInfo = statusMessages[newStatus];
+    if (notifInfo && data.utilisateur_id) {
+      await createNotification({
+        utilisateur_id: data.utilisateur_id,
+        type: notifInfo.type,
+        titre: notifInfo.titre,
+        message: notifInfo.message,
+        commande_id: orderId,
+      });
+    }
+  } catch (notifError) {
+    console.error("Erreur envoi notification client:", notifError);
+  }
+
   return data;
 }
 
