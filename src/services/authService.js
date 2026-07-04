@@ -1,7 +1,9 @@
 import { supabase } from "./supabase";
 
 export async function signUp(email, password) {
-  const redirectBase = import.meta.env.VITE_SITE_URL || "http://localhost:5173";
+  const redirectBase =
+    import.meta.env.VITE_SITE_URL ||
+    "https://yakalma-gahs-1sd5nnoie-yakalma.vercel.app/";
   return await supabase.auth.signUp({
     email,
     password,
