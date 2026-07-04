@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Heart,
   Flag,
@@ -21,6 +21,7 @@ import { ProfileOverview } from "../components/profile/ProfileOverview";
 import { ProfileSettings } from "../components/profile/ProfileSettings";
 import { ProfileSidebar } from "../components/profile/ProfileSidebar";
 import { UserReports } from "../components/profile/UserReports";
+import { ActiveOrderFloatingIndicator } from "../components/profile/ActiveOrderFloatingIndicator";
 import { signOut } from "../services/authService";
 import { useUserInfo } from "../context/UserInfoContext";
 import { useAuth } from "../context/AuthContext";
@@ -38,7 +39,10 @@ const menuItems = [
 export default function Profile() {
   const { user: authUser, profile } = useAuth();
   const { commandes, favorites, addresses: userInfoAddresses } = useUserInfo();
-  const [activeSection, setActiveSection] = useState("overview");
+  const location = useLocation();
+  const [activeSection, setActiveSection] = useState(
+    location.state?.activeSection || "overview"
+  );
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   
@@ -129,6 +133,11 @@ export default function Profile() {
           {activeSection === "settings" && <ProfileSettings />}
         </div>
       </main>
+      
+      <ActiveOrderFloatingIndicator
+        orders={commandes}
+        onViewOrders={() => setActiveSection("orders")}
+      />
     </div>
   );
 }

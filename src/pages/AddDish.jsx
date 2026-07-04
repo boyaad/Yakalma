@@ -143,6 +143,10 @@ export default function AddDish() {
         prix: Number(formData.price),
         image_url: url,
         disponibilite: true,
+        temps_preparation: formData.prepTime || null,
+        portions: formData.servings || null,
+        ingredients: ingredients || [],
+        allergenes: allergens || [],
       };
 
       const { error } = await addPlat(nouveauPlat);

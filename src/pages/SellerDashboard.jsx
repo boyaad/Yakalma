@@ -20,6 +20,7 @@ import { QuickActions } from "../components/seller/QuickActions";
 import { PerformanceCard } from "../components/seller/PerformanceCard";
 import { DishCard } from "../components/seller/DishCard";
 import { OrderCard } from "../components/seller/OrderCard";
+import { PendingOrdersFloatingIndicator } from "../components/seller/PendingOrdersFloatingIndicator";
 import { signOut } from "../services/authService";
 import { useSeller } from "../context/SellerInfoContext";
 import { deletePlat } from "../services/platService";
@@ -331,6 +332,11 @@ export default function SellerDashboard() {
 
         </div>
       </main>
+      
+      <PendingOrdersFloatingIndicator
+        orders={commandes}
+        onViewOrders={() => navigate("/seller/orders")}
+      />
     </div>
   );
 }
