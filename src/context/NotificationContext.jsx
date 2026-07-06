@@ -30,6 +30,14 @@ export function NotificationProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const hasInitialLoad = useRef(false);
 
+  // Réinitialiser l'état lors de la déconnexion
+  const resetState = useCallback(() => {
+    hasInitialLoad.current = false;
+    setNotifications([]);
+    setUnreadCount(0);
+    setLoading(false);
+  }, []);
+
   // Charger les notifications
   const fetchNotifications = useCallback(async () => {
     if (!user) return;
@@ -51,13 +59,28 @@ export function NotificationProvider({ children }) {
       hasInitialLoad.current = true;
       fetchNotifications();
     }
-    if (!user) {
-      hasInitialLoad.current = false;
-      setNotifications([]);
-      setUnreadCount(0);
-      setLoading(false);
-    }
   }, [user, fetchNotifications]);
+
+  // Polling de secours toutes les 10 secondes (si l'onglet est actif)
+  useEffect(() => {
+    if (!user) return;
+
+    const interval = setInterval(() => {
+      if (document.visibilityState === "visible") {
+        fetchNotifications();
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [user, fetchNotifications]);
+
+  // Réinitialiser à la déconnexion — appel légitime de setState en réponse à un changement d'auth
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    if (user) return;
+    resetState();
+  }, [user, resetState]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   // Écoute en temps réel des nouvelles notifications
   useEffect(() => {
@@ -71,30 +94,45 @@ export function NotificationProvider({ children }) {
           event: "INSERT",
           schema: "public",
           table: "notifications",
-          filter: `utilisateur_id=eq.${user.id}`,
         },
         (payload) => {
+          const isMyNotification = payload.new?.utilisateur_id === user.id;
+          if (!isMyNotification) return;
+
+          console.log("[NotificationContext] Realtime INSERT notification received:", payload.new);
           const newNotif = payload.new;
 
-          // Ajouter en tête de liste
-          setNotifications((prev) => [newNotif, ...prev]);
-          setUnreadCount((prev) => prev + 1);
+          // Ajouter en tête de liste sans doublon
+          setNotifications((prev) => {
+            if (prev.some((n) => n.id === newNotif.id)) return prev;
+            setUnreadCount((c) => c + 1);
+            return [newNotif, ...prev];
+          });
 
-          // Afficher un toast instantané (uniquement pour les vendeurs sur nouvelle_commande)
-          if (newNotif.type === "nouvelle_commande") {
-            const icon = NOTIFICATION_ICONS[newNotif.type] || "🔔";
-            toast.info(
-              `${icon} ${newNotif.titre}\n${newNotif.message}`,
-              {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                className: "notification-toast",
-              }
-            );
+          // Afficher un toast instantané pour tous les types de notifications
+          const type = newNotif.type;
+          const icon = NOTIFICATION_ICONS[type] || "🔔";
+          const toastMessage = `${icon} ${newNotif.titre}\n${newNotif.message}`;
+          const toastOptions = {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            className: "notification-toast",
+          };
+
+          if (type === "commande_annulee") {
+            toast.error(toastMessage, toastOptions);
+          } else if (
+            type === "commande_acceptee" ||
+            type === "commande_prete" ||
+            type === "commande_livree"
+          ) {
+            toast.success(toastMessage, toastOptions);
+          } else {
+            toast.info(toastMessage, toastOptions);
           }
         }
       )
@@ -104,18 +142,18 @@ export function NotificationProvider({ children }) {
           event: "UPDATE",
           schema: "public",
           table: "notifications",
-          filter: `utilisateur_id=eq.${user.id}`,
         },
         (payload) => {
+          const isMyNotification = payload.new?.utilisateur_id === user.id || payload.old?.utilisateur_id === user.id;
+          if (!isMyNotification) return;
+
+          console.log("[NotificationContext] Realtime UPDATE notification received:", payload.new);
           const updated = payload.new;
-          setNotifications((prev) =>
-            prev.map((n) => (n.id === updated.id ? updated : n))
-          );
-          // Recalculer le count
           setNotifications((prev) => {
-            const count = prev.filter((n) => !n.lue).length;
+            const next = prev.map((n) => (n.id === updated.id ? updated : n));
+            const count = next.filter((n) => !n.lue).length;
             setUnreadCount(count);
-            return prev;
+            return next;
           });
         }
       )
@@ -125,9 +163,12 @@ export function NotificationProvider({ children }) {
           event: "DELETE",
           schema: "public",
           table: "notifications",
-          filter: `utilisateur_id=eq.${user.id}`,
         },
         (payload) => {
+          const isMyNotification = payload.old?.utilisateur_id === user.id;
+          if (!isMyNotification) return;
+
+          console.log("[NotificationContext] Realtime DELETE notification received:", payload.old);
           const deletedId = payload.old.id;
           setNotifications((prev) => {
             const newList = prev.filter((n) => n.id !== deletedId);
@@ -136,7 +177,12 @@ export function NotificationProvider({ children }) {
           });
         }
       )
-      .subscribe();
+      .subscribe((status, err) => {
+        console.log(`[NotificationContext] Realtime notification channel status:`, status);
+        if (err) {
+          console.error("Realtime notification channel error:", err);
+        }
+      });
 
     return () => {
       supabase.removeChannel(channel);

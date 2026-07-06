@@ -4,9 +4,13 @@ import { ChefHat, Package, ArrowRight, Bell } from "lucide-react";
 export function ActiveOrderFloatingIndicator({ orders, onViewOrders }) {
   if (!orders || orders.length === 0) return null;
 
-  // Trouver les commandes actives (en cours de préparation ou prêtes)
+  // Trouver les commandes actives (en attente, en cours de préparation ou prêtes)
   const activeOrders = orders.filter(
-    (order) => order.order_status === "en_cours" || order.order_status === "pret"
+    (order) =>
+      order.order_status === "en_cours" ||
+      order.order_status === "pret" ||
+      order.order_status === "en_attente" ||
+      order.order_status === "pending"
   );
 
   if (activeOrders.length === 0) return null;
@@ -14,6 +18,21 @@ export function ActiveOrderFloatingIndicator({ orders, onViewOrders }) {
   // Prendre la plus récente
   const latestActiveOrder = activeOrders[0];
   const isReady = latestActiveOrder.order_status === "pret";
+  const isPending =
+    latestActiveOrder.order_status === "en_attente" ||
+    latestActiveOrder.order_status === "pending";
+
+  const getBgColor = () => {
+    if (isReady) return "bg-success/15";
+    if (isPending) return "bg-info/15";
+    return "bg-primary/15";
+  };
+
+  const getBadgeColor = () => {
+    if (isReady) return "bg-success";
+    if (isPending) return "bg-info";
+    return "bg-warning";
+  };
 
   return (
     <div
@@ -22,27 +41,37 @@ export function ActiveOrderFloatingIndicator({ orders, onViewOrders }) {
     >
       {/* Icône avec pulsation */}
       <div className="relative">
-        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isReady ? 'bg-success/15' : 'bg-primary/15'}`}>
+        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${getBgColor()}`}>
           {isReady ? (
             <Package className="w-6 h-6 text-success animate-bounce" />
+          ) : isPending ? (
+            <Bell className="w-6 h-6 text-info animate-pulse" />
           ) : (
             <ChefHat className="w-6 h-6 text-primary animate-pulse" />
           )}
         </div>
-        {/* Petit point de notification vert/orange clignotant */}
+        {/* Petit point de notification clignotant */}
         <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-          <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${isReady ? 'bg-success' : 'bg-warning'}`}></span>
-          <span className={`relative inline-flex rounded-full h-3.5 w-3.5 ${isReady ? 'bg-success' : 'bg-warning'}`}></span>
+          <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${getBadgeColor()}`}></span>
+          <span className={`relative inline-flex rounded-full h-3.5 w-3.5 ${getBadgeColor()}`}></span>
         </span>
       </div>
 
       {/* Contenu textuel */}
       <div className="flex-1 min-w-0 pr-2">
         <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-          {isReady ? "Prêt pour livraison" : "Commande acceptée"}
+          {isReady
+            ? "Prêt pour livraison"
+            : isPending
+            ? "Commande en attente"
+            : "Commande acceptée"}
         </h4>
         <p className="text-sm font-semibold text-foreground truncate mt-0.5">
-          {isReady ? "Votre plat est prêt !" : "Votre commande est en cours..."}
+          {isReady
+            ? "Votre plat est prêt !"
+            : isPending
+            ? "En attente de validation..."
+            : "Votre commande est en cours..."}
         </p>
         <p className="text-xs text-muted-foreground truncate">
           Commande #{latestActiveOrder.id.slice(0, 8)}...

@@ -4,7 +4,7 @@ import { useAuth } from "./AuthContext";
 import { toast } from "react-toastify";
 
 /* eslint-disable react-refresh/only-export-components */
-const SellerInfoContext = createContext();
+export const SellerInfoContext = createContext();
 
 function formatTimeAgo(date) {
   const seconds = Math.floor((new Date() - date) / 1000);
@@ -18,17 +18,18 @@ function formatTimeAgo(date) {
 }
 
 export default function SellerInfoProvider({ children }) {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
+  const isSeller = profile?.role === "vendeur";
   const [plats, setPlats] = useState([]);
   const [platsLoading, setPlatsLoading] = useState(true);
   const [commandes, setCommandes] = useState([]);
   const [commandesLoading, setCommandesLoading] = useState(true);
 
   // Charger les plats du vendeur
-  const fetchPlats = useCallback(async () => {
+  const fetchPlats = useCallback(async (background = false) => {
     if (!user) return;
     try {
-      setPlatsLoading(true);
+      if (!background) setPlatsLoading(true);
       const { data, error } = await supabase
         .from("plats")
         .select(`
@@ -46,15 +47,15 @@ export default function SellerInfoProvider({ children }) {
       console.error("Erreur fetchPlats:", error);
       toast.error("Impossible de charger vos plats.");
     } finally {
-      setPlatsLoading(false);
+      if (!background) setPlatsLoading(false);
     }
   }, [user]);
 
   // Charger les commandes du vendeur
-  const fetchCommandes = useCallback(async () => {
+  const fetchCommandes = useCallback(async (background = false) => {
     if (!user) return;
     try {
-      setCommandesLoading(true);
+      if (!background) setCommandesLoading(true);
       const { data, error } = await supabase
         .from("commandes")
         .select(`
@@ -74,6 +75,8 @@ export default function SellerInfoProvider({ children }) {
         .order("date_creation", { ascending: false });
 
       if (error) throw error;
+      
+      console.log("[SellerInfoContext] fetchCommandes success, count:", data?.length);
 
       // Récupérer les noms des clients correspondants
       const customerIds = data.map((o) => o.utilisateur_id).filter(Boolean);
@@ -114,58 +117,103 @@ export default function SellerInfoProvider({ children }) {
       console.error("Erreur fetchCommandes:", error);
       toast.error("Impossible de charger les commandes reçues.");
     } finally {
-      setCommandesLoading(false);
+      if (!background) setCommandesLoading(false);
     }
   }, [user]);
 
   useEffect(() => {
-    if (user) {
+    if (user && isSeller) {
       fetchPlats();
       fetchCommandes();
     }
-  }, [user, fetchPlats, fetchCommandes]);
+  }, [user, isSeller, fetchPlats, fetchCommandes]);
 
-  // Écoute en temps réel des commandes et des plats
+  // Polling de secours toutes les 10 secondes (si l'onglet est actif)
   useEffect(() => {
-    if (!user) return;
+    if (!user || !isSeller) return;
 
-    const commandesChannel = supabase
-      .channel("vendeur-commandes-realtime")
+    const interval = setInterval(() => {
+      if (document.visibilityState === "visible") {
+        fetchCommandes(true);
+        fetchPlats(true);
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [user, isSeller, fetchCommandes, fetchPlats]);
+
+  // Écoute en temps réel des commandes et des plats (vendeur uniquement)
+  useEffect(() => {
+    if (!user || !isSeller) return;
+
+    const channel = supabase
+      .channel(`vendeur-data-realtime-${user.id}`)
       .on(
         "postgres_changes",
         {
           event: "*",
           schema: "public",
           table: "commandes",
-          filter: `vendeur_id=eq.${user.id}`,
         },
-        () => {
-          fetchCommandes();
+        (payload) => {
+          const isMyOrder = payload.new?.vendeur_id === user.id || payload.old?.vendeur_id === user.id;
+          if (!isMyOrder) return;
+
+          console.log("[SellerInfoContext] Realtime commandes event received:", payload.eventType, payload);
+
+          if (payload.eventType === "UPDATE") {
+             const updatedOrder = payload.new;
+             setCommandes((prev) => {
+                 if (!prev) return prev;
+                 return prev.map(order => {
+                     if (order.id === updatedOrder.id) {
+                         return { ...order, ...updatedOrder, status: updatedOrder.order_status };
+                     }
+                     return order;
+                 });
+             });
+
+             // Toast si le client a annulé la commande
+             const oldStatus = payload.old?.order_status;
+             const newStatus = updatedOrder.order_status;
+             if ((newStatus === "annulee" || newStatus === "cancelled") && oldStatus !== newStatus) {
+               const orderIdShort = updatedOrder.id ? updatedOrder.id.slice(0, 8) : "";
+               toast.warning(`La commande #${orderIdShort} a été annulée par le client.`, {
+                 position: "bottom-right",
+                 autoClose: 6000,
+               });
+             }
+          } else {
+             // INSERT ou DELETE : fetch complet avec un léger délai pour ligne_commandes
+             console.log("[SellerInfoContext] INSERT/DELETE event. Triggering fetchCommandes.");
+             setTimeout(() => fetchCommandes(true), 500);
+          }
         },
       )
-      .subscribe();
-
-    const platsChannel = supabase
-      .channel("vendeur-plats-realtime")
       .on(
         "postgres_changes",
         {
           event: "*",
           schema: "public",
           table: "plats",
-          filter: `vendeur_id=eq.${user.id}`,
         },
-        () => {
-          fetchPlats();
+        (payload) => {
+          const isMyPlat = payload.new?.vendeur_id === user.id || payload.old?.vendeur_id === user.id;
+          if (!isMyPlat) return;
+
+          console.log("[SellerInfoContext] Realtime plats event received:", payload.eventType);
+          fetchPlats(true);
         },
       )
-      .subscribe();
+      .subscribe((status, err) => {
+        console.log(`[SellerInfoContext] Realtime subscription status:`, status);
+        if (err) console.error("[SellerInfoContext] Realtime subscription error:", err);
+      });
 
     return () => {
-      supabase.removeChannel(commandesChannel);
-      supabase.removeChannel(platsChannel);
+      supabase.removeChannel(channel);
     };
-  }, [user, fetchCommandes, fetchPlats]);
+  }, [user, isSeller, fetchCommandes, fetchPlats]);
 
   return (
     <SellerInfoContext.Provider
