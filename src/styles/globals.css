@@ -3,6 +3,7 @@
 
 @theme {
   --color-primary: #A0430A;
+  --color-primary-foreground: #FFFFFF;
   --color-background-warm: #FFF8F2;
   --color-foreground: #1A1A1A;
   --color-muted-foreground: #666666;
