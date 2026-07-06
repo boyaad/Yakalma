@@ -57,9 +57,9 @@ function AppRoutes() {
           <Route
             path="/create-profile"
             element={
-              <ProtectedRoute>
+              <>
                 <CreateProfile />
-              </ProtectedRoute>
+              </>
             }
           />
 
