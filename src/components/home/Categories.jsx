@@ -12,13 +12,14 @@ const IMAGES_PAR_CATEGORIE = {
     "https://i.pinimg.com/736x/4e/85/db/4e85dba33993fac47e0ffcb8dcca88c8.jpg",
   "Jus naturels":
     "https://i.pinimg.com/736x/6c/7b/e3/6c7be37772213184702a242ed3ba4204.jpg",
-  FastFood:
+ 
+    FastFood:
     "https://i.pinimg.com/736x/ad/9a/1f/ad9a1f5be9843d9809822c983ea9d8da.jpg",
   Pâtisseries:
     "https://images.unsplash.com/photo-1598110750624-207050c4f28c?w=800&q=80",
   "Jus locaux":
     "https://images.unsplash.com/photo-1546173159-315724a31696?w=800&q=80",
-
+"Plats internationaux":"https://i.pinimg.com/736x/8b/00/34/8b0034cc0b982e60c32567ac68921774.jpg",
   // Catégories fallback
   Thiéboudienne:
     "https://images.unsplash.com/photo-1665332195309-9d75071138f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkZWxpY2lvdXMlMjByaWNlJTIwZmlzaCUyMG1lYWx8ZW58MXx8fHwxNzgwNTg0MTgxfDA&ixlib=rb-4.1.0&q=80&w=1080",
@@ -111,6 +112,7 @@ export function Categories() {
                 src={category.image}
                 alt={category.nom}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                loading="lazy"
               />
               <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">

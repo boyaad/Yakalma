@@ -1,12 +1,16 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/ui/Navbar";
 import { Footer } from "../components/ui/Footer";
 import { useOrderNotifications } from "../hooks/useOrderNotifications";
-  
+import { useUserInfo } from "../context/UserInfoContext";
+import { ActiveOrderFloatingIndicator } from "../components/profile/ActiveOrderFloatingIndicator";
 
 function MainLayout() {
   useOrderNotifications();
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const { commandes } = useUserInfo() || {};
+
   const hideFooter =
     pathname === "/login" ||
     pathname === "/register" ||
@@ -42,6 +46,13 @@ function MainLayout() {
       </main>
 
       {!hideFooter && <Footer />}
+
+      <ActiveOrderFloatingIndicator
+        orders={commandes}
+        onViewOrders={() =>
+          navigate("/profile", { state: { activeSection: "orders" } })
+        }
+      />
     </div>
   );
 }

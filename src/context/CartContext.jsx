@@ -19,7 +19,7 @@ export function CartProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   // Charger le panier depuis Supabase quand l'utilisateur se connecte
-  const fetchCart = useCallback(async () => {
+  const fetchCart = useCallback(async (background = false) => {
     if (!user) {
       setCartItems([]);
       setLoading(false);
@@ -27,7 +27,7 @@ export function CartProvider({ children }) {
     }
 
     try {
-      setLoading(true);
+      if (!background) setLoading(true);
       const data = await getCart(user.id);
 
       // Transformer les données pour un format plus simple à utiliser dans l'UI
@@ -47,7 +47,7 @@ export function CartProvider({ children }) {
       console.error("Erreur lors du chargement du panier:", error);
       toast.error("Impossible de charger votre panier.");
     } finally {
-      setLoading(false);
+      if (!background) setLoading(false);
     }
   }, [user]);
 
@@ -60,18 +60,21 @@ export function CartProvider({ children }) {
     if (!user) return;
 
     const channel = supabase
-      .channel("panier-realtime")
+      .channel(`panier-realtime-${user.id}`)
       .on(
         "postgres_changes",
         {
           event: "*",
           schema: "public",
           table: "panier_articles",
-          filter: `utilisateur_id=eq.${user.id}`,
         },
-        () => {
-          // Recharger le panier complet lors de tout changement
-          fetchCart();
+        (payload) => {
+          const isMyCart = payload.new?.utilisateur_id === user.id || payload.old?.utilisateur_id === user.id;
+          if (!isMyCart) return;
+
+          console.log("[CartContext] Realtime panier event received");
+          // Recharger le panier complet en arrière-plan
+          fetchCart(true);
         },
       )
       .subscribe();
