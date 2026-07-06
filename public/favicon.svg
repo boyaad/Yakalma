@@ -1,0 +1,44 @@
+<svg
+  width="64"
+  height="64"
+  viewBox="0 0 60 60"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  {/* Cercle de fond marron de l'icône originale */}
+  <circle cx="30" cy="30" r="28" fill="#A0430A" />
+  
+  {/* Base de la toque */}
+  <path
+    d="M20 35C20 35 22 28 30 28C38 28 40 35 40 35"
+    stroke="#FFF8F2"
+    strokeWidth="2"
+    strokeLinecap="round"
+  />
+  
+  {/* Sommet de la toque */}
+  <path
+    d="M24 24C24 24 26 18 30 18C34 18 36 24 36 24"
+    stroke="#FFF8F2"
+    strokeWidth="2"
+    strokeLinecap="round"
+  />
+  
+  {/* Ombre/Base ovale de la toque */}
+  <ellipse
+    cx="30"
+    cy="38"
+    rx="8"
+    ry="3"
+    fill="#FFF8F2"
+    opacity="0.9"
+  />
+  
+  {/* Plis de la toque */}
+  <path
+    d="M26 20L24 25M30 18L30 24M34 20L36 25"
+    stroke="#FFF8F2"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+  />
+</svg>
