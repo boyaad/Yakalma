@@ -128,6 +128,20 @@ export default function SellerInfoProvider({ children }) {
     }
   }, [user, isSeller, fetchPlats, fetchCommandes]);
 
+  // Polling de secours toutes les 10 secondes (si l'onglet est actif)
+  useEffect(() => {
+    if (!user || !isSeller) return;
+
+    const interval = setInterval(() => {
+      if (document.visibilityState === "visible") {
+        fetchCommandes(true);
+        fetchPlats(true);
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [user, isSeller, fetchCommandes, fetchPlats]);
+
   // Écoute en temps réel des commandes et des plats (vendeur uniquement)
   useEffect(() => {
     if (!user || !isSeller) return;

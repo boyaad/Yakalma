@@ -61,6 +61,19 @@ export function NotificationProvider({ children }) {
     }
   }, [user, fetchNotifications]);
 
+  // Polling de secours toutes les 10 secondes (si l'onglet est actif)
+  useEffect(() => {
+    if (!user) return;
+
+    const interval = setInterval(() => {
+      if (document.visibilityState === "visible") {
+        fetchNotifications();
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [user, fetchNotifications]);
+
   // Réinitialiser à la déconnexion — appel légitime de setState en réponse à un changement d'auth
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {

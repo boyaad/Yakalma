@@ -183,6 +183,21 @@ export function UserInfoProvider({ children }) {
         }
     }, [user, fetchCommandes, fetchFavorites, fetchAddresses]);
 
+    // Polling de secours toutes les 10 secondes (si l'onglet est actif)
+    useEffect(() => {
+        if (!user) return;
+
+        const interval = setInterval(() => {
+            if (document.visibilityState === "visible") {
+                fetchCommandes(true);
+                fetchFavorites(true);
+                fetchAddresses(true);
+            }
+        }, 2000);
+
+        return () => clearInterval(interval);
+    }, [user, fetchCommandes, fetchFavorites, fetchAddresses]);
+
     // Écouter les changements en temps réel sur les commandes, favoris, et adresses de l'utilisateur
     useEffect(() => {
         if (!user) return;
