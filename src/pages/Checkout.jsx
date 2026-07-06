@@ -185,7 +185,7 @@ export default function Checkout() {
 
       // Rafraîchir l'historique des commandes dans le context utilisateur
       if (refreshCommandes) {
-        await refreshCommandes();
+        await refreshCommandes(true);
       }
 
       toast.success("Votre commande a été validée avec succès !");

@@ -46,6 +46,7 @@ function ChefCard({ chef }) {
             src={chef.avatar}
             alt={chef.name}
             className="w-16 h-16 rounded-full object-cover border-2 border-primary shrink-0"
+            loading="lazy"
           />
         ) : (
           <div className="w-16 h-16 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center shrink-0">

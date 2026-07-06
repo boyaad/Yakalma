@@ -123,9 +123,12 @@ function PlatDetail() {
           event: "*",
           schema: "public",
           table: "avis",
-          filter: `plat_id=eq.${id}`,
         },
-        () => {
+        (payload) => {
+          const isMyPlat = payload.new?.plat_id === id || payload.old?.plat_id === id;
+          if (!isMyPlat) return;
+
+          console.log("[PlatDetail] Realtime reviews event received");
           // Recharger les avis lors de tout changement (INSERT, UPDATE, DELETE)
           fetchReviews();
         },

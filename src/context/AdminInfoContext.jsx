@@ -43,10 +43,10 @@ export default function AdminInfoProvider({ children }) {
 
   const isAdmin = profile?.role === "admin";
 
-  const fetchUsers = useCallback(async () => {
+  const fetchUsers = useCallback(async (background = false) => {
     if (!isAdmin) return;
     try {
-      setUsersLoading(true);
+      if (!background) setUsersLoading(true);
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
@@ -63,14 +63,14 @@ export default function AdminInfoProvider({ children }) {
       console.error("Erreur fetchUsers:", err);
       toast.error("Impossible de charger les utilisateurs.");
     } finally {
-      setUsersLoading(false);
+      if (!background) setUsersLoading(false);
     }
   }, [isAdmin]);
 
-  const fetchSellers = useCallback(async () => {
+  const fetchSellers = useCallback(async (background = false) => {
     if (!isAdmin) return;
     try {
-      setSellersLoading(true);
+      if (!background) setSellersLoading(true);
       const { data: profiles, error } = await supabase
         .from("profiles")
         .select("*")
@@ -130,14 +130,14 @@ export default function AdminInfoProvider({ children }) {
       console.error("Erreur fetchSellers:", err);
       toast.error("Impossible de charger les vendeurs.");
     } finally {
-      setSellersLoading(false);
+      if (!background) setSellersLoading(false);
     }
   }, [isAdmin]);
 
-  const fetchPlats = useCallback(async () => {
+  const fetchPlats = useCallback(async (background = false) => {
     if (!isAdmin) return;
     try {
-      setPlatsLoading(true);
+      if (!background) setPlatsLoading(true);
       const { data, error } = await supabase
         .from("plats")
         .select(`
@@ -171,14 +171,14 @@ export default function AdminInfoProvider({ children }) {
       console.error("Erreur fetchPlats:", err);
       toast.error("Impossible de charger les plats.");
     } finally {
-      setPlatsLoading(false);
+      if (!background) setPlatsLoading(false);
     }
   }, [isAdmin]);
 
-  const fetchCommandes = useCallback(async () => {
+  const fetchCommandes = useCallback(async (background = false) => {
     if (!isAdmin) return;
     try {
-      setCommandesLoading(true);
+      if (!background) setCommandesLoading(true);
       const { data, error } = await supabase
         .from("commandes")
         .select(`
@@ -249,14 +249,14 @@ export default function AdminInfoProvider({ children }) {
       console.error("Erreur fetchCommandes:", err);
       toast.error("Impossible de charger les commandes.");
     } finally {
-      setCommandesLoading(false);
+      if (!background) setCommandesLoading(false);
     }
   }, [isAdmin]);
 
-  const fetchSignalements = useCallback(async () => {
+  const fetchSignalements = useCallback(async (background = false) => {
     if (!isAdmin) return;
     try {
-      setSignalementsLoading(true);
+      if (!background) setSignalementsLoading(true);
       const { data, error } = await supabase
         .from("signalements")
         .select(`
@@ -305,7 +305,7 @@ export default function AdminInfoProvider({ children }) {
       console.error("Erreur fetchSignalements:", err);
       toast.error("Impossible de charger les signalements.");
     } finally {
-      setSignalementsLoading(false);
+      if (!background) setSignalementsLoading(false);
     }
   }, [isAdmin]);
 
@@ -393,17 +393,17 @@ export default function AdminInfoProvider({ children }) {
     const channel = supabase
       .channel("admin-realtime")
       .on("postgres_changes", { event: "*", schema: "public", table: "profiles" }, () => {
-        fetchUsers();
-        fetchSellers();
+        fetchUsers(true);
+        fetchSellers(true);
       })
       .on("postgres_changes", { event: "*", schema: "public", table: "plats" }, () => {
-        fetchPlats();
+        fetchPlats(true);
       })
       .on("postgres_changes", { event: "*", schema: "public", table: "commandes" }, () => {
-        fetchCommandes();
+        fetchCommandes(true);
       })
       .on("postgres_changes", { event: "*", schema: "public", table: "signalements" }, () => {
-        fetchSignalements();
+        fetchSignalements(true);
       })
       .subscribe();
 

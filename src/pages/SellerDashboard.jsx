@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -21,10 +21,13 @@ import { PerformanceCard } from "../components/seller/PerformanceCard";
 import { DishCard } from "../components/seller/DishCard";
 import { OrderCard } from "../components/seller/OrderCard";
 import { PendingOrdersFloatingIndicator } from "../components/seller/PendingOrdersFloatingIndicator";
+import { Pagination } from "../components/categories/Pagination";
 import { signOut } from "../services/authService";
 import { useSeller } from "../context/SellerInfoContext";
 import { deletePlat } from "../services/platService";
 import { toast } from "react-toastify";
+
+const ORDERS_PER_PAGE = 9;
 
 const menuItems = [
   {
@@ -53,6 +56,7 @@ export default function SellerDashboard() {
   } = useSeller();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [ordersCurrentPage, setOrdersCurrentPage] = useState(1);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -104,11 +108,26 @@ export default function SellerDashboard() {
   // Calculer les statistiques du tableau de bord
   const activePlatsCount = plats ? plats.filter((p) => p.disponibilite).length : 0;
   const totalOrdersCount = commandes ? commandes.length : 0;
+  const totalOrdersPages = Math.ceil(totalOrdersCount / ORDERS_PER_PAGE);
+  const safeOrdersPage = totalOrdersPages > 0 ? Math.min(ordersCurrentPage, totalOrdersPages) : 1;
   const totalRevenue = commandes
     ? commandes
         .filter((c) => c.order_status === "livre" || c.order_status === "ready")
         .reduce((sum, c) => sum + Number(c.total), 0)
     : 0;
+
+  useEffect(() => {
+    if (totalOrdersPages === 0) {
+      if (ordersCurrentPage !== 1) {
+        setOrdersCurrentPage(1);
+      }
+      return;
+    }
+
+    if (ordersCurrentPage > totalOrdersPages) {
+      setOrdersCurrentPage(totalOrdersPages);
+    }
+  }, [ordersCurrentPage, totalOrdersPages]);
 
   const allReviews = plats ? plats.flatMap((plat) => plat.avis || []) : [];
   const averageRating = allReviews.length
@@ -206,6 +225,13 @@ export default function SellerDashboard() {
         status: o.order_status,
         time: o.time,
       }))
+    : [];
+
+  const paginatedOrders = commandes
+    ? commandes.slice(
+        (safeOrdersPage - 1) * ORDERS_PER_PAGE,
+        safeOrdersPage * ORDERS_PER_PAGE,
+      )
     : [];
 
   return (
@@ -309,19 +335,41 @@ export default function SellerDashboard() {
 
           {/* Orders Section */}
           {activeSection === "orders" && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+            <div className="space-y-4">
               {commandesLoading ? (
                 <div className="col-span-full py-12 text-center">
                   <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary" />
                 </div>
               ) : commandes && commandes.length > 0 ? (
-                commandes.map((order) => (
-                  <OrderCard
-                    key={order.id}
-                    order={order}
-                    onStatusUpdated={refreshCommandes}
+                <>
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="text-sm text-muted-foreground">
+                      {totalOrdersCount} commande
+                      {totalOrdersCount > 1 ? "s" : ""} au total
+                    </p>
+                    {totalOrdersPages > 1 && (
+                      <p className="text-xs text-muted-foreground">
+                        Page {safeOrdersPage} sur {totalOrdersPages}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {paginatedOrders.map((order) => (
+                      <OrderCard
+                        key={order.id}
+                        order={order}
+                        onStatusUpdated={refreshCommandes}
+                      />
+                    ))}
+                  </div>
+
+                  <Pagination
+                    currentPage={safeOrdersPage}
+                    totalPages={totalOrdersPages}
+                    setCurrentPage={setOrdersCurrentPage}
                   />
-                ))
+                </>
               ) : (
                 <div className="col-span-full py-12 text-center bg-white rounded-2xl border border-dashed p-6 text-muted-foreground">
                   Aucune commande reçue pour le moment.
